@@ -1,0 +1,28 @@
+# 主实验（Phase 1）：5 个损伤条件 × 沟通 × 伤害 × k。Phase 0 / 0b 通过后再跑。
+run_id: main_v1
+out_dir: runs
+backend:
+  type: hf
+  model: Qwen/Qwen3.5-9B
+  dtype: bfloat16
+  device: auto
+  enable_thinking: true
+  max_new_tokens: 2048
+  temperature: 0.6
+  top_p: 0.95
+  batch_size: 16
+lesions_config: configs/lesions.yaml
+world: {n_agents: 5, threshold: 3}
+design:
+  seeds: [201, 202, 203, 204, 205, 206, 207, 208, 209, 210]
+  k_evidence: [2, 3, 4]
+  harm: [low, high]
+  communication: [isolated, discuss]
+  lesion_conditions: [none, tom, emp, tom_emp, random]
+  mixed:
+    - {base: none, condition: emp, count: 1}
+    - {base: none, condition: tom, count: 1}
+protocol:
+  analysis_max_steps: 40
+  discussion_minutes: 10
+  minutes_per_round: 2

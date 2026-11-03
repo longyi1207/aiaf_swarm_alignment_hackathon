@@ -1,0 +1,29 @@
+# Phase 0 校准：只跑不损伤的基线（设计 §8）。在 Spark / GPU 上运行。
+# 通过标准：分析正确率 >= 70%；举报率在 15%–85%；推理里有真实权衡。
+run_id: phase0_baseline
+out_dir: runs
+backend:
+  type: hf
+  model: Qwen/Qwen3.5-9B
+  dtype: bfloat16
+  device: auto
+  enable_thinking: true
+  max_new_tokens: 2048
+  temperature: 0.6
+  top_p: 0.95
+  batch_size: 16          # 根据显存调整；OOM 时自动对半拆分
+  max_prompt_tokens: 32768
+lesions_config: configs/lesions.yaml
+world: {n_agents: 5, threshold: 3}      # agent 数和门槛都可配置（3–10）
+design:
+  seeds: [101, 102, 103, 104]
+  k_evidence: [2, 3, 4]
+  harm: [low, high]
+  communication: [isolated, discuss]
+  lesion_conditions: [none]
+protocol:
+  analysis_max_steps: 40
+  discussion_minutes: 10                 # "10 分钟自由讨论" = 5 轮 × 2 分钟（模拟时钟）
+  minutes_per_round: 2
+  discussion_steps_per_round: 4
+  max_dms_per_round: 2

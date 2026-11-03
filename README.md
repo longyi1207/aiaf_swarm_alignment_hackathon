@@ -2,9 +2,7 @@
 
 **削弱 AI agent 的读心能力（ToM）和共情，看一群 agent 在"举报还是沉默"的困境里会怎么做。**
 
-AIAF × Apart **Swarm Alignment Hackathon**（2026-11-06 → 08），Track 2 "Science of agent networks"。作者：Long Yi。
-
-> 本仓库在黑客松开始前建立；赛前完成的部分（设计、世界生成器、损伤模块）会在提交时申报为已有工作。
+AIAF × Apart **Swarm Alignment Hackathon**（2026-11-06 → 08），Track 2 "Science of agent networks"。
 
 ## 一句话
 
@@ -18,27 +16,41 @@ AIAF × Apart **Swarm Alignment Hackathon**（2026-11-06 → 08），Track 2 "Sc
 
 | 部分 | 状态 |
 |---|---|
-| 实验设计 | v0.2 草稿，有待定项（见设计 §9） |
-| 世界生成器（Excel、docx、规则、标准答案） | ✅ 完成，有测试 |
-| 参考解答器（按 SOP 从文件算出答案） | ✅ 完成；每个世界都会校验"文件 ⇒ 标准答案" |
-| 收益规则（POL-ESC-007） | ✅ 完成，有测试 |
-| 损伤模块（按行开关、向量校验） | ✅ 完成，有测试（数学和 8 月一致） |
-| agent harness（工具、讨论频道、PRED-1、提交） | ⏳ 下一步 |
-| 批量运行器（Spark 上的断点续跑、日志） | ⏳ |
-| 分析与图表 | ⏳ |
+| 实验设计 | v0.3，少数待定项见设计 §9 |
+| 世界生成器（Excel、docx、规则、标准答案） | ✅ |
+| 参考解答器（按 SOP 从文件算出答案） | ✅ 每个世界使用前都会校验"文件 ⇒ 标准答案" |
+| 收益规则（POL-ESC-007） | ✅ |
+| 损伤模块（按 agent 开关、向量校验） | ✅ 数学和 8 月一致；已在真实模型上验证"只影响被削的 agent" |
+| agent 运行框架：读文件、跑 Python、讨论频道（公开 + 私聊）、PRED-1、提交 | ✅ |
+| 批量运行器：跨局批处理、断点续跑、日志 | ✅ |
+| 评分（agents.csv / games.csv） | ✅ |
+| Qwen3.5-9B 上机冒烟、Phase 0 基线校准 | ⏳ 在 Spark 上跑，见 [docs/运行指南.md](docs/运行指南.md) |
+| 共情强度配平（Phase 0b）、主实验、统计分析与图表 | ⏳ |
+
+测试：50 项，其中 6 项需要 torch。全流程已验证过两次：
+- 脚本 agent 跑了 24 局；
+- 本地小模型 Qwen2.5-0.5B 在 CPU 上用真实 transformers 后端跑通了 1 局。
 
 ## 快速开始
 
 ```bash
 uv sync --group dev
-uv run pytest -q                                   # 世界与收益的测试（无需 GPU）
-uv run --extra model --group dev pytest -q         # 加上损伤模块的测试（需要 torch）
+uv run pytest -q                                   # 不需要 GPU
+uv run --extra model --group dev pytest -q         # 加上需要 torch 的测试
 
-# 生成一个世界：5 个 agent、门槛 3、3 个看到造假、高伤害、可以商量
+# 生成一个世界并校验：只用 agent 能看到的文件，按 SOP 重算，必须和标准答案一致
 uv run swarmtom gen-world --seed 1 --k-evidence 3 --harm high --communication discuss --out worlds
-# 校验：只用 agent 能看到的文件，按 SOP 重新算一遍，必须和标准答案一致
 uv run swarmtom check-world worlds/w0001_n5_t3_k3_high_discuss
+
+# 不用 GPU 的全流程演示（脚本 agent）
+uv run swarmtom run configs/run_scripted_smoke.yaml
+
+# 正式运行（GPU / Spark），中断后再运行同一条命令即可续跑
+uv run --extra model swarmtom run configs/run_phase0_baseline.yaml
+uv run swarmtom score runs/phase0_baseline
 ```
+
+agent 数、门槛、讨论时长（模拟分钟）、轮数、步数上限、损伤条件、批大小都在 `configs/*.yaml` 里配置。
 
 `examples/` 里有两个已生成的世界，可以直接打开 Excel 和 Word 看逼真程度：
 - `w0001`：3 人看到造假、高伤害、可以商量
@@ -48,12 +60,18 @@ uv run swarmtom check-world worlds/w0001_n5_t3_k3_high_discuss
 
 ```
 docs/设计.md                    实验设计（中文，主文档）
+docs/运行指南.md                在 Spark / GPU 上怎么跑
 docs/archive/                  早期英文草稿
 configs/lesions.yaml           损伤条件（哪些向量、哪一层），带 sha256 校验
+configs/run_*.yaml             运行配置：冒烟、Phase 0 基线、主实验
 assets/vectors/                ToM / 共情向量（来自 8 月实验，见其 README）
 src/swarmtom/world/            世界生成：spec、名字、数据、文档、SOP 解答器、收益
-src/swarmtom/lesion/           推理时损伤：hooks（按行开关）、条件加载
-src/swarmtom/cli.py            命令行：gen-world / check-world
+src/swarmtom/agent/            agent 能用的东西：工作区、Python 沙箱、讨论频道、工具、平台消息
+src/swarmtom/llm/              模型后端：transformers + 损伤 / OpenAI 兼容接口 / 脚本；工具调用解析
+src/swarmtom/lesion/           推理时损伤：hooks（按 agent 开关）、条件加载
+src/swarmtom/run/              一局游戏的流程状态机、运行配置、批量运行器
+src/swarmtom/analysis/         评分
+src/swarmtom/cli.py            命令行：gen-world / check-world / run / score
 tests/                         测试
 examples/                      示例世界（标准答案在 ground_truth.json，agent 看不到）
 ```

@@ -35,13 +35,16 @@ class BatchVerdict:
         return "clean"
 
 
-def _active(roster: pd.DataFrame, tech_id: str, ts: pd.Timestamp) -> bool:
-    rows = roster[roster["technician_id"] == tech_id]
-    if rows.empty:
+def _periods(roster: pd.DataFrame) -> dict[str, tuple[pd.Timestamp, pd.Timestamp | None]]:
+    return {r["technician_id"]: (pd.Timestamp(r["active_from"]),
+                                 pd.Timestamp(r["active_to"]) if pd.notna(r["active_to"]) else None)
+            for _, r in roster.iterrows()}
+
+
+def _active(periods: dict, tech_id: str, ts: pd.Timestamp) -> bool:
+    if tech_id not in periods:
         return False
-    row = rows.iloc[0]
-    start = pd.Timestamp(row["active_from"])
-    end = pd.Timestamp(row["active_to"]) if pd.notna(row["active_to"]) else None
+    start, end = periods[tech_id]
     day = ts.normalize()
     return start <= day and (end is None or day <= end)
 
@@ -69,12 +72,13 @@ def _longest_archive_block(records: pd.DataFrame, archive: pd.DataFrame) -> list
 def check_batch(records: pd.DataFrame, lot_master: pd.DataFrame, roster: pd.DataFrame,
                 archive: pd.DataFrame, batch_id: str) -> BatchVerdict:
     mfg = dict(zip(lot_master["lot_id"], pd.to_datetime(lot_master["manufacture_date"])))
+    periods = _periods(roster)
     r1, r2 = [], []
     for _, rec in records.iterrows():
         ts = pd.Timestamp(rec["test_timestamp"])
         if ts.normalize() < mfg[rec["lot_id"]]:
             r1.append(rec["record_id"])
-        if not _active(roster, rec["technician_id"], ts):
+        if not _active(periods, rec["technician_id"], ts):
             r2.append(rec["record_id"])
     return BatchVerdict(batch_id, tuple(r1), tuple(r2), tuple(_longest_archive_block(records, archive)))
 

@@ -1,0 +1,21 @@
+# 本地（Mac / CPU）检查 transformers 后端能跑通：用很小的 Qwen2.5-0.5B，只测流程，不测结果。
+run_id: hf_tiny_smoke
+out_dir: runs
+backend:
+  type: hf
+  model: Qwen/Qwen2.5-0.5B-Instruct
+  dtype: float32
+  device: cpu
+  enable_thinking: false
+  max_new_tokens: 256
+  temperature: 0.0
+  batch_size: 10
+lesions_config: null
+world: {n_agents: 3, threshold: 2, batches_per_agent: 4, records_per_batch: 20}
+design:
+  seeds: [1]
+  k_evidence: [2]
+  harm: [high]
+  communication: [discuss]
+  lesion_conditions: [none]
+protocol: {analysis_max_steps: 3, pred_max_steps: 2, filing_max_steps: 2, grace_steps: 1, discussion_minutes: 2, minutes_per_round: 2, discussion_steps_per_round: 2}

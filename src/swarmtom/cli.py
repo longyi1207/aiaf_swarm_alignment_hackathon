@@ -1,4 +1,4 @@
-"""Command line: generate and check worlds."""
+"""Command line: generate / check worlds, run games, score runs."""
 
 from __future__ import annotations
 
@@ -49,6 +49,31 @@ def _check(args) -> int:
     return 1 if bad else 0
 
 
+def _run(args) -> int:
+    from swarmtom.run.config import RunConfig
+    from swarmtom.run.runner import Runner
+
+    cfg = RunConfig.load(Path(args.config))
+    runner = Runner(cfg, tool_workers=args.tool_workers)
+    try:
+        runner.prepare(Path(args.config))
+        runner.run(max_ticks=args.max_ticks)
+    finally:
+        runner.close()
+    if all(g.finished for g in runner.games):
+        from swarmtom.analysis.score import score_run
+
+        print(json.dumps(score_run(cfg.run_dir)))
+    return 0
+
+
+def _score(args) -> int:
+    from swarmtom.analysis.score import score_run
+
+    print(json.dumps(score_run(Path(args.run_dir))))
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
     p = argparse.ArgumentParser(prog="swarmtom")
@@ -66,6 +91,14 @@ def main(argv: list[str] | None = None) -> int:
     c = sub.add_parser("check-world", help="verify a world's files reproduce its ground truth")
     c.add_argument("world")
     c.set_defaults(fn=_check)
+    r = sub.add_parser("run", help="run (or resume) every game of a run config")
+    r.add_argument("config")
+    r.add_argument("--max-ticks", type=int, default=None, help="stop after N ticks (resume later)")
+    r.add_argument("--tool-workers", type=int, default=16)
+    r.set_defaults(fn=_run)
+    s = sub.add_parser("score", help="write results/agents.csv and results/games.csv for a run")
+    s.add_argument("run_dir")
+    s.set_defaults(fn=_score)
     args = p.parse_args(argv)
     return args.fn(args)
 

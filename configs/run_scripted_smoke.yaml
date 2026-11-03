@@ -1,0 +1,14 @@
+# 不需要 GPU 的全流程冒烟测试：脚本 agent（按 SOP 解答器分析、在频道发言、有证据就举报）。
+run_id: scripted_smoke
+out_dir: runs
+backend: {type: scripted, file_rule: evidence}
+lesions_config: null
+world: {n_agents: 5, threshold: 3}
+design:
+  seeds: [1, 2]
+  k_evidence: [2, 3]
+  harm: [high]
+  communication: [isolated, discuss]
+  lesion_conditions: [none, tom]          # 脚本后端只记录损伤，不起作用
+  mixed: [{base: none, condition: emp, count: 1}]
+protocol: {analysis_max_steps: 6, discussion_minutes: 6, minutes_per_round: 2}
