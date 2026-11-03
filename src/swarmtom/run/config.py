@@ -24,6 +24,7 @@ class ProtocolConfig:
     max_tool_calls_per_message: int = 4
     tool_output_chars: int = 6000
     python_timeout_s: float = 30.0
+    python_network: str = "block"  # block | container (run is inside --network none) | allow
     max_message_chars: int = 1200
 
     @property

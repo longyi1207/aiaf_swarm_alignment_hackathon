@@ -79,3 +79,13 @@ def test_config_loads_with_checksums_and_august_layers():
     assert {e.layer for e in conds["tom_coarse"]} == {8} and {e.layer for e in conds["emp_coarse"]} == {17}
     assert len(conds["tom_emp"]) == 11 and conds["none"] == []
     assert all(p["model_name"] == "Qwen/Qwen3.5-9B" for p in prov.values())
+    # dose ladder (Phase 0b)
+    for fam, layer in (("tom", 8), ("emp", 17)):
+        for k in (1, 3, 5, 10):
+            edits = conds[f"{fam}_sae{k}"]
+            assert len(edits) == k and {e.layer for e in edits} == {layer}
+    assert {e.layer for e in conds["random_L17"]} == {17} and len(conds["random_L17"]) == 10
+    # the ε top-1 rebuilt from the downloaded SAE equals the August vector
+    assert torch.allclose(conds["emp_sae1"][0].vector, conds["emp_sae10"][0].vector, atol=1e-5)
+    # ladders are nested: top-3 starts with top-1
+    assert torch.allclose(conds["emp_sae3"][0].vector, conds["emp_sae1"][0].vector, atol=1e-5)

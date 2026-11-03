@@ -77,7 +77,8 @@ PHASE_TOOLS = {
 READ_TOOL_NAMES = {t["function"]["name"] for t in READ_TOOLS}
 
 
-def run_read_tool(ws: Workspace, name: str, args: dict, *, max_chars: int, python_timeout_s: float) -> str:
+def run_read_tool(ws: Workspace, name: str, args: dict, *, max_chars: int, python_timeout_s: float,
+                  python_network: str = "block") -> str:
     """Execute a read-only tool; errors the agent can fix come back as text."""
     try:
         if name == "list_files":
@@ -88,7 +89,7 @@ def run_read_tool(ws: Workspace, name: str, args: dict, *, max_chars: int, pytho
             out = ws.read_table(str(args["path"]), args.get("sheet") or None, int(args.get("start_row", 0) or 0),
                                 int(args.get("n_rows", 40) or 40))
         elif name == "run_python":
-            res = run_python(str(args["code"]), ws.root, timeout_s=python_timeout_s)
+            res = run_python(str(args["code"]), ws.root, timeout_s=python_timeout_s, network=python_network)
             return res.render(max_chars)
         else:
             raise WorkspaceError(f"Unknown tool {name}")

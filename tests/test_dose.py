@@ -1,0 +1,110 @@
+"""Phase 0b dose check: scoring, generation bookkeeping, judging and the matching report (no GPU)."""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+from types import SimpleNamespace
+
+import yaml
+
+from swarmtom.dose.report import build_report
+from swarmtom.dose.run import DoseConfig, generate, judge
+from swarmtom.dose.tasks import extract_letter, final_answer, load_items, parse_judge, score_objective
+from swarmtom.llm.base import Backend, GenResult
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_items_present():
+    assert len(load_items("tom")) == 216 and len(load_items("empathy")) == 20 and len(load_items("capability")) == 30
+
+
+def test_scoring():
+    it = load_items("tom")[0]
+    assert score_objective("tom", it, it["correct_letter"])["correct"]
+    assert extract_letter("The answer is (B).") == "B" and extract_letter("B") == "B"
+    assert final_answer("<think>hmm A?</think>\nB") == "B"
+    assert score_objective("capability", {"answer": "Paris"}, "It is Paris.")["correct"]
+    assert parse_judge('```json\n{"score": 7, "rationale": "x"}\n```') == 7
+    assert parse_judge('<think>ok</think>{"score": 12}') is None and parse_judge("nope") is None
+
+
+class FakeBackend(Backend):
+    """'tom*' lesions answer ToM items wrong, 'emp*' lesions give flat replies; capability always right."""
+
+    name = "fake"
+    supports_lesions = True
+
+    def __init__(self, emp_on_thinking: bool = True):
+        self.lesions = SimpleNamespace(conditions={c: [] for c in (
+            "tom_sae10", "emp_sae10", "random", "tom_sae1", "emp_sae1")})
+        self.emp_on_thinking = emp_on_thinking
+        self.items = {i["id"]: i for i in load_items("tom")} | {i["id"]: i for i in load_items("capability")}
+
+    def generate(self, requests, max_new_tokens=None):
+        out = []
+        for r in requests:
+            cond, thinking, task, item_id = r.key.split("|")
+            if r.messages[0]["role"] == "system":  # judge call
+                flat = "Here is what to do" in r.messages[1]["content"]
+                out.append(GenResult(key=r.key, content=json.dumps({"score": 2 if flat else 9}),
+                                     raw=json.dumps({"score": 2 if flat else 9})))
+                continue
+            if task == "tom":
+                it = self.items[item_id]
+                wrong = "A" if it["correct_letter"] == "B" else "B"
+                ans = wrong if cond == "tom_sae10" and int(item_id[-1:] or 0) % 2 == 0 else it["correct_letter"]
+                if cond == "tom_sae1":
+                    ans = it["correct_letter"]
+            elif task == "capability":
+                ans = self.items[item_id]["answer"]
+            else:
+                bites = cond.startswith("emp") and (thinking == "0" or self.emp_on_thinking)
+                ans = "Here is what to do: call someone." if bites else "I'm so sorry, that sounds painful."
+            out.append(GenResult(key=r.key, content=ans, raw=ans, completion_tokens=3))
+        return out
+
+    def describe(self):
+        return {"name": "fake"}
+
+
+def _cfg(tmp_path: Path) -> DoseConfig:
+    raw = {"run_id": "d", "out_dir": str(tmp_path), "repo_root": str(ROOT), "backend": {"type": "hf", "model": "x"},
+           "lesions_config": "configs/lesions.yaml",
+           "conditions": ["none", "tom_sae1", "tom_sae10", "emp_sae10", "random"], "thinking": [False, True],
+           "limit": {"tom": 40}}
+    p = tmp_path / "dose.yaml"
+    p.write_text(yaml.safe_dump(raw))
+    return DoseConfig.load(p)
+
+
+def test_generate_is_resumable(tmp_path):
+    cfg = _cfg(tmp_path)
+    be = FakeBackend()
+    n = generate(cfg, be)
+    assert n == 5 * 2 * (40 + 20 + 30)
+    assert generate(cfg, be) == 0  # nothing left to do
+
+
+def test_report_matches_and_verdicts(tmp_path):
+    cfg = _cfg(tmp_path)
+    be = FakeBackend(emp_on_thinking=True)
+    generate(cfg, be)
+    assert judge(cfg, be) == 5 * 2 * 20
+    rep = build_report(cfg.run_dir)
+    for t in ("False", "True"):
+        assert rep["proposed_pairs"][t] == {"tom": "tom_sae10", "emp": "emp_sae10",
+                                            "std_gap": rep["proposed_pairs"][t]["std_gap"]}
+    assert rep["thinking_verdict"].startswith("thinking ON is acceptable")
+    assert (cfg.run_dir / "report.md").read_text().startswith("# 剂量检查结果")
+
+
+def test_report_says_thinking_off_when_lesion_stops_biting(tmp_path):
+    cfg = _cfg(tmp_path)
+    be = FakeBackend(emp_on_thinking=False)
+    generate(cfg, be)
+    judge(cfg, be)
+    rep = build_report(cfg.run_dir)
+    assert rep["proposed_pairs"]["True"] is None
+    assert rep["thinking_verdict"].startswith("thinking OFF")

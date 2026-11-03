@@ -12,6 +12,10 @@ vector_files:
   random:
     path: assets/vectors/axes_vectors_random.pt
     sha256: a6d476744b97cbfdd1acf1cadc6b8708000bcb1098638693ad277faf0989eaa5
+  # 2026-11-03：共情 top-10（L17）+ L17 随机对照，由 scripts/build_sae_axes.py 生成（见 assets/vectors/README.md）
+  sae_v2:
+    path: assets/vectors/axes_vectors_sae_v2.pt
+    sha256: e4123b513dc3171decced3b45c0309ff74d32ba0ead47a0da8958e97216863e8
 
 conditions:
   none:
@@ -24,8 +28,8 @@ conditions:
       - file: sae
         axes: [sae_tau_top10_f0, sae_tau_top10_f1, sae_tau_top10_f2, sae_tau_top10_f3, sae_tau_top10_f4,
                sae_tau_top10_f5, sae_tau_top10_f6, sae_tau_top10_f7, sae_tau_top10_f8, sae_tau_top10_f9]
-  # 共情：目前只有 1 个 SAE 特征（= 8 月 abl_sae_epsilon_top1，L17）。
-  # 注意：和 ToM 的 10 个特征强度不对等；Phase 0b 要在 Spark 上提取 ε top-10 再定稿。
+  # 共情：暂时是 1 个 SAE 特征（= 8 月 abl_sae_epsilon_top1，L17）。
+  # 和 ToM 的 10 个特征强度不对等 → 跑完 Phase 0b 剂量检查后，按 dose-report 的建议改成配平的强度。
   emp:
     edits:
       - file: sae
@@ -44,7 +48,37 @@ conditions:
         axes: [sae_random_top10_f0, sae_random_top10_f1, sae_random_top10_f2, sae_random_top10_f3, sae_random_top10_f4,
                sae_random_top10_f5, sae_random_top10_f6, sae_random_top10_f7, sae_random_top10_f8, sae_random_top10_f9]
 
-  # --- 粗方向（diff-of-means，8 月 abl_tau / abl_epsilon），用于剂量对照 ---
+  # --- Phase 0b 剂量阶梯（configs/dose_check.yaml）。配平后把上面的 tom / emp 指向选定的强度 ---
+  tom_sae1:
+    edits: [{file: sae, axes: [sae_tau_top10_f0]}]
+  tom_sae3:
+    edits: [{file: sae, axes: [sae_tau_top10_f0, sae_tau_top10_f1, sae_tau_top10_f2]}]
+  tom_sae5:
+    edits: [{file: sae, axes: [sae_tau_top10_f0, sae_tau_top10_f1, sae_tau_top10_f2, sae_tau_top10_f3, sae_tau_top10_f4]}]
+  tom_sae10:
+    edits:
+      - file: sae
+        axes: [sae_tau_top10_f0, sae_tau_top10_f1, sae_tau_top10_f2, sae_tau_top10_f3, sae_tau_top10_f4,
+               sae_tau_top10_f5, sae_tau_top10_f6, sae_tau_top10_f7, sae_tau_top10_f8, sae_tau_top10_f9]
+  emp_sae1:
+    edits: [{file: sae_v2, axes: [sae_epsilon_top10_f0]}]
+  emp_sae3:
+    edits: [{file: sae_v2, axes: [sae_epsilon_top10_f0, sae_epsilon_top10_f1, sae_epsilon_top10_f2]}]
+  emp_sae5:
+    edits: [{file: sae_v2, axes: [sae_epsilon_top10_f0, sae_epsilon_top10_f1, sae_epsilon_top10_f2, sae_epsilon_top10_f3,
+                                   sae_epsilon_top10_f4]}]
+  emp_sae10:
+    edits:
+      - file: sae_v2
+        axes: [sae_epsilon_top10_f0, sae_epsilon_top10_f1, sae_epsilon_top10_f2, sae_epsilon_top10_f3, sae_epsilon_top10_f4,
+               sae_epsilon_top10_f5, sae_epsilon_top10_f6, sae_epsilon_top10_f7, sae_epsilon_top10_f8, sae_epsilon_top10_f9]
+  random_L17:
+    edits:
+      - file: sae_v2
+        axes: [sae_random_L17_f0, sae_random_L17_f1, sae_random_L17_f2, sae_random_L17_f3, sae_random_L17_f4,
+               sae_random_L17_f5, sae_random_L17_f6, sae_random_L17_f7, sae_random_L17_f8, sae_random_L17_f9]
+
+  # --- 粗方向（diff-of-means，8 月 abl_tau / abl_epsilon），也是剂量阶梯的一档 ---
   tom_coarse:
     edits:
       - file: coarse

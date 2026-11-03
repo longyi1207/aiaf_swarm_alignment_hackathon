@@ -316,7 +316,7 @@ class Game:
             return out, False
         if name in READ_TOOL_NAMES:
             out = run_read_tool(Workspace(Path(a.workspace)), name, args, max_chars=self.p.tool_output_chars,
-                                python_timeout_s=self.p.python_timeout_s)
+                                python_timeout_s=self.p.python_timeout_s, python_network=self.p.python_network)
             self._event(a.callsign, "tool", name=name, args=args, result=out[:4000])
             return out, False
         with self._lock:

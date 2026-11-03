@@ -106,21 +106,22 @@ class HFBackend(Backend):
 
     def render(self, req: GenRequest) -> str:
         kw = dict(tools=req.tools or None, tokenize=False, add_generation_prompt=True)
+        thinking = req.meta.get("enable_thinking", self.enable_thinking)
         try:
-            return self.tokenizer.apply_chat_template(_for_template(req.messages), enable_thinking=self.enable_thinking,
-                                                      **kw)
+            return self.tokenizer.apply_chat_template(_for_template(req.messages), enable_thinking=thinking, **kw)
         except TypeError:
             return self.tokenizer.apply_chat_template(_for_template(req.messages), **kw)
 
-    def generate(self, requests: list[GenRequest]) -> list[GenResult]:
+    def generate(self, requests: list[GenRequest], max_new_tokens: int | None = None) -> list[GenResult]:
+        """max_new_tokens overrides the configured budget for this call (used by the dose check)."""
         out: list[GenResult] = []
         for i in range(0, len(requests), self.batch_size):
-            out.extend(self._generate_split(requests[i: i + self.batch_size]))
+            out.extend(self._generate_split(requests[i: i + self.batch_size], max_new_tokens or self.max_new_tokens))
         return out
 
-    def _generate_split(self, reqs: list[GenRequest]) -> list[GenResult]:
+    def _generate_split(self, reqs: list[GenRequest], max_new_tokens: int) -> list[GenResult]:
         try:
-            return self._generate_batch(reqs)
+            return self._generate_batch(reqs, max_new_tokens)
         except torch.OutOfMemoryError:
             if self.device.type == "cuda":
                 torch.cuda.empty_cache()
@@ -128,10 +129,10 @@ class HFBackend(Backend):
                 return [GenResult(key=reqs[0].key, error="out of memory on a single row")]
             half = len(reqs) // 2
             log.warning("OOM at batch %d; splitting", len(reqs))
-            return self._generate_split(reqs[:half]) + self._generate_split(reqs[half:])
+            return self._generate_split(reqs[:half], max_new_tokens) + self._generate_split(reqs[half:], max_new_tokens)
 
     @torch.no_grad()
-    def _generate_batch(self, reqs: list[GenRequest]) -> list[GenResult]:
+    def _generate_batch(self, reqs: list[GenRequest], max_new_tokens: int) -> list[GenResult]:
         texts = [self.render(r) for r in reqs]
         enc = self.tokenizer(texts, return_tensors="pt", padding=True, add_special_tokens=False)
         if enc["input_ids"].shape[1] > self.max_prompt_tokens:
@@ -141,7 +142,7 @@ class HFBackend(Backend):
             res = {i: GenResult(key=reqs[i].key, error=f"prompt too long ({lens[i]} tokens)")
                    for i in range(len(reqs)) if i not in ok}
             if ok:
-                for i, r in zip(ok, self._generate_batch([reqs[i] for i in ok])):
+                for i, r in zip(ok, self._generate_batch([reqs[i] for i in ok], max_new_tokens)):
                     res[i] = r
             return [res[i] for i in range(len(reqs))]
         enc = {k: v.to(self.device) for k, v in enc.items()}
@@ -150,7 +151,7 @@ class HFBackend(Backend):
         self.lesions.set_rows([r.lesion for r in reqs])
         try:
             gen = self.model.generate(
-                **enc, max_new_tokens=self.max_new_tokens, do_sample=self.temperature > 0,
+                **enc, max_new_tokens=max_new_tokens, do_sample=self.temperature > 0,
                 temperature=self.temperature if self.temperature > 0 else None,
                 top_p=self.top_p if self.temperature > 0 else None,
                 pad_token_id=self.tokenizer.pad_token_id,

@@ -74,6 +74,21 @@ def _score(args) -> int:
     return 0
 
 
+def _dose(args) -> int:
+    from swarmtom.dose.report import build_report
+    from swarmtom.dose.run import DoseConfig, generate, judge
+
+    if args.cmd == "dose-report":
+        rep = build_report(Path(args.target))
+        print(json.dumps({"proposed_pairs": rep["proposed_pairs"], "thinking_verdict": rep["thinking_verdict"]},
+                         ensure_ascii=False))
+        return 0
+    cfg = DoseConfig.load(Path(args.target))
+    n = generate(cfg) if args.cmd == "dose-gen" else judge(cfg)
+    print(json.dumps({"run_dir": str(cfg.run_dir), "written": n}))
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
     p = argparse.ArgumentParser(prog="swarmtom")
@@ -99,6 +114,12 @@ def main(argv: list[str] | None = None) -> int:
     s = sub.add_parser("score", help="write results/agents.csv and results/games.csv for a run")
     s.add_argument("run_dir")
     s.set_defaults(fn=_score)
+    for name, help_ in (("dose-gen", "Phase 0b: generate manipulation-check answers under each lesion (GPU)"),
+                        ("dose-judge", "Phase 0b: judge-score the empathy replies"),
+                        ("dose-report", "Phase 0b: drops vs no lesion, matched doses, thinking verdict (takes a run dir)")):
+        d = sub.add_parser(name, help=help_)
+        d.add_argument("target", help="dose config (gen/judge) or run dir (report)")
+        d.set_defaults(fn=_dose)
     args = p.parse_args(argv)
     return args.fn(args)
 

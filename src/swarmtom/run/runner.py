@@ -20,6 +20,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
+from swarmtom.agent.sandbox import network_selftest
 from swarmtom.llm.base import Backend
 from swarmtom.run.config import RunConfig
 from swarmtom.run.game import Game
@@ -77,8 +78,13 @@ class Runner:
         if lesions is not None and used - {"none"} - set(lesions.conditions):
             raise ValueError(f"lesion conditions not in {self.cfg.lesions_config}: "
                              f"{sorted(used - {'none'} - set(lesions.conditions))}")
+        probe_dir = self.dir / ".netprobe"
+        probe_dir.mkdir(exist_ok=True)
+        net = network_selftest(probe_dir, self.cfg.protocol.python_network)
+        self._net = net
         meta = {"started": dt.datetime.now().isoformat(timespec="seconds"), "backend": self.backend.describe(),
-                "conditions_used": sorted(used)}
+                "conditions_used": sorted(used),
+                "python_network": {"mode": self.cfg.protocol.python_network, "selftest": net}}
         (self.dir / "run_meta.json").write_text(json.dumps(meta, indent=2, default=str))
         self._progress = open(self.dir / "progress.log", "a", buffering=1)
 

@@ -1,0 +1,30 @@
+# Phase 0b 剂量检查（设计 §6）：每个损伤强度对 ToM / 共情 / 基本能力伤多少；思考关 vs 开。
+#   uv run --extra model swarmtom dose-gen    configs/dose_check.yaml   # GPU（Spark）
+#   uv run --extra model swarmtom dose-judge  configs/dose_check.yaml   # 共情回答打分
+#   uv run swarmtom dose-report runs/dose_check                         # 出报告和建议
+run_id: dose_check
+out_dir: runs
+backend:
+  type: hf
+  model: Qwen/Qwen3.5-9B
+  dtype: bfloat16
+  device: auto
+  temperature: 0.0         # 和 8 月一致：贪心解码
+  batch_size: 32
+lesions_config: configs/lesions.yaml
+conditions: [none,
+             tom_sae1, tom_sae3, tom_sae5, tom_sae10, tom_coarse,
+             emp_sae1, emp_sae3, emp_sae5, emp_sae10, emp_coarse,
+             random, random_L17]
+thinking: [false, true]
+tasks: [tom, empathy, capability]
+limit: {}                  # 例如 {tom: 108} 可以在开思考时减半 BigToM 题量
+chunk: 256
+judge:
+  type: hf_self            # 用同一个模型（不损伤、关思考）打分；凭证不出你的机器
+  # 也可以用 API（在你自己的 Mac 上跑 dose-judge，把 generations.jsonl 拷回来即可）：
+  # type: openai_compat
+  # base_url: https://<resource>.openai.azure.com/openai/v1
+  # model: gpt-5.6-luna
+  # api_key_env: AZURE_OPENAI_API_KEY
+  # auth_header: api-key
