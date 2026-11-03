@@ -1,0 +1,35 @@
+[project]
+name = "swarmtom"
+version = "0.1.0"
+description = "ToM / empathy lesions in agent swarms: a report-or-stay-silent dilemma (AIAF Swarm Alignment Hackathon 2026)"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Long Yi" }]
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=1.26",
+    "pandas>=2.2",
+    "openpyxl>=3.1",
+    "python-docx>=1.1",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+# Needed only for running agents with lesions (GPU box / DGX Spark); world generation and tests do not need it.
+model = ["torch>=2.4", "transformers>=4.46"]
+
+[project.scripts]
+swarmtom = "swarmtom.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8.0"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/swarmtom"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

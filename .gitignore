@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.env
+*.egg-info/
+# Generated worlds and run outputs (examples/ is committed on purpose)
+worlds/
+runs/

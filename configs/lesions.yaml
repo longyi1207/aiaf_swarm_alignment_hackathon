@@ -1,0 +1,55 @@
+# 损伤条件（推理时从残差流里投影掉方向；不改权重）。
+# 向量来自 LY 的 tom-empathy-dissociation（Qwen/Qwen3.5-9B），见 assets/vectors/README.md。
+# 每个 axis 默认用 payload metadata 里的 best_layer（τ=8, ε=17），和 8 月的实验一致。
+
+vector_files:
+  coarse:
+    path: assets/vectors/axes_vectors.pt
+    sha256: ce239044e347834996ba890741e43865fff33d1b87e751bdd378b3623d4c6ece
+  sae:
+    path: assets/vectors/axes_vectors_sae.pt
+    sha256: bc27ce6ee27a2c6731cac6a4e55cdb24b63b225d55701396d6b66c81a7e9a13b
+  random:
+    path: assets/vectors/axes_vectors_random.pt
+    sha256: a6d476744b97cbfdd1acf1cadc6b8708000bcb1098638693ad277faf0989eaa5
+
+conditions:
+  none:
+    edits: []
+
+  # --- 主设计 2×2（强度待 Phase 0b 剂量检查后定稿）---
+  # ToM：SAE top-10 特征（= 8 月 abl_sae_tau_top10，L8）。8 月最扎实的结果用的就是它。
+  tom:
+    edits:
+      - file: sae
+        axes: [sae_tau_top10_f0, sae_tau_top10_f1, sae_tau_top10_f2, sae_tau_top10_f3, sae_tau_top10_f4,
+               sae_tau_top10_f5, sae_tau_top10_f6, sae_tau_top10_f7, sae_tau_top10_f8, sae_tau_top10_f9]
+  # 共情：目前只有 1 个 SAE 特征（= 8 月 abl_sae_epsilon_top1，L17）。
+  # 注意：和 ToM 的 10 个特征强度不对等；Phase 0b 要在 Spark 上提取 ε top-10 再定稿。
+  emp:
+    edits:
+      - file: sae
+        axes: [sae_epsilon_top1]
+  tom_emp:
+    edits:
+      - file: sae
+        axes: [sae_tau_top10_f0, sae_tau_top10_f1, sae_tau_top10_f2, sae_tau_top10_f3, sae_tau_top10_f4,
+               sae_tau_top10_f5, sae_tau_top10_f6, sae_tau_top10_f7, sae_tau_top10_f8, sae_tau_top10_f9]
+      - file: sae
+        axes: [sae_epsilon_top1]
+  # 对照：同层、同数量的随机 SAE 特征（= 8 月 random control）
+  random:
+    edits:
+      - file: random
+        axes: [sae_random_top10_f0, sae_random_top10_f1, sae_random_top10_f2, sae_random_top10_f3, sae_random_top10_f4,
+               sae_random_top10_f5, sae_random_top10_f6, sae_random_top10_f7, sae_random_top10_f8, sae_random_top10_f9]
+
+  # --- 粗方向（diff-of-means，8 月 abl_tau / abl_epsilon），用于剂量对照 ---
+  tom_coarse:
+    edits:
+      - file: coarse
+        axes: [tau]
+  emp_coarse:
+    edits:
+      - file: coarse
+        axes: [epsilon]
