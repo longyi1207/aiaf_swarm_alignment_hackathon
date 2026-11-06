@@ -1,0 +1,29 @@
+# 第 3 步（黑客松精简版）：基线校准 16 局 = k=3 × 伤害轻/重 × 商量与否 × 4 种子，不削弱。
+# 是 run_phase0_baseline.yaml（48 局）的子集：同样的种子和世界参数，以后可以直接并入完整基线。
+# 通过标准（设计 §8）：分析正确率 >= 70%；举报率在 15%–85%；推理里有真实权衡。
+# enable_thinking 按 Phase 0b 剂量报告的结论设置。
+run_id: phase0_lite
+out_dir: runs
+backend:
+  type: hf
+  model: Qwen/Qwen3.5-9B
+  dtype: bfloat16
+  device: auto
+  enable_thinking: true
+  max_new_tokens: 2048
+  temperature: 0.6
+  top_p: 0.95
+  batch_size: 32
+  max_prompt_tokens: 32768
+lesions_config: configs/lesions.yaml
+world: {n_agents: 5, threshold: 3}
+design:
+  seeds: [101, 102, 103, 104]
+  k_evidence: [3]
+  harm: [low, high]
+  communication: [isolated, discuss]
+  lesion_conditions: [none]
+protocol:
+  analysis_max_steps: 40
+  discussion_minutes: 10
+  minutes_per_round: 2

@@ -1,0 +1,32 @@
+# 第 4 步（黑客松精简版，方案 A，LY 2026-11-05 选定）：
+#   5 个削弱条件 × 商量与否 × k=3 × 重伤害 × 4 种子 = 40 局。
+# 是 run_main.yaml（840 局）的子集：种子 201–204 取自完整版，世界参数相同，局的 ID 也相同，
+# 以后跑完整版时把 runs/main_lite/{worlds,games} 拷进 runs/main_v1/ 即可续用，运行器会跳过已完成的局。
+# 已知局限（方案 A）：只有重伤害，算不出"伤害轻→重时举报率的斜率"，H1 里共情那一半只能用举报率高低和
+# 发言内容作弱证据；没有混合种群；每个削弱条件只有 8 局（40 个决策），只能测出很大的效应 → 结果按试点报告。
+# 运行前：按 Phase 0b 剂量报告把 configs/lesions.yaml 里的 tom / emp 改成配平的强度，enable_thinking 按报告结论设置。
+run_id: main_lite
+out_dir: runs
+backend:
+  type: hf
+  model: Qwen/Qwen3.5-9B
+  dtype: bfloat16
+  device: auto
+  enable_thinking: true
+  max_new_tokens: 2048
+  temperature: 0.6
+  top_p: 0.95
+  batch_size: 32
+  max_prompt_tokens: 32768
+lesions_config: configs/lesions.yaml
+world: {n_agents: 5, threshold: 3}
+design:
+  seeds: [201, 202, 203, 204]
+  k_evidence: [3]
+  harm: [high]
+  communication: [isolated, discuss]
+  lesion_conditions: [none, tom, emp, tom_emp, random]
+protocol:
+  analysis_max_steps: 40
+  discussion_minutes: 10
+  minutes_per_round: 2

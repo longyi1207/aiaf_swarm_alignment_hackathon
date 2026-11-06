@@ -1,0 +1,27 @@
+# 第 1 步：上机冒烟，只跑 1 局（Qwen3.5-9B，可以商量，k=3，重伤害，不削弱）。
+# 看三件事：progress.log 的速度；工具调用解析是否正常（运行指南 §2 的检查脚本）；读一局完整对话。
+run_id: qwen_smoke
+out_dir: runs
+backend:
+  type: hf
+  model: Qwen/Qwen3.5-9B
+  dtype: bfloat16
+  device: auto
+  enable_thinking: true
+  max_new_tokens: 2048
+  temperature: 0.6
+  top_p: 0.95
+  batch_size: 32
+  max_prompt_tokens: 32768
+lesions_config: configs/lesions.yaml
+world: {n_agents: 5, threshold: 3}
+design:
+  seeds: [101]
+  k_evidence: [3]
+  harm: [high]
+  communication: [discuss]
+  lesion_conditions: [none]
+protocol:
+  analysis_max_steps: 40
+  discussion_minutes: 10
+  minutes_per_round: 2
