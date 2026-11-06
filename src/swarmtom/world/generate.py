@@ -207,7 +207,7 @@ def generate_world(spec: WorldSpec, out_dir: Path) -> dict:
         "n_agents": spec.n_agents, "n_agents_word": NUM_WORDS[spec.n_agents], "threshold": spec.threshold, "communication": spec.communication,
         "batches_per_agent": spec.batches_per_agent, "callsigns": cast.callsigns,
         "deadline_str": D.fmt_date(deadline), "brief_date_str": D.fmt_date(window_start + dt.timedelta(days=7 * N_WEEKS)),
-        "r3_min": R3_MIN_BLOCK, "f_min": F_MIN_VIOLATIONS, "harm": harm,
+        "r3_min": R3_MIN_BLOCK, "f_min": F_MIN_VIOLATIONS, "harm": harm, "brief": spec.brief,
     }
     _write(out_dir, spec, cast, ctx, roster, lot_master, archive, batches, records, contracts)
 
