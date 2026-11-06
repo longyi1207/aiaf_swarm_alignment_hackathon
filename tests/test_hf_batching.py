@@ -33,6 +33,8 @@ def test_oom_retry_splits_and_recovers():
 
     b = HFBackend.__new__(HFBackend)
     b.device = torch.device("cpu")
+    b.token_budget = None
+    b._len_cache = {str(i): 100 for i in range(8)}
     calls = []
 
     def fake_batch(reqs, max_new_tokens):
@@ -46,3 +48,4 @@ def test_oom_retry_splits_and_recovers():
     out = b._generate_split(reqs, 16)
     assert [r.key for r in out] == [str(i) for i in range(8)] and all(r.content == "ok" for r in out)
     assert calls[0] == 8 and max(calls[1:]) <= 4
+    assert b.token_budget is not None and b.token_budget < 8 * (100 + 16)  # budget learned from the OOM

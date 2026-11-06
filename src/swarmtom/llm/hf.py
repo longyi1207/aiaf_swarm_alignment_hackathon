@@ -118,6 +118,7 @@ class HFBackend(Backend):
         self.seed = seed
         self.max_prompt_tokens = max_prompt_tokens
         self.token_budget = token_budget
+        self._len_cache: dict[str, int] = {}
         self._calls = 0
         torch_dtype = {"bfloat16": torch.bfloat16, "float16": torch.float16, "float32": torch.float32}[dtype]
         if self.device.type == "cpu":
@@ -179,6 +180,7 @@ class HFBackend(Backend):
         budget = max_new_tokens or self.max_new_tokens
         texts = [self.render(r) for r in requests]
         lengths = [len(self.tokenizer(t, add_special_tokens=False)["input_ids"]) for t in texts]
+        self._len_cache = {r.key: n for r, n in zip(requests, lengths)}
         out: list[GenResult | None] = [None] * len(requests)
         for idx in plan_batches(lengths, self.batch_size, budget, self.token_budget):
             for i, res in zip(idx, self._generate_split([requests[i] for i in idx], budget)):
@@ -198,6 +200,12 @@ class HFBackend(Backend):
         gc.collect()
         if self.device.type == "cuda":
             torch.cuda.empty_cache()
+        # Learn from the failure: later batches are planned under a smaller padded-token budget, so the
+        # same OOM is not retried every tick.
+        padded = len(reqs) * (max(self._len_cache.get(r.key, 0) for r in reqs) + max_new_tokens)
+        if padded > 0 and (self.token_budget is None or padded * 0.8 < self.token_budget):
+            self.token_budget = int(padded * 0.8)
+            log.warning("token_budget lowered to %d after OOM", self.token_budget)
         if len(reqs) == 1:
             return [GenResult(key=reqs[0].key, error="out of memory on a single row")]
         half = len(reqs) // 2
