@@ -85,6 +85,12 @@ _WRAPPER = (
 
 
 MAC_NO_NETWORK = "(version 1)(allow default)(deny network*)"
+
+def _tool_python() -> str:
+    """Interpreter for the agents' run_python tool. SWARMTOM_TOOL_PYTHON pins it (e.g. the vLLM venv
+    runs games but the tool keeps the original environment's pandas / openpyxl versions)."""
+    return os.environ.get("SWARMTOM_TOOL_PYTHON") or sys.executable
+
 NETWORK_MODES = ("block", "audit", "container", "allow")
 
 
@@ -109,7 +115,7 @@ def preferred_network() -> str:
     """The strongest isolation this host supports: an OS-level block if it works here, else 'audit'."""
     try:
         prefix = _prefix("block")
-        r = subprocess.run(prefix + [sys.executable, "-c", "pass"], capture_output=True, timeout=20)
+        r = subprocess.run(prefix + [_tool_python(), "-c", "pass"], capture_output=True, timeout=20)
         return "block" if r.returncode == 0 else "audit"
     except (NetworkIsolationError, OSError, subprocess.TimeoutExpired):
         return "audit"
@@ -130,7 +136,7 @@ def run_python(code: str, cwd: Path, timeout_s: float = 30.0, mem_limit_mb: int 
     }
     start = time.monotonic()
     proc = subprocess.Popen(
-        _prefix(network) + [sys.executable, "-I", "-c", _WRAPPER, str(int(timeout_s) + 5), str(mem_limit_mb or 0),
+        _prefix(network) + [_tool_python(), "-I", "-c", _WRAPPER, str(int(timeout_s) + 5), str(mem_limit_mb or 0),
                             network],
         cwd=cwd, env=env, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
         start_new_session=True,

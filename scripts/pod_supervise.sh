@@ -7,8 +7,8 @@ name=$1; shift
 log=/workspace/logs/$name.log
 max=${MAX_RESTARTS:-5}
 for attempt in $(seq 0 "$max"); do
-  echo "=== $(date -u +%FT%TZ) attempt $attempt: swarmtom $*" >> "$log"
-  /root/venv/bin/swarmtom "$@" >> "$log" 2>&1 < /dev/null
+  echo "=== $(date -u +%FT%TZ) attempt $attempt: ${SWARMTOM_BIN:-swarmtom} $*" >> "$log"
+  "${SWARMTOM_BIN:-/root/venv/bin/swarmtom}" "$@" >> "$log" 2>&1 < /dev/null
   code=$?
   if [ $code -eq 0 ]; then
     echo "=== $(date -u +%FT%TZ) DONE (exit 0)" >> "$log"

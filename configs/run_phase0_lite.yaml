@@ -5,16 +5,15 @@
 run_id: phase0_lite
 out_dir: runs
 backend:
-  type: hf
+  type: vllm              # 2026-11-06 改用 vLLM：HF 每轮约 12 分钟，vLLM 约 1 分钟（同一局面实测）
   model: Qwen/Qwen3.5-9B
   dtype: bfloat16
-  device: auto
   enable_thinking: false
   max_new_tokens: 2048
   temperature: 0.6
   top_p: 0.95
-  batch_size: 64          # 每次 generate 最多几行；按提示长度排序后分批
-  token_budget: 250000    # 每批 行数 x (最长提示 + max_new_tokens) 的上限，防显存溢出（H100 80GB）
+  enforce_eager: true      # 损伤钩子需要 eager 模式；基线和主实验用同一设置
+  gpu_memory_utilization: 0.88
   max_prompt_tokens: 32768
 lesions_config: configs/lesions.yaml
 world: {n_agents: 5, threshold: 3}

@@ -1,0 +1,24 @@
+# Phase 0b 在 vLLM 引擎上重做（2026-11-06）：主实验改用 vLLM（HF 每轮 12 分钟，vLLM 约 1 分钟），
+# 损伤钩子的实现换了，所以在同一引擎上重测全部 16 个条件（关思考），既验证钩子实现、也作为主实验引擎上的操纵检查。
+# 条件、任务、贪心解码与 dose_check_ext.yaml 完全相同。
+run_id: dose_check_vllm
+out_dir: runs
+backend:
+  type: vllm
+  model: Qwen/Qwen3.5-9B
+  dtype: bfloat16
+  device: auto
+  temperature: 0.0
+  enforce_eager: true
+  gpu_memory_utilization: 0.88
+lesions_config: configs/lesions.yaml
+conditions: [none,
+             tom_sae1, tom_sae3, tom_sae5, tom_sae10, tom_coarse, tom_coarse_all,
+             emp_sae1, emp_sae3, emp_sae5, emp_sae10, emp_coarse, emp_coarse_all,
+             random, random_L17, random_dir_all]
+thinking: [false]
+tasks: [tom, empathy, capability]
+limit: {}
+chunk: 256
+judge:
+  type: vllm_self

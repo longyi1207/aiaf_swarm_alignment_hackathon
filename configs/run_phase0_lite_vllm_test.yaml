@@ -1,0 +1,26 @@
+# 测速用（不是实验配置）：phase0_lite 换 vLLM 后端，输出到 /workspace/vtest
+run_id: phase0_lite
+out_dir: /workspace/vtest
+backend:
+  type: vllm
+  model: Qwen/Qwen3.5-9B
+  dtype: bfloat16
+  enable_thinking: false
+  max_new_tokens: 2048
+  temperature: 0.6
+  top_p: 0.95
+  max_prompt_tokens: 32768
+  gpu_memory_utilization: 0.88
+  enforce_eager: false
+lesions_config: configs/lesions.yaml
+world: {n_agents: 5, threshold: 3}
+design:
+  seeds: [101, 102, 103, 104]
+  k_evidence: [3]
+  harm: [low, high]
+  communication: [isolated, discuss]
+  lesion_conditions: [none]
+protocol:
+  analysis_max_steps: 40
+  discussion_minutes: 10
+  minutes_per_round: 2

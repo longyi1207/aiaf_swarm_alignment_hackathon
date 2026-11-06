@@ -37,6 +37,10 @@ def make_backend(cfg: RunConfig) -> Backend:
         from swarmtom.llm.hf import HFBackend
 
         return HFBackend(b.pop("model"), lesions_config=cfg.lesions_config, repo_root=cfg.repo_root, **b)
+    if kind == "vllm":
+        from swarmtom.llm.vllm_backend import VLLMBackend
+
+        return VLLMBackend(b.pop("model"), lesions_config=cfg.lesions_config, repo_root=cfg.repo_root, **b)
     if kind == "openai_compat":
         from swarmtom.llm.openai_compat import OpenAICompatBackend
 

@@ -67,11 +67,19 @@ def _read_jsonl(path: Path) -> list[dict]:
 
 
 def _hf(cfg: DoseConfig):
+    b = dict(cfg.backend)
+    kind = b.pop("type")
+    b.setdefault("temperature", 0.0)  # August used greedy decoding
+    if kind == "vllm":
+        from swarmtom.llm.vllm_backend import VLLMBackend
+
+        b.pop("batch_size", None)
+        b.pop("token_budget", None)
+        b.setdefault("enforce_eager", True)
+        return VLLMBackend(b.pop("model"), lesions_config=cfg.lesions_config, repo_root=cfg.repo_root, **b)
+    assert kind == "hf", "the dose check needs a backend that can apply lesions (hf or vllm)"
     from swarmtom.llm.hf import HFBackend
 
-    b = dict(cfg.backend)
-    assert b.pop("type") == "hf", "the dose check needs the hf backend (lesions)"
-    b.setdefault("temperature", 0.0)  # August used greedy decoding
     return HFBackend(b.pop("model"), lesions_config=cfg.lesions_config, repo_root=cfg.repo_root, **b)
 
 
