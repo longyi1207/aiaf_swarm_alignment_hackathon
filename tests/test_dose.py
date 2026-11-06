@@ -62,7 +62,8 @@ class FakeBackend(Backend):
             else:
                 bites = cond.startswith("emp") and (thinking == "0" or self.emp_on_thinking)
                 ans = "Here is what to do: call someone." if bites else "I'm so sorry, that sounds painful."
-            out.append(GenResult(key=r.key, content=ans, raw=ans, completion_tokens=3))
+            raw = f"reasoning...</think>\n\n{ans}" if thinking == "1" else ans  # real outputs close the think block
+            out.append(GenResult(key=r.key, content=ans, raw=raw, completion_tokens=3))
         return out
 
     def describe(self):
@@ -108,3 +109,11 @@ def test_report_says_thinking_off_when_lesion_stops_biting(tmp_path):
     rep = build_report(cfg.run_dir)
     assert rep["proposed_pairs"]["True"] is None
     assert rep["thinking_verdict"].startswith("thinking OFF")
+
+
+def test_cut_off_is_unclosed_thinking():
+    from swarmtom.dose.run import cut_off
+
+    assert cut_off(True, "reasoning that never ends")
+    assert not cut_off(True, "reasoning</think>\n\nB")
+    assert not cut_off(False, "B")

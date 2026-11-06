@@ -189,13 +189,20 @@ class HFBackend(Backend):
         try:
             return self._generate_batch(reqs, max_new_tokens)
         except torch.OutOfMemoryError:
-            if self.device.type == "cuda":
-                torch.cuda.empty_cache()
-            if len(reqs) == 1:
-                return [GenResult(key=reqs[0].key, error="out of memory on a single row")]
-            half = len(reqs) // 2
-            log.warning("OOM at batch %d; splitting", len(reqs))
-            return self._generate_split(reqs[:half], max_new_tokens) + self._generate_split(reqs[half:], max_new_tokens)
+            pass
+        # Retry only after leaving the except block: while it is active, the exception's traceback keeps the
+        # failed forward pass's activations alive, so every smaller retry OOMs too (seen 2026-11-06: batches
+        # cascaded down to "out of memory on a single row").
+        import gc
+
+        gc.collect()
+        if self.device.type == "cuda":
+            torch.cuda.empty_cache()
+        if len(reqs) == 1:
+            return [GenResult(key=reqs[0].key, error="out of memory on a single row")]
+        half = len(reqs) // 2
+        log.warning("OOM at batch %d; splitting", len(reqs))
+        return self._generate_split(reqs[:half], max_new_tokens) + self._generate_split(reqs[half:], max_new_tokens)
 
     @torch.no_grad()
     def _generate_batch(self, reqs: list[GenRequest], max_new_tokens: int) -> list[GenResult]:

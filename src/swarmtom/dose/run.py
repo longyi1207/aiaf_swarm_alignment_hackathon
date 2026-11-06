@@ -53,6 +53,13 @@ class DoseConfig:
         return self.out_dir / self.run_id
 
 
+def cut_off(thinking: bool, raw: str | None) -> bool:
+    """Thinking was on but the reasoning never closed within the token budget. (The chat template opens
+    <think> in the prompt, so an unclosed block parses as plain content; checking the parsed fields missed
+    these until 2026-11-06.)"""
+    return bool(thinking) and "</think>" not in (raw or "")
+
+
 def _read_jsonl(path: Path) -> list[dict]:
     if not path.exists():
         return []
@@ -100,7 +107,7 @@ def generate(cfg: DoseConfig, backend=None) -> int:
                                "item_id": it["id"], "item_condition": it.get("condition"), "answer": answer,
                                "reasoning": res.reasoning, "raw": res.raw, "error": res.error,
                                "completion_tokens": res.completion_tokens,
-                               "cut_off_thinking": bool(thinking and res.reasoning and not answer),
+                               "cut_off_thinking": cut_off(thinking, res.raw),
                                **score_objective(task, it, answer)}
                         f.write(json.dumps(rec, ensure_ascii=False) + "\n")
                         written += 1
@@ -112,7 +119,7 @@ def generate(cfg: DoseConfig, backend=None) -> int:
 def judge(cfg: DoseConfig, backend=None) -> int:
     gens = [g for g in _read_jsonl(cfg.run_dir / "generations.jsonl") if g["task"] == "empathy"]
     out = cfg.run_dir / "judgments.jsonl"
-    done = {r["key"] for r in _read_jsonl(out)}
+    done = {r["key"] for r in _read_jsonl(out) if not r.get("error")}  # failed judgments are retried
     todo = [g for g in gens if g["key"] not in done]
     if not todo:
         return 0

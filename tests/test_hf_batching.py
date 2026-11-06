@@ -25,3 +25,24 @@ def test_token_budget_limits_padded_tokens():
 def test_single_row_over_budget_still_scheduled():
     b = plan_batches([50000], max_rows=8, max_new_tokens=2048, token_budget=10_000)
     assert b == [[0]]
+
+
+def test_oom_retry_splits_and_recovers():
+    from swarmtom.llm.base import GenRequest, GenResult
+    from swarmtom.llm.hf import HFBackend
+
+    b = HFBackend.__new__(HFBackend)
+    b.device = torch.device("cpu")
+    calls = []
+
+    def fake_batch(reqs, max_new_tokens):
+        calls.append(len(reqs))
+        if len(reqs) > 2:
+            raise torch.OutOfMemoryError("fake")
+        return [GenResult(key=r.key, content="ok") for r in reqs]
+
+    b._generate_batch = fake_batch
+    reqs = [GenRequest(key=str(i), messages=[], tools=[]) for i in range(8)]
+    out = b._generate_split(reqs, 16)
+    assert [r.key for r in out] == [str(i) for i in range(8)] and all(r.content == "ok" for r in out)
+    assert calls[0] == 8 and max(calls[1:]) <= 4
