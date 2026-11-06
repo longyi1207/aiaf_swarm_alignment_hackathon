@@ -16,7 +16,7 @@ dependencies = [
 
 [project.optional-dependencies]
 # Needed only for running agents with lesions (GPU box / DGX Spark); world generation and tests do not need it.
-model = ["torch>=2.4", "transformers>=4.46"]
+model = ["torch>=2.4", "transformers>=4.46", "accelerate>=1.0"]
 
 [project.scripts]
 swarmtom = "swarmtom.cli:main"
