@@ -33,6 +33,35 @@ def _device(pref: str) -> torch.device:
     return torch.device(pref)
 
 
+STOP_TOKENS = ("<|im_end|>", "<|endoftext|>", "<|im_start|>", "<|eot_id|>", "</s>")
+
+
+def stop_token_ids(tokenizer, model_eos) -> list[int]:
+    """Every id that ends an assistant turn.
+
+    Qwen3.5-9B ships no generation_config.json and its model config lists only <|endoftext|> as EOS,
+    while chat turns end with <|im_end|> (the tokenizer's EOS). Without this, generation runs past the
+    end of the turn and invents further turns until max_new_tokens.
+    """
+    ids: set[int] = set()
+    for x in ([model_eos] if isinstance(model_eos, int) else list(model_eos or [])) + [tokenizer.eos_token_id]:
+        if isinstance(x, int):
+            ids.add(x)
+    unk = getattr(tokenizer, "unk_token_id", None)
+    for tok in STOP_TOKENS:
+        tid = tokenizer.convert_tokens_to_ids(tok)
+        if isinstance(tid, int) and tid >= 0 and tid != unk:
+            ids.add(tid)
+    return sorted(ids)
+
+
+def cut_at_stop(ids: list[int], stop_ids: set[int]) -> list[int]:
+    for i, t in enumerate(ids):
+        if t in stop_ids:
+            return ids[:i]
+    return ids
+
+
 def _for_template(messages: list[dict]) -> list[dict]:
     """Chat templates expect tool-call arguments as dicts and no extra keys."""
     out = []
@@ -97,6 +126,8 @@ class HFBackend(Backend):
                         raise ValueError(f"lesion {name}: vector dim {e.vector.numel()} != model hidden {hidden}")
         self.lesions = LesionController(conditions=conditions)
         self.lesions.register(self.model)
+        self.stop_ids = stop_token_ids(self.tokenizer, getattr(self.model.generation_config, "eos_token_id", None))
+        log.info("stop token ids: %s", self.stop_ids)
 
     def describe(self) -> dict:
         return {"name": self.name, "model": self.model_name, "device": str(self.device),
@@ -154,20 +185,18 @@ class HFBackend(Backend):
                 **enc, max_new_tokens=max_new_tokens, do_sample=self.temperature > 0,
                 temperature=self.temperature if self.temperature > 0 else None,
                 top_p=self.top_p if self.temperature > 0 else None,
-                pad_token_id=self.tokenizer.pad_token_id,
+                pad_token_id=self.tokenizer.pad_token_id, eos_token_id=self.stop_ids,
             )
         finally:
             self.lesions.set_rows(None)
         prompt_len = enc["input_ids"].shape[1]
         results = []
+        stops = set(self.stop_ids)
         for i, r in enumerate(reqs):
-            new = gen[i, prompt_len:]
+            new = cut_at_stop(gen[i, prompt_len:].tolist(), stops)
             raw = self.tokenizer.decode(new, skip_special_tokens=False)
-            for tok in (self.tokenizer.pad_token, self.tokenizer.eos_token):
-                if tok:
-                    raw = raw.replace(tok, "")
             reasoning, content, calls, errors = parse_output(raw)
-            n_new = int((new != self.tokenizer.pad_token_id).sum())
+            n_new = len(new)
             results.append(GenResult(key=r.key, content=content, reasoning=reasoning, tool_calls=calls, raw=raw,
                                      prompt_tokens=int(enc["attention_mask"][i].sum()), completion_tokens=n_new,
                                      parse_errors=errors))
