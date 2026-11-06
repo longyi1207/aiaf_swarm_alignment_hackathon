@@ -21,4 +21,4 @@ tasks: [tom, empathy, capability]
 limit: {}
 chunk: 256
 judge:
-  type: vllm_self
+  type: hf_self              # 用同一模型（同一后端，不损伤、关思考）打分
