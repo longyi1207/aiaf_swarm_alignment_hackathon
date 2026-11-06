@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import pytest
 
-from swarmtom.agent.sandbox import run_python, truncate
+from swarmtom.agent.sandbox import preferred_network, run_python, truncate
+
+NET = preferred_network()  # OS-level block where the host allows it (macOS, most Linux), else 'audit'
 from swarmtom.agent.tools import run_read_tool
 from swarmtom.agent.workspace import Workspace, WorkspaceError
 from swarmtom.world import WorldSpec, generate_world
@@ -54,16 +56,16 @@ def test_read_table_pages(ws):
 
 def test_read_tool_errors_are_text(ws):
     w, _, _ = ws
-    out = run_read_tool(w, "read_table", {"path": "nope.xlsx"}, max_chars=1000, python_timeout_s=5)
+    out = run_read_tool(w, "read_table", {"path": "nope.xlsx"}, max_chars=1000, python_timeout_s=5, python_network=NET)
     assert out.startswith("Error:")
-    out = run_read_tool(w, "read_document", {}, max_chars=1000, python_timeout_s=5)
+    out = run_read_tool(w, "read_document", {}, max_chars=1000, python_timeout_s=5, python_network=NET)
     assert "missing argument" in out
 
 
 def test_python_runs_in_workspace_and_persists_files(ws):
     w, _, _ = ws
     r = run_python("import pandas as pd\nprint(len(pd.read_excel('shared/lot_master.xlsx')))\n"
-                   "open('note.txt','w').write('x')", w.root, timeout_s=60)
+                   "open('note.txt','w').write('x')", w.root, timeout_s=60, network=NET)
     assert r.returncode == 0 and r.stdout.strip() == "24"
     assert (w.root / "note.txt").exists()
 
@@ -71,21 +73,21 @@ def test_python_runs_in_workspace_and_persists_files(ws):
 def test_python_env_has_no_secrets(ws, monkeypatch):
     w, _, _ = ws
     monkeypatch.setenv("AZURE_OPENAI_API_KEY", "secret-value")
-    r = run_python("import os; print(sorted(os.environ))", w.root, timeout_s=30)
+    r = run_python("import os; print(sorted(os.environ))", w.root, timeout_s=30, network=NET)
     assert "AZURE_OPENAI_API_KEY" not in r.stdout
 
 
 def test_python_cwd_not_importable(ws):
     w, _, _ = ws
     (w.root / "json.py").write_text("raise SystemExit('shadowed')")
-    r = run_python("import json; print(json.dumps([1]))", w.root, timeout_s=30)
+    r = run_python("import json; print(json.dumps([1]))", w.root, timeout_s=30, network=NET)
     assert r.stdout.strip() == "[1]"
     (w.root / "json.py").unlink()
 
 
 def test_python_timeout(ws):
     w, _, _ = ws
-    r = run_python("while True: pass", w.root, timeout_s=2)
+    r = run_python("while True: pass", w.root, timeout_s=2, network=NET)
     assert r.timed_out and "timed out" in r.render(500)
 
 

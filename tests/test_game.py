@@ -7,6 +7,7 @@ from pathlib import Path
 
 import yaml
 
+from swarmtom.agent.sandbox import preferred_network
 from swarmtom.analysis.score import score_run
 from swarmtom.llm.base import GenRequest, GenResult, ToolCall
 from swarmtom.llm.scripted import OraclePolicy, ScriptedBackend
@@ -23,7 +24,8 @@ def _config(tmp_path: Path, **overrides) -> RunConfig:
         "world": {"n_agents": 5, "threshold": 3, "batches_per_agent": 4, "records_per_batch": 20},
         "design": {"seeds": [1], "k_evidence": [2, 3], "harm": ["high"], "communication": ["isolated", "discuss"],
                    "lesion_conditions": ["none"], "mixed": [{"base": "none", "condition": "tom", "count": 2}]},
-        "protocol": {"analysis_max_steps": 5, "discussion_minutes": 4, "minutes_per_round": 2},
+        "protocol": {"analysis_max_steps": 5, "discussion_minutes": 4, "minutes_per_round": 2,
+                     "python_network": preferred_network()},
     }
     for k, v in overrides.items():
         raw[k] = {**raw[k], **v} if isinstance(v, dict) else v

@@ -14,8 +14,9 @@ Isolation (proportionate to a local open-weight model analysing spreadsheets):
 - `network="audit"`: for hosts that are themselves unprivileged containers (e.g. RunPod), where
   neither OS-level option is available. A Python audit hook installed before the agent code runs
   refuses socket creation/connection/DNS and process spawning. This is weaker than an OS-level
-  block (code that reaches libc directly could bypass it), but it stops the ordinary ways Python
-  code reaches the network, and the self-test verifies it.
+  block: code that reaches libc directly (e.g. through ctypes, which cannot be blocked because
+  numpy/pandas load shared libraries with it on Linux) could bypass it. It stops the ordinary ways
+  Python code reaches the network, and the self-test verifies it.
 """
 
 from __future__ import annotations
@@ -69,7 +70,7 @@ _WRAPPER = (
     "if mode == 'audit':\n"
     "    _BLOCK = ('socket.__new__', 'socket.connect', 'socket.bind', 'socket.getaddrinfo', 'socket.gethostbyname',\n"
     "              'socket.gethostbyaddr', 'socket.sendto', 'subprocess.Popen', 'os.system', 'os.exec', 'os.posix_spawn',\n"
-    "              'os.spawn', 'os.fork', 'os.forkpty', 'pty.spawn', 'ctypes.dlopen')\n"
+    "              'os.spawn', 'os.fork', 'os.forkpty', 'pty.spawn')\n"
     "    def _hook(event, args):\n"
     "        if event in _BLOCK:\n"
     "            raise PermissionError(f'{event} is not allowed in this sandbox')\n"
@@ -102,6 +103,16 @@ def _prefix(network: str) -> list[str]:
         return ["unshare", "-rn", "--"]
     raise NetworkIsolationError("no way to block the network for the Python tool on this machine; run inside a "
                                 "container with --network none and set protocol.python_network: container")
+
+
+def preferred_network() -> str:
+    """The strongest isolation this host supports: an OS-level block if it works here, else 'audit'."""
+    try:
+        prefix = _prefix("block")
+        r = subprocess.run(prefix + [sys.executable, "-c", "pass"], capture_output=True, timeout=20)
+        return "block" if r.returncode == 0 else "audit"
+    except (NetworkIsolationError, OSError, subprocess.TimeoutExpired):
+        return "audit"
 
 
 def run_python(code: str, cwd: Path, timeout_s: float = 30.0, mem_limit_mb: int | None = 4096,
