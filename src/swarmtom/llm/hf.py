@@ -10,6 +10,7 @@ whole model pinned to the first visible GPU, sdpa attention.
 from __future__ import annotations
 
 import logging
+import os
 import time
 from pathlib import Path
 
@@ -129,6 +130,15 @@ class HFBackend(Backend):
         kw: dict = {"trust_remote_code": True, "torch_dtype": torch_dtype}
         if self.device.type == "cuda":
             kw.update(device_map={"": 0}, attn_implementation="sdpa")
+            # The cuDNN SDPA kernel failed with an unrecoverable CUDA error (err 999) under memory pressure
+            # on the H100 pod (2026-11-06); flash / memory-efficient SDPA kernels are used instead.
+            torch.backends.cuda.enable_cudnn_sdp(False)
+            # When several jobs share one GPU, cap this process so it hits a catchable OutOfMemoryError
+            # (handled by batch splitting) instead of starving the other job.
+            frac = os.environ.get("SWARMTOM_GPU_MEM_FRACTION")
+            if frac:
+                torch.cuda.set_per_process_memory_fraction(float(frac), 0)
+                log.info("GPU memory fraction capped at %s", frac)
         self.model = AutoModelForCausalLM.from_pretrained(model_name, **kw)
         if self.device.type != "cuda":
             self.model = self.model.to(self.device)
@@ -201,19 +211,23 @@ class HFBackend(Backend):
                 for i, r in zip(ok, self._generate_batch([reqs[i] for i in ok], max_new_tokens)):
                     res[i] = r
             return [res[i] for i in range(len(reqs))]
-        enc = {k: v.to(self.device) for k, v in enc.items()}
+        enc_dev = {k: v.to(self.device) for k, v in enc.items()}
         self._calls += 1
         torch.manual_seed(self.seed + self._calls)
         self.lesions.set_rows([r.lesion for r in reqs])
         try:
             gen = self.model.generate(
-                **enc, max_new_tokens=max_new_tokens, do_sample=self.temperature > 0,
+                **enc_dev, max_new_tokens=max_new_tokens, do_sample=self.temperature > 0,
                 temperature=self.temperature if self.temperature > 0 else None,
                 top_p=self.top_p if self.temperature > 0 else None,
                 pad_token_id=self.tokenizer.pad_token_id, eos_token_id=self.stop_ids,
             )
         finally:
             self.lesions.set_rows(None)
+        gen = gen.cpu()
+        del enc_dev
+        if self.device.type == "cuda":
+            torch.cuda.empty_cache()  # hand cached blocks back so a co-located job can use them
         prompt_len = enc["input_ids"].shape[1]
         results = []
         stops = set(self.stop_ids)

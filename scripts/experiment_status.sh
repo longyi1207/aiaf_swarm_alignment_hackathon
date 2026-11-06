@@ -10,7 +10,8 @@ cd /workspace/repo 2>/dev/null || exit 0
 echo "== gpu"
 nvidia-smi --query-gpu=utilization.gpu,memory.used,memory.total --format=csv,noheader
 echo "== processes"
-pgrep -fa "swarmtom|pod_setup|hf download" | grep -v pgrep | cut -c1-160 || echo "(none)"
+pgrep -fa "bin/swarmtom" | grep -v pgrep | cut -c1-160 || echo "(none)"
+echo "== restarts"; cat /workspace/logs/restarts.log 2>/dev/null | tail -3 || true
 for r in runs/*/; do
   [ -d "$r" ] || continue
   name=$(basename "$r")
