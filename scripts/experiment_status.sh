@@ -23,6 +23,10 @@ for r in runs/*/; do
     done=$(ls "$r"/games/*/result.json 2>/dev/null | wc -l)
     echo "== $name (games): finished $done / $total"
     for pl in "$r"/progress*.log; do [ -f "$pl" ] && { echo "  $(basename "$pl"):"; tail -n 2 "$pl" | cut -c1-260; }; done
+    nerr=$(cat "$r"/games/*/events.jsonl 2>/dev/null | grep -c '"backend_error"')
+    forced=$(cat "$r"/games/*/events.jsonl 2>/dev/null | grep '"forced_end"' | grep -c 'backend_error')
+    echo "  backend errors: $nerr; agents forced out by backend errors: $forced"
+    [ "$forced" -gt 0 ] && grep -l '"reason": "backend_error"' "$r"/games/*/events.jsonl | xargs -n1 dirname | xargs -n1 basename | sed 's/^/    FORCED: /'
   fi
 done
 for f in /workspace/logs/*.log; do
