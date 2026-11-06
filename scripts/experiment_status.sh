@@ -22,7 +22,7 @@ for r in runs/*/; do
     total=$(ls "$r/games" | wc -l)
     done=$(ls "$r"/games/*/result.json 2>/dev/null | wc -l)
     echo "== $name (games): finished $done / $total"
-    tail -n 2 "$r/progress.log" 2>/dev/null | cut -c1-260
+    for pl in "$r"/progress*.log; do [ -f "$pl" ] && { echo "  $(basename "$pl"):"; tail -n 2 "$pl" | cut -c1-260; }; done
   fi
 done
 for f in /workspace/logs/*.log; do

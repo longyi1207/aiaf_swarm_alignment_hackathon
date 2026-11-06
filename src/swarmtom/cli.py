@@ -58,13 +58,16 @@ def _run(args) -> int:
         cfg.protocol.python_network = args.python_network
     if args.batch_size:
         cfg.backend["batch_size"] = args.batch_size
-    runner = Runner(cfg, tool_workers=args.tool_workers)
+    if args.token_budget:
+        cfg.backend["token_budget"] = args.token_budget
+    i, n = (int(x) for x in args.shard.split("/"))
+    runner = Runner(cfg, tool_workers=args.tool_workers, shard=(i, n))
     try:
         runner.prepare(Path(args.config))
         runner.run(max_ticks=args.max_ticks)
     finally:
         runner.close()
-    if all(g.finished for g in runner.games):
+    if n == 1 and all(g.finished for g in runner.games):
         from swarmtom.analysis.score import score_run
 
         print(json.dumps(score_run(cfg.run_dir)))
@@ -119,6 +122,8 @@ def main(argv: list[str] | None = None) -> int:
     r.add_argument("--python-network", choices=["block", "audit", "container", "allow"], default=None,
                    help="override protocol.python_network (e.g. 'audit' on unprivileged container hosts)")
     r.add_argument("--batch-size", type=int, default=None, help="override backend.batch_size")
+    r.add_argument("--token-budget", type=int, default=None, help="override backend.token_budget")
+    r.add_argument("--shard", default="0/1", help="i/n: run only every n-th seed starting at i (n processes, one run dir)")
     r.set_defaults(fn=_run)
     s = sub.add_parser("score", help="write results/agents.csv and results/games.csv for a run")
     s.add_argument("run_dir")

@@ -165,3 +165,16 @@ def test_unavailable_tool_is_rejected(tmp_path):
     r = _run(cfg, ScriptedBackend(early_filer))
     for a in r.games[0].agents.values():
         assert any("not available now" in (m.get("content") or "") for m in a.messages if m["role"] == "tool")
+
+
+def test_shards_partition_worlds_by_seed(tmp_path):
+    from swarmtom.run.config import RunConfig
+    from swarmtom.run.runner import Runner
+
+    cfg_path = Path(__file__).resolve().parents[1] / "configs" / "run_main_lite.yaml"
+    cfg = RunConfig.load(cfg_path)
+    all_ids = {s.world_id for s in cfg.world_specs()}
+    parts = [{s.world_id for s in Runner(cfg, shard=(i, 2))._my_specs()} for i in range(2)]
+    assert parts[0] | parts[1] == all_ids and not parts[0] & parts[1]
+    for p in parts:  # each shard keeps both communication conditions
+        assert {w.split("_")[-1] for w in p} == {s.world_id.split("_")[-1] for s in cfg.world_specs()}

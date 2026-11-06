@@ -4,7 +4,7 @@ backend call per tick, tool calls run in a thread pool, and every game is checkp
 Layout of runs/<run_id>/:
     config.yaml            copy of the run config
     run_meta.json          backend description, lesion vector provenance, start time
-    progress.log           one line per tick (also on stderr)
+    progress.log           one line per tick (also on stderr); progress.shard<i>.log when sharded
     worlds/<world_id>/     generated worlds (verified with the SOP solver before use)
     games/<game_id>/       state.json, events.jsonl, workspaces/, result.json
     results/               written by `swarmtom score`
@@ -57,13 +57,27 @@ def verify_world(world_dir: Path, gt: dict) -> None:
 
 
 class Runner:
-    def __init__(self, cfg: RunConfig, backend: Backend | None = None, tool_workers: int = 16):
+    def __init__(self, cfg: RunConfig, backend: Backend | None = None, tool_workers: int = 16,
+                 shard: tuple[int, int] = (0, 1)):
+        """shard=(i, n): this process runs only the worlds whose seed is the i-th of every n seeds in
+        the design (all arms of those worlds), so n processes can share one run directory."""
         self.cfg = cfg
         self.backend = backend
         self.tool_workers = tool_workers
         self.games: list[Game] = []
         self.dir = cfg.run_dir
         self._progress = None
+        i, n = shard
+        if not (n >= 1 and 0 <= i < n):
+            raise ValueError(f"bad shard {shard}")
+        self.shard = (i, n)
+        self._sfx = "" if n == 1 else f".shard{i}"
+
+    def _my_specs(self) -> list:
+        i, n = self.shard
+        seeds = list(dict.fromkeys(self.cfg.design.seeds))
+        mine = {s for j, s in enumerate(seeds) if j % n == i}
+        return [spec for spec in self.cfg.world_specs() if spec.seed in mine]
 
     def prepare(self, config_path: Path | None = None) -> None:
         self.dir.mkdir(parents=True, exist_ok=True)
@@ -78,17 +92,18 @@ class Runner:
         if lesions is not None and used - {"none"} - set(lesions.conditions):
             raise ValueError(f"lesion conditions not in {self.cfg.lesions_config}: "
                              f"{sorted(used - {'none'} - set(lesions.conditions))}")
-        probe_dir = self.dir / ".netprobe"
+        probe_dir = self.dir / f".netprobe{self._sfx}"
         probe_dir.mkdir(exist_ok=True)
         net = network_selftest(probe_dir, self.cfg.protocol.python_network)
         self._net = net
-        meta = {"started": dt.datetime.now().isoformat(timespec="seconds"), "backend": self.backend.describe(),
+        meta = {"started": dt.datetime.now().isoformat(timespec="seconds"), "shard": list(self.shard),
+                "backend": self.backend.describe(),
                 "conditions_used": sorted(used),
                 "python_network": {"mode": self.cfg.protocol.python_network, "selftest": net}}
-        (self.dir / "run_meta.json").write_text(json.dumps(meta, indent=2, default=str))
-        self._progress = open(self.dir / "progress.log", "a", buffering=1)
+        (self.dir / f"run_meta{self._sfx}.json").write_text(json.dumps(meta, indent=2, default=str))
+        self._progress = open(self.dir / f"progress{self._sfx}.log", "a", buffering=1)
 
-        for spec in self.cfg.world_specs():
+        for spec in self._my_specs():
             wdir = self.dir / "worlds" / spec.world_id
             if not (wdir / "ground_truth.json").exists():
                 if wdir.exists():
