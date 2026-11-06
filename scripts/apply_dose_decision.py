@@ -10,7 +10,7 @@ Reads runs/dose_check/report.json (from `swarmtom dose-report`) and:
   4. writes runs/dose_check/decision.json.
 Stops (exit 2) without changing anything if no matched pair bites.
 
-    python scripts/apply_dose_decision.py [--dry-run]
+    python scripts/apply_dose_decision.py [--report runs/<dose run>/report.json] [--note "未配平（方案 A）"] [--dry-run]
 """
 
 from __future__ import annotations
@@ -85,8 +85,11 @@ def main() -> int:
         f, prefix = RANDOM_POOL[layer]
         rand_edits.append({"file": f, "axes": [f"{prefix}{i}" for i in range(n)]})
 
-    block = f"""  # --- 主设计 2×2：由 scripts/apply_dose_decision.py 按设计 §6 的预设规则写入（Phase 0b 报告 {report.parent}/report.md）---
-  # 配平的一对：ToM = {pair['tom']}，共情 = {pair['emp']}（标准化下降差 {pair['std_gap']}）；思考模式：{'开' if thinking else '关'}
+    note = sys.argv[sys.argv.index("--note") + 1] if "--note" in sys.argv else None
+    head = (f"配平的一对：ToM = {pair['tom']}，共情 = {pair['emp']}（标准化下降差 {pair['std_gap']}）" if not note
+            else f"{note}：ToM = {pair['tom']}，共情 = {pair['emp']}")
+    block = f"""  # --- 主设计 2×2：由 scripts/apply_dose_decision.py 写入（Phase 0b 报告 {report.parent}/report.md）---
+  # {head}；思考模式：{'开' if thinking else '关'}
   # 判定原文：{verdict}
   tom:
     edits:
@@ -106,7 +109,8 @@ def main() -> int:
     text = LESIONS.read_text()
     i, j = text.index(BEGIN), text.index(END)
     new_text = text[:i] + block + text[j:]
-    decision = {"pair": pair, "thinking": thinking, "verdict": verdict, "random": rand_edits, "layer_counts": counts}
+    decision = {"pair": pair, "thinking": thinking, "verdict": verdict, "random": rand_edits, "layer_counts": counts,
+                "note": note}
     print(json.dumps(decision, ensure_ascii=False, indent=2))
     if dry:
         return 0
