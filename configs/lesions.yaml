@@ -16,6 +16,10 @@ vector_files:
   sae_v2:
     path: assets/vectors/axes_vectors_sae_v2.pt
     sha256: e4123b513dc3171decced3b45c0309ff74d32ba0ead47a0da8958e97216863e8
+  # 2026-11-06：全层消融的随机方向对照（每层一个固定种子的高斯单位向量），scripts/build_random_dirs.py 生成
+  rand_dirs:
+    path: assets/vectors/axes_random_dirs.pt
+    sha256: 689da9bee449b7bf20bb1caf26a7af1d132e3485dd7fa33176be648f918e916f
 
 conditions:
   none:
@@ -87,3 +91,14 @@ conditions:
     edits:
       - file: coarse
         axes: [epsilon]
+
+  # --- 2026-11-06 剂量阶梯扩展（偏离预注册，见 runs/timeline.md 和 docs/设计.md §6 补记）---
+  # 原阶梯在关思考时 ToM 没有一档"有效"（95% CI 都含 0）；开思考时 tom_sae3/5/10 让推理陷入重复循环（截断 52–64%）。
+  # 按规则"重新考虑强度"，补上文献里的标准做法：在所有 32 层各自投影掉该层的粗方向（Arditi et al. 2024, arXiv 2406.11717）。
+  # 单层消融容易被后面的层补偿（8 月 RQ2 的粗方向单层消融就是 null）。配平规则不变。
+  tom_coarse_all:
+    edits: [{file: coarse, axes: [tau], layers: all}]
+  emp_coarse_all:
+    edits: [{file: coarse, axes: [epsilon], layers: all}]
+  random_dir_all:
+    edits: [{file: rand_dirs, axes: [rand_dir], layers: all}]

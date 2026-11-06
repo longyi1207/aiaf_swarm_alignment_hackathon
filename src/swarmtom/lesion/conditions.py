@@ -29,8 +29,9 @@ def load_payload(path: Path) -> dict:
 def load_conditions(config_path: Path, repo_root: Path | None = None) -> tuple[dict[str, list[Edit]], dict]:
     """Return ({condition: [Edit, ...]}, provenance) for every condition in the config.
 
-    Each axis is applied at the layer named in the config, or else at the axis's
-    `best_layer` from the payload metadata, which is what the August runs used.
+    Each axis is applied at the layer named in the config (`layer: 8`), at several layers
+    (`layers: [4, 8, 12]` or `layers: all`, each layer using that layer's own vector), or else at the
+    axis's `best_layer` from the payload metadata, which is what the August runs used.
     """
     repo_root = repo_root or config_path.resolve().parents[1]
     cfg = yaml.safe_load(config_path.read_text())
@@ -51,12 +52,16 @@ def load_conditions(config_path: Path, repo_root: Path | None = None) -> tuple[d
             payload = payloads[item["file"]]
             for axis in item["axes"]:
                 vectors = payload["vectors"][axis]
-                layer = item.get("layer", payload["metadata"][axis]["best_layer"])
-                if layer not in vectors:
-                    raise KeyError(f"{name}: axis {axis} has no vector at layer {layer}")
-                v = vectors[layer].float()
-                edits.append(Edit(type=item.get("type", "ablate"), layer=int(layer), vector=v / v.norm(),
-                                  alpha=float(item.get("alpha", 1.0))))
+                if "layers" in item:
+                    layers = sorted(vectors) if item["layers"] == "all" else list(item["layers"])
+                else:
+                    layers = [item.get("layer", payload["metadata"][axis]["best_layer"])]
+                for layer in layers:
+                    if layer not in vectors:
+                        raise KeyError(f"{name}: axis {axis} has no vector at layer {layer}")
+                    v = vectors[layer].float()
+                    edits.append(Edit(type=item.get("type", "ablate"), layer=int(layer), vector=v / v.norm(),
+                                      alpha=float(item.get("alpha", 1.0))))
         out[name] = edits
         log.info("lesion condition %s: %d edit(s) at layer(s) %s", name, len(edits), sorted({e.layer for e in edits}))
     return out, provenance

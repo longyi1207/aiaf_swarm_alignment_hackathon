@@ -1,0 +1,23 @@
+# Phase 0b 扩展（2026-11-06，偏离预注册，原因见 configs/lesions.yaml 末尾和 runs/timeline.md）：
+# 思考模式已按规则定为“关”（原剂量检查没有配平的一对 → 规则的“否则游戏里关思考”），所以只测关思考。
+# 原阶梯全部重测（同一次运行里有同一个不削弱基线，内核设置一致），再加全层消融和它的随机对照。配平规则不变。
+run_id: dose_check_ext
+out_dir: runs
+backend:
+  type: hf
+  model: Qwen/Qwen3.5-9B
+  dtype: bfloat16
+  device: auto
+  temperature: 0.0
+  batch_size: 64
+lesions_config: configs/lesions.yaml
+conditions: [none,
+             tom_sae1, tom_sae3, tom_sae5, tom_sae10, tom_coarse, tom_coarse_all,
+             emp_sae1, emp_sae3, emp_sae5, emp_sae10, emp_coarse, emp_coarse_all,
+             random, random_L17, random_dir_all]
+thinking: [false]
+tasks: [tom, empathy, capability]
+limit: {}
+chunk: 256
+judge:
+  type: hf_self

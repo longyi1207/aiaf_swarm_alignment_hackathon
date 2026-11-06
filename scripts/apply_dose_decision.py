@@ -31,14 +31,26 @@ RANDOM_POOL = {8: ("random", "sae_random_top10_f"), 17: ("sae_v2", "sae_random_L
 
 
 def _flow(edits: list[dict]) -> str:
-    return "\n".join(f"      - file: {e['file']}\n        axes: [{', '.join(e['axes'])}]" for e in edits)
+    out = []
+    for e in edits:
+        s = f"      - file: {e['file']}\n        axes: [{', '.join(e['axes'])}]"
+        if "layers" in e:
+            s += f"\n        layers: {e['layers']}"
+        elif "layer" in e:
+            s += f"\n        layer: {e['layer']}"
+        out.append(s)
+    return "\n".join(out)
 
 
 def main() -> int:
     dry = "--dry-run" in sys.argv
-    rep = json.loads(REPORT.read_text())
+    report = Path(sys.argv[sys.argv.index("--report") + 1]) if "--report" in sys.argv else REPORT
+    rep = json.loads(report.read_text())
     verdict, pairs = rep["thinking_verdict"], rep["proposed_pairs"]
-    if verdict.startswith("thinking ON: lesions only bite with thinking on"):
+    if verdict == "only thinking=[False] was run":
+        # extension run after the thinking mode was already fixed to OFF by the rule's default branch
+        pair, thinking = pairs.get("False"), False
+    elif verdict.startswith("thinking ON: lesions only bite with thinking on"):
         pair, thinking = pairs.get("True"), True
     elif verdict.startswith("thinking ON is acceptable"):
         pair, thinking = pairs.get("False"), True
@@ -53,14 +65,19 @@ def main() -> int:
     conds = yaml.safe_load(LESIONS.read_text())["conditions"]
     tom_e, emp_e = conds[pair["tom"]]["edits"], conds[pair["emp"]]["edits"]
 
-    # layer of each chosen edit set, from the vector files' metadata (best_layer per axis)
+    # Random control, lesion by lesion: an all-layer ablation gets a random direction at every layer
+    # (rand_dir, then rand_dir2 for the second one); a single-layer SAE lesion gets the same number of random
+    # SAE features at the same layer (layer from the vector files' metadata).
     from swarmtom.lesion.conditions import load_conditions
     loaded, _ = load_conditions(LESIONS, ROOT)
     counts: dict[int, int] = {}
+    rand_edits, free_dirs = [], ["rand_dir", "rand_dir2"]
     for name in (pair["tom"], pair["emp"]):
+        if any(e.get("layers") == "all" for e in conds[name]["edits"]):
+            rand_edits.append({"file": "rand_dirs", "axes": [free_dirs.pop(0)], "layers": "all"})
+            continue
         for e in loaded[name]:
             counts[e.layer] = counts.get(e.layer, 0) + 1
-    rand_edits = []
     for layer, n in sorted(counts.items()):
         if layer not in RANDOM_POOL or n > 10:
             print(f"no random pool for layer {layer} x {n}", file=sys.stderr)
@@ -68,7 +85,7 @@ def main() -> int:
         f, prefix = RANDOM_POOL[layer]
         rand_edits.append({"file": f, "axes": [f"{prefix}{i}" for i in range(n)]})
 
-    block = f"""  # --- 主设计 2×2：由 scripts/apply_dose_decision.py 按设计 §6 的预设规则写入（Phase 0b 报告 runs/dose_check/report.md）---
+    block = f"""  # --- 主设计 2×2：由 scripts/apply_dose_decision.py 按设计 §6 的预设规则写入（Phase 0b 报告 {report.parent}/report.md）---
   # 配平的一对：ToM = {pair['tom']}，共情 = {pair['emp']}（标准化下降差 {pair['std_gap']}）；思考模式：{'开' if thinking else '关'}
   # 判定原文：{verdict}
   tom:
@@ -80,7 +97,7 @@ def main() -> int:
   tom_emp:
     edits:
 {_flow(tom_e + emp_e)}
-  # 对照（设计 §5）：同层、同数量的随机 SAE 特征，按 tom_emp 配：{', '.join(f'L{l}×{n}' for l, n in sorted(counts.items()))}
+  # 对照（设计 §5）：按 tom_emp 逐项配同样大小的随机扰动（全层消融配每层一个随机方向；单层 SAE 配同层同数量的随机 SAE 特征）
   random:
     edits:
 {_flow(rand_edits)}
@@ -102,7 +119,7 @@ def main() -> int:
         s = p.read_text()
         s2 = re.sub(r"(\n  enable_thinking:) (true|false)", rf"\1 {'true' if thinking else 'false'}", s, count=1)
         p.write_text(s2)
-    (REPORT.parent / "decision.json").write_text(json.dumps(decision, ensure_ascii=False, indent=2))
+    (report.parent / "decision.json").write_text(json.dumps(decision, ensure_ascii=False, indent=2))
     return 0
 
 
