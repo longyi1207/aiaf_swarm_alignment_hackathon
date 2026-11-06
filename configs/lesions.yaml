@@ -25,32 +25,30 @@ conditions:
   none:
     edits: []
 
-  # --- 主设计 2×2（强度待 Phase 0b 剂量检查后定稿）---
-  # ToM：SAE top-10 特征（= 8 月 abl_sae_tau_top10，L8）。8 月最扎实的结果用的就是它。
+  # --- 主设计 2×2：由 scripts/apply_dose_decision.py 写入（Phase 0b 报告 runs/dose_check_vllm/report.md）---
+  # 配平的一对：ToM = tom_sae3，共情 = emp_sae1（标准化下降差 0.361）；思考模式：关
+  # 判定原文：only thinking=[False] was run
   tom:
     edits:
       - file: sae
-        axes: [sae_tau_top10_f0, sae_tau_top10_f1, sae_tau_top10_f2, sae_tau_top10_f3, sae_tau_top10_f4,
-               sae_tau_top10_f5, sae_tau_top10_f6, sae_tau_top10_f7, sae_tau_top10_f8, sae_tau_top10_f9]
-  # 共情：暂时是 1 个 SAE 特征（= 8 月 abl_sae_epsilon_top1，L17）。
-  # 和 ToM 的 10 个特征强度不对等 → 跑完 Phase 0b 剂量检查后，按 dose-report 的建议改成配平的强度。
+        axes: [sae_tau_top10_f0, sae_tau_top10_f1, sae_tau_top10_f2]
   emp:
     edits:
-      - file: sae
-        axes: [sae_epsilon_top1]
+      - file: sae_v2
+        axes: [sae_epsilon_top10_f0]
   tom_emp:
     edits:
       - file: sae
-        axes: [sae_tau_top10_f0, sae_tau_top10_f1, sae_tau_top10_f2, sae_tau_top10_f3, sae_tau_top10_f4,
-               sae_tau_top10_f5, sae_tau_top10_f6, sae_tau_top10_f7, sae_tau_top10_f8, sae_tau_top10_f9]
-      - file: sae
-        axes: [sae_epsilon_top1]
-  # 对照：同层、同数量的随机 SAE 特征（= 8 月 random control）
+        axes: [sae_tau_top10_f0, sae_tau_top10_f1, sae_tau_top10_f2]
+      - file: sae_v2
+        axes: [sae_epsilon_top10_f0]
+  # 对照（设计 §5）：按 tom_emp 逐项配同样大小的随机扰动（全层消融配每层一个随机方向；单层 SAE 配同层同数量的随机 SAE 特征）
   random:
     edits:
       - file: random
-        axes: [sae_random_top10_f0, sae_random_top10_f1, sae_random_top10_f2, sae_random_top10_f3, sae_random_top10_f4,
-               sae_random_top10_f5, sae_random_top10_f6, sae_random_top10_f7, sae_random_top10_f8, sae_random_top10_f9]
+        axes: [sae_random_top10_f0, sae_random_top10_f1, sae_random_top10_f2]
+      - file: sae_v2
+        axes: [sae_random_L17_f0]
 
   # --- Phase 0b 剂量阶梯（configs/dose_check.yaml）。配平后把上面的 tom / emp 指向选定的强度 ---
   tom_sae1:

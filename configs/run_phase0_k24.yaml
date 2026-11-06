@@ -1,0 +1,28 @@
+# 基线校准补充（2026-11-06）：k=3 时有证据的人数正好等于 3/5 门槛，phase0_lite 里举报完全由"有没有 F"决定（48/48 有 F 的报 E、32/32 没 F 的报 I，
+# 每局正好 3 人举报、16/16 立案，伤害和商量零差别）→ 设计 §8 的"推理里确实有权衡"不满足。补跑完整基线设计里的另两档 k（2：必须有人联署；4：可以搭便车），
+# 种子、伤害、商量与 phase0_lite 相同；和 phase0_lite 合起来就是 run_phase0_baseline.yaml 的 48 局。
+run_id: phase0_k24
+out_dir: runs
+backend:
+  type: vllm              # 2026-11-06 改用 vLLM：HF 每轮约 12 分钟，vLLM 约 1 分钟（同一局面实测）
+  model: Qwen/Qwen3.5-9B
+  dtype: bfloat16
+  enable_thinking: false
+  max_new_tokens: 2048
+  temperature: 0.6
+  top_p: 0.95
+  enforce_eager: true      # 损伤钩子需要 eager 模式；基线和主实验用同一设置
+  gpu_memory_utilization: 0.88
+  max_prompt_tokens: 98304   # 2026-11-06 由 32768 提高：分析阶段工具输出多，有 agent 超过 32k 被迫出局（模型原生支持 262k）
+lesions_config: configs/lesions.yaml
+world: {n_agents: 5, threshold: 3}
+design:
+  seeds: [101, 102, 103, 104]
+  k_evidence: [2, 4]
+  harm: [low, high]
+  communication: [isolated, discuss]
+  lesion_conditions: [none]
+protocol:
+  analysis_max_steps: 40
+  discussion_minutes: 10
+  minutes_per_round: 2
