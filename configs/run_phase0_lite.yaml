@@ -13,7 +13,8 @@ backend:
   max_new_tokens: 2048
   temperature: 0.6
   top_p: 0.95
-  batch_size: 32
+  batch_size: 64          # 每次 generate 最多几行；按提示长度排序后分批
+  token_budget: 250000    # 每批 行数 x (最长提示 + max_new_tokens) 的上限，防显存溢出（H100 80GB）
   max_prompt_tokens: 32768
 lesions_config: configs/lesions.yaml
 world: {n_agents: 5, threshold: 3}

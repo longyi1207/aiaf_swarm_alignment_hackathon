@@ -11,14 +11,11 @@ echo "== gpu"
 nvidia-smi --query-gpu=utilization.gpu,memory.used,memory.total --format=csv,noheader
 echo "== processes"
 pgrep -fa "swarmtom|pod_setup|hf download" | grep -v pgrep | cut -c1-160 || echo "(none)"
-echo "== setup"
-tail -n 4 /workspace/setup.log 2>/dev/null
-grep -E "DOWNLOAD_OK|Error|error" /workspace/download.log 2>/dev/null | tail -2
 for r in runs/*/; do
   [ -d "$r" ] || continue
   name=$(basename "$r")
   if [ -f "$r/generations.jsonl" ]; then
-    echo "== $name (dose): generations $(wc -l < "$r/generations.jsonl"), judgments $(wc -l < "$r/judgments.jsonl" 2>/dev/null || echo 0), report $(test -f "$r/report.md" && echo yes || echo no)"
+    echo "== $name (dose): generations $(wc -l < "$r/generations.jsonl"), judgments $(cat "$r/judgments.jsonl" 2>/dev/null | wc -l), report $(test -f "$r/report.md" && echo yes || echo no)"
   fi
   if [ -d "$r/games" ]; then
     total=$(ls "$r/games" | wc -l)

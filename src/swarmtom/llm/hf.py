@@ -62,6 +62,26 @@ def cut_at_stop(ids: list[int], stop_ids: set[int]) -> list[int]:
     return ids
 
 
+def plan_batches(lengths: list[int], max_rows: int, max_new_tokens: int, token_budget: int | None) -> list[list[int]]:
+    """Group request indices into generate() calls: sorted by prompt length so each batch pads to a
+    similar length, at most max_rows per batch, and (if token_budget is set) at most token_budget
+    padded tokens (rows x (longest prompt + max_new_tokens)) per batch. Every index appears once."""
+    order = sorted(range(len(lengths)), key=lambda i: lengths[i])
+    batches: list[list[int]] = []
+    cur: list[int] = []
+    for i in order:
+        cand = cur + [i]
+        too_many = len(cand) > max_rows
+        too_big = token_budget is not None and len(cand) * (lengths[i] + max_new_tokens) > token_budget
+        if cur and (too_many or too_big):
+            batches.append(cur)
+            cand = [i]
+        cur = cand
+    if cur:
+        batches.append(cur)
+    return batches
+
+
 def _for_template(messages: list[dict]) -> list[dict]:
     """Chat templates expect tool-call arguments as dicts and no extra keys."""
     out = []
@@ -84,7 +104,7 @@ class HFBackend(Backend):
     def __init__(self, model_name: str, *, lesions_config: Path | None, repo_root: Path, dtype: str = "bfloat16",
                  device: str = "auto", enable_thinking: bool = True, max_new_tokens: int = 2048,
                  temperature: float = 0.6, top_p: float = 0.95, batch_size: int = 8, seed: int = 0,
-                 max_prompt_tokens: int = 32768):
+                 max_prompt_tokens: int = 32768, token_budget: int | None = None):
         from transformers import AutoModelForCausalLM, AutoTokenizer
 
         self.model_name = model_name
@@ -96,6 +116,7 @@ class HFBackend(Backend):
         self.batch_size = batch_size
         self.seed = seed
         self.max_prompt_tokens = max_prompt_tokens
+        self.token_budget = token_budget
         self._calls = 0
         torch_dtype = {"bfloat16": torch.bfloat16, "float16": torch.float16, "float32": torch.float32}[dtype]
         if self.device.type == "cpu":
@@ -133,7 +154,7 @@ class HFBackend(Backend):
         return {"name": self.name, "model": self.model_name, "device": str(self.device),
                 "enable_thinking": self.enable_thinking, "max_new_tokens": self.max_new_tokens,
                 "temperature": self.temperature, "top_p": self.top_p, "batch_size": self.batch_size,
-                "lesion_vectors": self.provenance}
+                "token_budget": self.token_budget, "lesion_vectors": self.provenance}
 
     def render(self, req: GenRequest) -> str:
         kw = dict(tools=req.tools or None, tokenize=False, add_generation_prompt=True)
@@ -145,10 +166,14 @@ class HFBackend(Backend):
 
     def generate(self, requests: list[GenRequest], max_new_tokens: int | None = None) -> list[GenResult]:
         """max_new_tokens overrides the configured budget for this call (used by the dose check)."""
-        out: list[GenResult] = []
-        for i in range(0, len(requests), self.batch_size):
-            out.extend(self._generate_split(requests[i: i + self.batch_size], max_new_tokens or self.max_new_tokens))
-        return out
+        budget = max_new_tokens or self.max_new_tokens
+        texts = [self.render(r) for r in requests]
+        lengths = [len(self.tokenizer(t, add_special_tokens=False)["input_ids"]) for t in texts]
+        out: list[GenResult | None] = [None] * len(requests)
+        for idx in plan_batches(lengths, self.batch_size, budget, self.token_budget):
+            for i, res in zip(idx, self._generate_split([requests[i] for i in idx], budget)):
+                out[i] = res
+        return out  # type: ignore[return-value]
 
     def _generate_split(self, reqs: list[GenRequest], max_new_tokens: int) -> list[GenResult]:
         try:

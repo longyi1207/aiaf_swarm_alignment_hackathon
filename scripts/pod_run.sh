@@ -5,6 +5,8 @@
 # remove packages installed outside it (flash-linear-attention, causal-conv1d).
 set -euo pipefail
 export HF_HOME=/root/hf HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 PYTHONUNBUFFERED=1
+# Several jobs share the GPU; expandable segments reduce fragmentation-driven OOMs.
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 mkdir -p /workspace/logs
 cd /workspace/repo
 name=$1; shift
