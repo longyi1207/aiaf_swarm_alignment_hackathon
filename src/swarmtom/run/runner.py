@@ -110,7 +110,9 @@ class Runner:
                     shutil.rmtree(wdir)
                 generate_world(spec, wdir)
             gt = json.loads((wdir / "ground_truth.json").read_text())
-            verify_world(wdir, gt)
+            if not (wdir / ".verified").exists():  # worlds are immutable once generated; verify once
+                verify_world(wdir, gt)
+                (wdir / ".verified").write_text(dt.datetime.now().isoformat(timespec="seconds"))
             for tag, lesions in self.cfg.lesion_assignments(spec.n_agents):
                 gdir = self.dir / "games" / f"{spec.world_id}__{tag}"
                 if (gdir / "state.json").exists():

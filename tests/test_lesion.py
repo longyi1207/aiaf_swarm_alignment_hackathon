@@ -89,3 +89,21 @@ def test_config_loads_with_checksums_and_august_layers():
     assert torch.allclose(conds["emp_sae1"][0].vector, conds["emp_sae10"][0].vector, atol=1e-5)
     # ladders are nested: top-3 starts with top-1
     assert torch.allclose(conds["emp_sae3"][0].vector, conds["emp_sae1"][0].vector, atol=1e-5)
+
+
+def test_cached_ablation_is_bit_identical_to_original():
+    import torch
+
+    from swarmtom.lesion.hooks import Edit, LesionController
+
+    dev = "cuda" if torch.cuda.is_available() else "cpu"
+    g = torch.Generator().manual_seed(0)
+    edits = [Edit(type="ablate", layer=3, vector=torch.randn(64, generator=g)) for _ in range(3)]
+    ctl = LesionController(conditions={"a": edits})
+    for dtype in (torch.float32, torch.bfloat16):
+        hs = torch.randn(5, 7, 64, generator=g).to(dev, dtype)
+        ref, got = hs, hs
+        for e in edits:
+            ref = e.apply(ref)
+            got = ctl._apply_cached(e, got)
+        assert torch.equal(ref, got)

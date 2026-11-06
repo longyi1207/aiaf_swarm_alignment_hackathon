@@ -101,6 +101,11 @@ class LesionController:
     conditions: dict[str, list[Edit]]
     _rows: list[str] | None = field(default=None, init=False, repr=False)
     _handles: list = field(default_factory=list, init=False, repr=False)
+    # Per-call caches (performance only; the maths is unchanged): row indices per condition, and each
+    # edit's direction already moved to the hidden state's device / dtype and normalised exactly as
+    # ablate_direction does it, so no host-to-device copy happens inside the forward pass.
+    _idx: dict = field(default_factory=dict, init=False, repr=False)
+    _dirs: dict = field(default_factory=dict, init=False, repr=False)
 
     def set_rows(self, row_conditions: list[str] | None) -> None:
         """Condition name per batch row; None or 'none' rows are left untouched."""
@@ -109,11 +114,32 @@ class LesionController:
             if unknown:
                 raise KeyError(f"Unknown lesion condition(s): {sorted(unknown)}")
         self._rows = row_conditions
+        self._idx = {}
+
+    def _rows_of(self, cond: str, device) -> torch.Tensor:
+        key = (cond, str(device))
+        if key not in self._idx:
+            self._idx[key] = torch.tensor([i for i, c in enumerate(self._rows) if c == cond], device=device)
+        return self._idx[key]
+
+    def _apply_cached(self, e: Edit, sub: torch.Tensor) -> torch.Tensor:
+        if e.type != "ablate":
+            return e.apply(sub)
+        key = (id(e), sub.device, sub.dtype)
+        d = self._dirs.get(key)
+        if d is None:
+            d = e.vector.to(sub.device, dtype=sub.dtype)
+            d = d / (d.norm() + 1e-8)  # same expression as ablate_direction
+            self._dirs[key] = d
+        coeff = (sub * d).sum(dim=-1, keepdim=True)
+        return sub - coeff * d
 
     def layers(self) -> set[int]:
         return {e.layer for edits in self.conditions.values() for e in edits}
 
     def _hook_for(self, layer_idx: int):
+        by_layer = {c: [e for e in edits if e.layer == layer_idx] for c, edits in self.conditions.items()}
+
         def hook(_module, _input, output):
             if not self._rows:
                 return output
@@ -123,16 +149,16 @@ class LesionController:
                     f"Batch has {hs.shape[0]} rows but set_rows() was given {len(self._rows)} conditions"
                 )
             new_hs = None
-            for cond in set(self._rows):
+            for cond in sorted(set(self._rows)):
                 if cond == "none":
                     continue
-                edits = [e for e in self.conditions[cond] if e.layer == layer_idx]
+                edits = by_layer.get(cond, [])
                 if not edits:
                     continue
-                idx = torch.tensor([i for i, c in enumerate(self._rows) if c == cond], device=hs.device)
+                idx = self._rows_of(cond, hs.device)
                 sub = hs.index_select(0, idx)
                 for e in edits:
-                    sub = e.apply(sub)
+                    sub = self._apply_cached(e, sub)
                 if new_hs is None:
                     new_hs = hs.clone()
                 new_hs.index_copy_(0, idx, sub)
