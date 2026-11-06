@@ -38,3 +38,13 @@ def test_allow_mode_needs_no_isolation(tmp_path):
 def test_bad_mode(tmp_path):
     with pytest.raises(ValueError):
         run_python("print(1)", tmp_path, network="maybe")
+
+
+def test_audit_mode_blocks_network_and_subprocesses_but_allows_pandas(tmp_path):
+    assert "blocked" in network_selftest(tmp_path, "audit")
+    r = run_python("import subprocess\ntry:\n    subprocess.run(['echo','x'])\n    print('spawned')\n"
+                   "except PermissionError as e:\n    print('denied', e)", tmp_path, timeout_s=30, network="audit")
+    assert "denied" in r.stdout and "spawned" not in r.stdout
+    (tmp_path / "t.csv").write_text("a,b\n1,2\n")
+    r = run_python("import pandas as pd; print(pd.read_csv('t.csv').shape)", tmp_path, timeout_s=60, network="audit")
+    assert r.returncode == 0 and r.stdout.strip() == "(1, 2)"

@@ -54,6 +54,10 @@ def _run(args) -> int:
     from swarmtom.run.runner import Runner
 
     cfg = RunConfig.load(Path(args.config))
+    if args.python_network:
+        cfg.protocol.python_network = args.python_network
+    if args.batch_size:
+        cfg.backend["batch_size"] = args.batch_size
     runner = Runner(cfg, tool_workers=args.tool_workers)
     try:
         runner.prepare(Path(args.config))
@@ -84,6 +88,8 @@ def _dose(args) -> int:
                          ensure_ascii=False))
         return 0
     cfg = DoseConfig.load(Path(args.target))
+    if getattr(args, "batch_size", None):
+        cfg.backend["batch_size"] = args.batch_size
     n = generate(cfg) if args.cmd == "dose-gen" else judge(cfg)
     print(json.dumps({"run_dir": str(cfg.run_dir), "written": n}))
     return 0
@@ -110,6 +116,9 @@ def main(argv: list[str] | None = None) -> int:
     r.add_argument("config")
     r.add_argument("--max-ticks", type=int, default=None, help="stop after N ticks (resume later)")
     r.add_argument("--tool-workers", type=int, default=16)
+    r.add_argument("--python-network", choices=["block", "audit", "container", "allow"], default=None,
+                   help="override protocol.python_network (e.g. 'audit' on unprivileged container hosts)")
+    r.add_argument("--batch-size", type=int, default=None, help="override backend.batch_size")
     r.set_defaults(fn=_run)
     s = sub.add_parser("score", help="write results/agents.csv and results/games.csv for a run")
     s.add_argument("run_dir")
@@ -119,6 +128,7 @@ def main(argv: list[str] | None = None) -> int:
                         ("dose-report", "Phase 0b: drops vs no lesion, matched doses, thinking verdict (takes a run dir)")):
         d = sub.add_parser(name, help=help_)
         d.add_argument("target", help="dose config (gen/judge) or run dir (report)")
+        d.add_argument("--batch-size", type=int, default=None, help="override backend.batch_size")
         d.set_defaults(fn=_dose)
     args = p.parse_args(argv)
     return args.fn(args)

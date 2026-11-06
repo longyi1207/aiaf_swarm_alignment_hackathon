@@ -10,7 +10,12 @@ Isolation (proportionate to a local open-weight model analysing spreadsheets):
 - network blocked (`network="block"`): `sandbox-exec` deny-network profile on macOS, `unshare -rn`
   (a fresh network namespace with no interfaces) on Linux. Where neither works (e.g. Ubuntu with
   unprivileged user namespaces restricted), run the whole job in a container started with
-  `--network none` and set `network="container"`. `network_selftest` proves the block before a run.
+  `--network none` and set `network="container"`. `network_selftest` proves the block before a run;
+- `network="audit"`: for hosts that are themselves unprivileged containers (e.g. RunPod), where
+  neither OS-level option is available. A Python audit hook installed before the agent code runs
+  refuses socket creation/connection/DNS and process spawning. This is weaker than an OS-level
+  block (code that reaches libc directly could bypass it), but it stops the ordinary ways Python
+  code reaches the network, and the self-test verifies it.
 """
 
 from __future__ import annotations
@@ -60,7 +65,15 @@ def truncate(text: str, max_chars: int) -> str:
 # safe when tools run from a thread pool.
 _WRAPPER = (
     "import resource, sys\n"
-    "cpu, mem = int(sys.argv[1]), int(sys.argv[2])\n"
+    "cpu, mem, mode = int(sys.argv[1]), int(sys.argv[2]), sys.argv[3]\n"
+    "if mode == 'audit':\n"
+    "    _BLOCK = ('socket.__new__', 'socket.connect', 'socket.bind', 'socket.getaddrinfo', 'socket.gethostbyname',\n"
+    "              'socket.gethostbyaddr', 'socket.sendto', 'subprocess.Popen', 'os.system', 'os.exec', 'os.posix_spawn',\n"
+    "              'os.spawn', 'os.fork', 'os.forkpty', 'pty.spawn', 'ctypes.dlopen')\n"
+    "    def _hook(event, args):\n"
+    "        if event in _BLOCK:\n"
+    "            raise PermissionError(f'{event} is not allowed in this sandbox')\n"
+    "    sys.addaudithook(_hook)\n"
     "resource.setrlimit(resource.RLIMIT_CPU, (cpu, cpu + 2))\n"
     "if mem > 0 and sys.platform.startswith('linux'):\n"
     "    resource.setrlimit(resource.RLIMIT_AS, (mem * 1048576, mem * 1048576))\n"
@@ -71,7 +84,7 @@ _WRAPPER = (
 
 
 MAC_NO_NETWORK = "(version 1)(allow default)(deny network*)"
-NETWORK_MODES = ("block", "container", "allow")
+NETWORK_MODES = ("block", "audit", "container", "allow")
 
 
 class NetworkIsolationError(RuntimeError):
@@ -106,7 +119,8 @@ def run_python(code: str, cwd: Path, timeout_s: float = 30.0, mem_limit_mb: int 
     }
     start = time.monotonic()
     proc = subprocess.Popen(
-        _prefix(network) + [sys.executable, "-I", "-c", _WRAPPER, str(int(timeout_s) + 5), str(mem_limit_mb or 0)],
+        _prefix(network) + [sys.executable, "-I", "-c", _WRAPPER, str(int(timeout_s) + 5), str(mem_limit_mb or 0),
+                            network],
         cwd=cwd, env=env, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
         start_new_session=True,
     )
