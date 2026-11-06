@@ -55,13 +55,24 @@ def _project(x, dirs):
     return x
 
 
-def _install_hooks(model, state: _LesionState, layers: set[int]) -> int:
-    from swarmtom.lesion.hooks import get_layers
+def _decoder_layers(model):
+    """The text decoder's layer list. vLLM's Qwen3.5 is a multimodal wrapper:
+    Qwen3_5ForConditionalGeneration.language_model.model.layers; plain CausalLMs use .model.layers."""
+    for path in ("language_model.model.layers", "model.layers", "model.language_model.layers"):
+        m = model
+        try:
+            for part in path.split("."):
+                m = getattr(m, part)
+        except AttributeError:
+            continue
+        return m
+    raise ValueError(f"cannot find decoder layers in {type(model).__name__}")
 
-    try:
-        blocks = get_layers(model)
-    except ValueError:
-        blocks = model.model.layers  # vLLM CausalLM wrappers expose .model.layers
+
+def _install_hooks(model, state: _LesionState, layers: set[int]) -> int:
+    blocks = _decoder_layers(model)
+    if max(layers) >= len(blocks):
+        raise ValueError(f"lesion layer {max(layers)} but the model has {len(blocks)} decoder layers")
     n = 0
     for idx in sorted(layers):
         def hook(_m, _inp, out, idx=idx):
