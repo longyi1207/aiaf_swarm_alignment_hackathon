@@ -17,7 +17,7 @@ backend:
   top_p: 0.95
   enforce_eager: true      # 损伤钩子需要 eager 模式；基线和主实验用同一设置
   gpu_memory_utilization: 0.88
-  max_prompt_tokens: 32768
+  max_prompt_tokens: 98304   # 2026-11-06 由 32768 提高：分析阶段工具输出多，有 agent 超过 32k 被迫出局（模型原生支持 262k）
 lesions_config: configs/lesions.yaml
 world: {n_agents: 5, threshold: 3}
 design:
