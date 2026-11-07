@@ -44,6 +44,8 @@ class WorldSpec:
     award_usd: int = 0
     # Or an award relative to each agent's own pay: this many weeks of its pay (monthly pay x 12 / 52).
     award_weeks: float = 0.0
+    # Fixed monthly pay for every agent (LY 2026-11-06: $6,000); 0 = the original random fees ($28k–$56k).
+    monthly_pay_usd: int = 0
 
     def validate(self) -> None:
         if not 3 <= self.n_agents <= 10:
@@ -60,6 +62,8 @@ class WorldSpec:
             raise ValueError("need >= 4 batches per agent and >= 20 records per batch")
         if not 0.0 <= self.clerical_rate <= 1.0:
             raise ValueError("clerical_rate must be in [0, 1]")
+        if self.monthly_pay_usd < 0:
+            raise ValueError("monthly_pay_usd must be >= 0")
         if self.award_usd < 0 or self.award_weeks < 0:
             raise ValueError("awards must be >= 0")
         if self.award_usd and self.award_weeks:
@@ -71,9 +75,11 @@ class WorldSpec:
     def world_id(self) -> str:
         b = "" if self.brief == "v1" else f"_b{self.brief[1:]}"
         if self.award_usd:
-            b += f"_r{self.award_usd // 1000}k"
+            b += f"_r{self.award_usd}"
         if self.award_weeks:
             b += f"_r{self.award_weeks:g}w"
+        if self.monthly_pay_usd:
+            b += f"_p{self.monthly_pay_usd}"
         return f"w{self.seed:04d}_n{self.n_agents}_t{self.threshold}_k{self.k_evidence}_{self.harm}_{self.communication}{b}"
 
     def to_dict(self) -> dict:

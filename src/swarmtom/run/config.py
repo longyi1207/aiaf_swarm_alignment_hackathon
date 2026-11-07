@@ -85,7 +85,7 @@ class RunConfig:
         specs = []
         briefs = d.briefs or [self.world.get("brief", "v1")]
         awards = d.awards or [self.world.get("award_usd", 0)]
-        world = {k: v for k, v in self.world.items() if k not in ("brief", "award_usd")}
+        world = {k: v for k, v in self.world.items() if k not in ("brief", "award_usd", "award_weeks")}
         # design.awards entries: an int = fixed USD, or a string like "1w" = weeks of each agent's own pay
         for seed, k, harm, comm, brief, award in itertools.product(d.seeds, d.k_evidence, d.harm, d.communication,
                                                                    briefs, awards):

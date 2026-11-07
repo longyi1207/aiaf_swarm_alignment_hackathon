@@ -42,7 +42,7 @@ def main() -> int:
     for r in rows:  # treat (brief, award) as the calibration variant
         aw = int(float(r.get("award_usd_level", 0) or 0))
         wk = float(r.get("award_weeks_level", 0) or 0)
-        r["brief"] = r.get("brief", "v1") + (f"+r{aw // 1000}k" if aw else "") + (f"+r{wk:g}w" if wk else "")
+        r["brief"] = r.get("brief", "v1") + (f"+r{aw}" if aw else "") + (f"+r{wk:g}w" if wk else "")
     briefs = sorted({r.get("brief", "v1") for r in rows})
     if len(briefs) > 1:  # calibration sweep over wording versions
         per = {}

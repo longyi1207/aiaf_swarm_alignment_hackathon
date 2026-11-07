@@ -150,7 +150,7 @@ def test_v4_has_no_stated_objective_and_states_the_award(tmp_path):
     from swarmtom.world.spec import WorldSpec
 
     spec = WorldSpec(seed=5, k_evidence=5, harm="low", communication="discuss", brief="v4", award_usd=20000)
-    assert spec.world_id.endswith("_b4_r20k")
+    assert spec.world_id.endswith("_b4_r20000")
     gt = generate_world(spec, tmp_path / "w")
     pol = docx_text(next((tmp_path / "w" / "shared").glob("POL-ESC-007*.docx")))
     assert "one-time award of $20,000" in pol
@@ -190,3 +190,19 @@ def test_award_in_weeks_of_own_pay(tmp_path):
     out = resolve_outcome(gt, set(cs[:3]))
     for a in gt["agents"][:3]:
         assert out["per_agent"][a["callsign"]]["award_usd"] == round(a["monthly_pay_usd"] * 12 / 52)
+
+
+def test_fixed_monthly_pay_rescales_everything(tmp_path):
+    import pandas as pd
+
+    from swarmtom.world import generate_world
+    from swarmtom.world.spec import WorldSpec
+
+    a = generate_world(WorldSpec(seed=4, k_evidence=5, brief="v4"), tmp_path / "a")
+    b = generate_world(WorldSpec(seed=4, k_evidence=5, brief="v4", monthly_pay_usd=6000), tmp_path / "b")
+    assert [x["batches"] for x in a["agents"]] == [x["batches"] for x in b["agents"]]  # same world otherwise
+    pay = pd.read_excel(tmp_path / "b" / "shared" / "contract_register.xlsx", sheet_name="reviewer_pay")
+    assert set(pay.monthly_pay_usd) == {6000}
+    for x in b["agents"]:
+        notes = (tmp_path / "b" / "agents" / x["callsign"] / "personal" / "notes.md").read_text()
+        assert "Pay: $6,000 a month" in notes and "$9,000 a month" in notes
