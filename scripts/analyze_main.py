@@ -160,6 +160,38 @@ def main() -> int:
                    "ci": [est[int(0.025 * N_BOOT)], est[int(0.975 * N_BOOT) - 1]]}
     rep["H3_did_filed_E"] = h3
 
+    # 3b. H1 (empathy half): harm slope = filing rate at high harm - at low harm; does the lesion change it?
+    def did_by(arm, key_fn, levels):
+        parts = {}
+        for lv in levels:
+            parts[lv] = (by_game([r for r in A[arm] if key_fn(r) == lv], "filed_e"),
+                         by_game([r for r in A["none"] if key_fn(r) == lv], "filed_e"))
+        if any(not ga or not gn for ga, gn in parts.values()):
+            return None
+        est = []
+        for _ in range(N_BOOT):
+            d = {}
+            for lv, (ga, gn) in parts.items():
+                ra = [rng.choice(list(ga)) for _ in ga]
+                rb = [rng.choice(list(gn)) for _ in gn]
+                d[lv] = pooled_mean(ga, ra) - pooled_mean(gn, rb)
+            est.append(d[levels[1]] - d[levels[0]])
+        est.sort()
+        point = {lv: pooled_mean(ga, list(ga)) - pooled_mean(gn, list(gn)) for lv, (ga, gn) in parts.items()}
+        return {f"effect_{levels[0]}": point[levels[0]], f"effect_{levels[1]}": point[levels[1]],
+                "did": point[levels[1]] - point[levels[0]], "ci": [est[int(0.025 * N_BOOT)], est[int(0.975 * N_BOOT) - 1]]}
+
+    harms = sorted({r["harm"] for r in agents})
+    if harms == ["high", "low"]:
+        slopes = {}
+        for arm in arms:
+            hi = [int(r["filed_e"]) for r in A[arm] if r["harm"] == "high"]
+            lo = [int(r["filed_e"]) for r in A[arm] if r["harm"] == "low"]
+            slopes[arm] = {"filed_E_high": st.fmean(hi) if hi else None, "filed_E_low": st.fmean(lo) if lo else None,
+                           "slope": (st.fmean(hi) - st.fmean(lo)) if hi and lo else None}
+        rep["harm_slope"] = slopes
+        rep["H1_slope_vs_none"] = {arm: did_by(arm, lambda r: r["harm"], ["low", "high"]) for arm in arms if arm != "none"}
+
     # 4. belief -> action coupling: mean predicted P(others file E) at pred_b among own filers vs non-filers
     coupling = {}
     for arm in arms:
@@ -208,6 +240,13 @@ def render(rep: dict, arms: list[str]) -> str:
     for a, h in rep["H3_did_filed_E"].items():
         L.append(f"- {a}：商量时 {h['effect_discuss']:+.3f}，不商量时 {h['effect_isolated']:+.3f}，差中差 {h['did']:+.3f} "
                  f"[{h['ci'][0]:+.3f}, {h['ci'][1]:+.3f}]")
+    if "harm_slope" in rep:
+        L += ["", "## 3b. H1（共情那一半）：伤害斜率 = 重伤害举报率 − 轻伤害举报率", ""]
+        for a, sl in rep["harm_slope"].items():
+            L.append(f"- {a}：重 {_f(sl['filed_E_high'], True)}，轻 {_f(sl['filed_E_low'], True)}，斜率 {_f(sl['slope'])}")
+        for a, h in rep["H1_slope_vs_none"].items():
+            if h:
+                L.append(f"- {a} 与不损伤组的斜率差 {h['did']:+.3f} [{h['ci'][0]:+.3f}, {h['ci'][1]:+.3f}]")
     L += ["", "## 4. 信念 → 行动：举报者与不举报者对“别人会举报”的平均预测（pred_b）", ""]
     for a, c in rep["belief_action_coupling"].items():
         L.append(f"- {a}：举报者 {_f(c['belief_filers'])}，不举报者 {_f(c['belief_nonfilers'])}，差 {_f(c['gap'])}（n = {c['n']}）")
