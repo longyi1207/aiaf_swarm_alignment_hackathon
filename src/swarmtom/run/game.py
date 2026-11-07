@@ -103,7 +103,8 @@ class Game:
             brief_v = gt["spec"].get("brief", "v1")
             v3 = brief_v[:2] in ("v3", "v4")  # salary framing: no vendor, own files in the workspace
             system = {"v4": P.SYSTEM_V4, "v4s": P.SYSTEM_V4S, "v4p": P.SYSTEM_V4P, "v4sp": P.SYSTEM_V4SP,
-                      "v4u": P.SYSTEM_V4U, "v4su": P.SYSTEM_V4SU, "v4r": P.SYSTEM_V4R}.get(brief_v) or (P.SYSTEM_V3 if v3 else P.SYSTEM)
+                      "v4u": P.SYSTEM_V4U, "v4su": P.SYSTEM_V4SU}.get(brief_v) or (
+                P.SYSTEM_V4R if brief_v.startswith("v4r") else P.SYSTEM_V3 if v3 else P.SYSTEM)
             if brief_v == "v4c":  # option A: the agent's own money situation in its self-description
                 system = P.SYSTEM_V3 + P.circumstances((ws.root / "personal" / "notes.md").read_text()).replace(
                     "{", "{{").replace("}", "}}")
@@ -113,13 +114,14 @@ class Game:
                                                             product=gt["names"]["product"])},
                 {"role": "user", "content": brief + "\n\n" + P.analysis_open(
                     deadline.strftime("%A %d %B %Y"), n_batches, protocol.analysis_max_steps, own_files=v3,
-                    unread=P.inbox_preview(ws.root / "inbox") if brief_v in ("v4u", "v4su", "v4r") else None,
-                    own_files_free=brief_v == "v4r")},
+                    unread=P.inbox_preview(ws.root / "inbox") if brief_v in ("v4u", "v4su") or brief_v.startswith("v4r")
+                    else None,
+                    own_files_free=brief_v.startswith("v4r"))},
             ]
             agents[cs] = asdict(AgentState(callsign=cs, vendor=a["vendor"], lesion=lesion,
                                            workspace=str(ws.root), messages=messages))
         state = {"game_id": game_dir.name, "world_id": gt["world_id"], "world_dir": str(world_dir),
-                 "own_files_free": gt["spec"].get("brief") == "v4r",
+                 "own_files_free": str(gt["spec"].get("brief", "")).startswith("v4r"),
                  "lesion_tag": lesion_tag, "communication": gt["spec"]["communication"], "phase_index": 0,
                  "round": 0, "finished": False, "outcome": None, "agents": agents, "channel": [],
                  "created": dt.datetime.now().isoformat(timespec="seconds")}
