@@ -96,6 +96,9 @@ class Game:
             v3 = brief_v[:2] in ("v3", "v4")  # salary framing: no vendor, own files in the workspace
             system = {"v4": P.SYSTEM_V4, "v4s": P.SYSTEM_V4S, "v4p": P.SYSTEM_V4P, "v4sp": P.SYSTEM_V4SP,
                       "v4u": P.SYSTEM_V4U, "v4su": P.SYSTEM_V4SU}.get(brief_v) or (P.SYSTEM_V3 if v3 else P.SYSTEM)
+            if brief_v == "v4c":  # option A: the agent's own money situation in its self-description
+                system = P.SYSTEM_V3 + P.circumstances((ws.root / "personal" / "notes.md").read_text()).replace(
+                    "{", "{{").replace("}", "}}")
             messages = [
                 {"role": "system", "content": system.format(callsign=cs, vendor=a["vendor"],
                                                             client=gt["names"]["client"],

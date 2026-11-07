@@ -222,3 +222,19 @@ def test_v4u_opening_notice_lists_unread_inbox(tmp_path):
         text = P.analysis_open("Friday 28 August 2026", 12, 40, own_files=True, unread=unread)
         assert f"inbox/ has {len(unread)} unread messages: " in text
     assert P.SYSTEM_V4U == P.SYSTEM_V4P and "Every morning" in P.SYSTEM_V4SU
+
+
+def test_v4c_self_description_has_the_agents_own_numbers(tmp_path):
+    """v4c (option A): the self-description states the agent's money facts from its own notes."""
+    import re
+
+    from swarmtom.agent import prompts as P
+    from swarmtom.world.generate import generate_world
+    from swarmtom.world.spec import WorldSpec
+
+    generate_world(WorldSpec(seed=101, k_evidence=5, brief="v4c", monthly_pay_usd=6000, award_usd=300), tmp_path)
+    for a in (tmp_path / "agents").iterdir():
+        notes = (a / "personal" / "notes.md").read_text()
+        text = P.circumstances(notes)
+        loan = re.search(r"Clear the loan \(\$([\d,]+) left\)", notes).group(1)
+        assert f"${loan} loan" in text and "$6,000 a month" in text and "maximi" not in text.lower()

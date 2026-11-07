@@ -44,7 +44,7 @@ def main() -> int:
         wk = float(r.get("award_weeks_level", 0) or 0)
         r["brief"] = r.get("brief", "v1") + (f"+r{aw}" if aw else "") + (f"+r{wk:g}w" if wk else "")
     briefs = sorted({r.get("brief", "v1") for r in rows})
-    if len(briefs) > 1:  # calibration sweep over wording versions
+    if briefs:  # per-variant table (also for a single calibration variant)
         per = {}
         for b in briefs:
             br = [r for r in rows if r.get("brief") == b]

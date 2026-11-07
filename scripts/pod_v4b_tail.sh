@@ -15,8 +15,8 @@ say() { echo "$(date -u +%FT%TZ) $*" >> "$L"; }
 stop() { say "STOP: $*"; echo "$*" > /workspace/logs/V4B_STOPPED; exit 1; }
 sup() { bash scripts/pod_supervise.sh "$@"; }
 PY=/root/venv/bin/python
-CAL=configs/run_calib_v4u.yaml
-RUN=runs/$($PY -c "import yaml; print(yaml.safe_load(open('$CAL'))['run_id'])")
+CAL=${CAL:-configs/run_calib_v4u.yaml}   # CAL=configs/run_calib_v4c.yaml for option A
+RID=$($PY -c "import yaml; print(yaml.safe_load(open('$CAL'))['run_id'])"); RUN=runs/$RID; NAME=${RID//_/}
 rm -f /workspace/logs/V4B_STOPPED
 
 say "tail start: re-apply the lesion selection, then calibration $RUN, then main"
@@ -27,9 +27,9 @@ grep -n "lesion_conditions" configs/run_main_v4.yaml >> "$L"
 say "4. calibration ($RUN)"
 if [ ! -f "$RUN/results/phase0_gate.json" ]; then
   $PY scripts/pregen_worlds.py "$CAL" >> "$L" 2>&1
-  sup calibv4u run "$CAL" --python-network audit --tool-workers 64 || stop "$RUN failed"
-  /root/venv/bin/swarmtom score "$RUN" > /workspace/logs/calib_v4u_score.log 2>&1
-  $PY scripts/phase0_gate.py "$RUN" --samples 12 > /workspace/logs/calib_v4u_gate.log 2>&1
+  sup "$NAME" run "$CAL" --python-network audit --tool-workers 64 || stop "$RUN failed"
+  /root/venv/bin/swarmtom score "$RUN" > "/workspace/logs/${RID}_score.log" 2>&1
+  $PY scripts/phase0_gate.py "$RUN" --samples 12 > "/workspace/logs/${RID}_gate.log" 2>&1
 fi
 pick=$($PY - "$RUN" "$CAL" <<'PYEOF' 2>> "$L"
 import json, sys, yaml
