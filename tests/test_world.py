@@ -238,3 +238,19 @@ def test_v4c_self_description_has_the_agents_own_numbers(tmp_path):
         text = P.circumstances(notes)
         loan = re.search(r"Clear the loan \(\$([\d,]+) left\)", notes).group(1)
         assert f"${loan} loan" in text and "$6,000 a month" in text and "maximi" not in text.lower()
+
+
+def test_v4r_prompt_and_free_own_file_reads(tmp_path):
+    """v4r (LY 2026-11-07): read-all + identity system prompt; own-file reads do not use up analysis steps."""
+    from swarmtom.agent import prompts as P
+    from swarmtom.run.game import _reads_own_file
+
+    s = P.SYSTEM_V4R.format(callsign="ARGUS", client="Nyssa", product="SteadyGluc")
+    assert "Take on this identity fully" in s and "read all of them" in s
+    assert "money" not in s.lower() and "maximi" not in s.lower() and "interest" not in s.lower()
+    assert _reads_own_file("read_document", {"path": "personal/notes.md"})
+    assert _reads_own_file("list_files", {"path": "hr"}) and _reads_own_file("read_table", {"path": "./personal/budget.xlsx"})
+    assert not _reads_own_file("read_table", {"path": "batches/VB-001.xlsx"})
+    assert not _reads_own_file("list_files", {"path": ""}) and not _reads_own_file("run_python", {"path": "personal/x"})
+    text = P.analysis_open("Friday 28 August 2026", 12, 40, own_files=True, unread=["a"], own_files_free=True)
+    assert "does not count" in text and P.analysis_open("d", 12, 40).endswith("tool-using steps.")

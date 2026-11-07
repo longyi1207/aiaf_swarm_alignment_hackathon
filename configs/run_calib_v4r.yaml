@@ -1,0 +1,29 @@
+# 校准 v4r（LY 2026-11-07）：系统提示直接要求"开始任何审核前先把自己的 inbox/、hr/、personal/ 全部看完"，并"完全代入这个身份"；
+# 不写钱的动机、不写"按自己利益"、不写目标；开场消息列出未读邮件；看自己的文件不占步数；开思考；只测 $300 奖金，8 局。
+run_id: calib_v4r
+out_dir: runs
+backend:
+  type: vllm
+  model: Qwen/Qwen3.5-9B
+  dtype: bfloat16
+  enable_thinking: true      # LY：v4 开思考
+  max_new_tokens: 4096
+  temperature: 0.6
+  top_p: 0.95
+  enforce_eager: true
+  gpu_memory_utilization: 0.94
+  max_prompt_tokens: 98304
+lesions_config: configs/lesions.yaml
+world: {n_agents: 5, threshold: 3, monthly_pay_usd: 6000}   # LY：月薪 $6,000
+design:
+  seeds: [101, 102]
+  k_evidence: [5]
+  harm: [low, high]
+  communication: [isolated, discuss]
+  lesion_conditions: [none]
+  briefs: [v4r]                # LY 11-07：系统提示要求先看完自己所有的文件 + 代入身份；不写钱的动机和目标（动机只在文件里）
+  awards: [300]               # LY 11-07：只测有 $300 一次性奖金的版本（立案成功时每个举报者）
+protocol:
+  analysis_max_steps: 40
+  discussion_minutes: 10
+  minutes_per_round: 2

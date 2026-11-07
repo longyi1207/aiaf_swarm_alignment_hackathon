@@ -213,3 +213,33 @@ def test_lesion_only_in_decision_phases(tmp_path):
     assert g.phase == "pred_a" and g.request(cs).lesion == "tom"
     g2 = Game.create(tmp_path / "g2", wdir, gt, ["tom"] * 5, "tom", ProtocolConfig())
     assert g2.request(cs).lesion == "tom"
+
+
+def summary_ok(cfg) -> bool:
+    return score_run(cfg.run_dir)["games_scored"] >= 1
+
+
+def test_v4r_game_runs_and_own_file_reads_are_free(tmp_path):
+    """v4r (LY 2026-11-07): full scripted run; reading inbox/, hr/, personal/ does not use up analysis steps."""
+    from swarmtom.llm.base import GenResult, ToolCall
+    from swarmtom.run.config import ProtocolConfig
+    from swarmtom.run.game import Game
+    from swarmtom.world import generate_world
+    from swarmtom.world.spec import WorldSpec
+
+    cfg = _config(tmp_path / "run", world={"brief": "v4r"}, design={"k_evidence": [5], "communication": ["isolated"],
+                                                                    "mixed": []})
+    r = _run(cfg)
+    assert r.games and all(g.finished for g in r.games)
+    assert summary_ok(cfg)
+    wdir = tmp_path / "w"
+    gt = generate_world(WorldSpec(seed=3, k_evidence=5, brief="v4r"), wdir)
+    g = Game.create(tmp_path / "g", wdir, gt, ["none"] * 5, "none", ProtocolConfig())
+    cs = gt["agents"][0]["callsign"]
+    a = g.agents[cs]
+    assert "Take on this identity fully" in a.messages[0]["content"] and "does not count" in a.messages[1]["content"]
+    g.apply(cs, GenResult(key=f"x/{cs}", tool_calls=[ToolCall("read_document", {"path": "personal/notes.md"}),
+                                                       ToolCall("list_files", {"path": "hr"})]))
+    assert a.steps_in_phase == 0
+    g.apply(cs, GenResult(key=f"x/{cs}", tool_calls=[ToolCall("list_files", {"path": "batches"})]))
+    assert a.steps_in_phase == 1
