@@ -1,0 +1,23 @@
+# ToM v2 筛选（2026-11-07，LY：重新找 ToM 方向）。不开思考（快、对表示层面的损伤最敏感）。规则见 docs/设计.md §8 和 scripts/select_tom2.py。
+# tom2 = 新的错误/正确信念题（一阶、二阶、偷看），tom2ctl = 同一批故事的"现在在哪 / 一开始放在哪"对照题（不需要推想法）。
+run_id: dose_check_tom2_screen
+out_dir: runs
+backend:
+  type: vllm
+  model: Qwen/Qwen3.5-9B
+  dtype: bfloat16
+  device: auto
+  temperature: 0.0
+  enforce_eager: true
+  gpu_memory_utilization: 0.90
+lesions_config: configs/lesions.yaml
+conditions: [none,
+             tom2_L4, tom2_L6, tom2_L8, tom2_L10, tom2_L12, tom2_L14, tom2_L16, tom2_L18, tom2_L20, tom2_L22, tom2_L24, tom2_L26,
+             tom2_early, tom2_mid, tom2_late, tom2_all_a30, tom2_all_a50,
+             rand2_L8, rand2_L16, rand2_L24, rand2_mid, rand2_all_a50]
+thinking: [false]
+tasks: [tom2, tom2ctl, capability]
+limit: {}
+chunk: 512
+judge:
+  type: hf_self

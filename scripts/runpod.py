@@ -82,7 +82,7 @@ def create() -> None:
         sys.exit(f"a pod is already recorded in {STATE}; delete it first")
     pub = (SSH_KEY.with_suffix(".pub")).read_text().strip()
     body = {"name": "swarmtom-h100", "imageName": IMAGE, "gpuTypeIds": GPU_TYPES, "gpuTypePriority": "custom",
-            "gpuCount": 1, "cloudType": "SECURE", "containerDiskInGb": 40, "volumeInGb": 120,
+            "gpuCount": 1, "cloudType": "SECURE", "containerDiskInGb": 80, "volumeInGb": 120,
             "volumeMountPath": "/workspace", "ports": ["22/tcp"], "env": {"PUBLIC_KEY": pub},
             "minRAMPerGPU": 64, "minVCPUPerGPU": 8}
     pod = _req("POST", "/pods", body)

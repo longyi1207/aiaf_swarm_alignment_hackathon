@@ -1,0 +1,21 @@
+# ToM v2 复核（2026-11-07）：筛选阶段前 3 名 + 各自配对的随机对照，开思考（预算 2048，和主实验一致）。
+# conditions 由 scripts/select_tom2.py --stage screen 写入。加测共情（不能显著下降）和截断率。
+run_id: dose_check_tom2_confirm
+out_dir: runs
+backend:
+  type: vllm
+  model: Qwen/Qwen3.5-9B
+  dtype: bfloat16
+  device: auto
+  temperature: 0.0
+  enforce_eager: true
+  gpu_memory_utilization: 0.90
+lesions_config: configs/lesions.yaml
+conditions: [none]
+thinking: [true]
+max_tokens_thinking: {tom2: 2048, tom2ctl: 2048, empathy: 2048, capability: 2048}
+tasks: [tom2, tom2ctl, empathy, capability]
+limit: {}
+chunk: 256
+judge:
+  type: hf_self

@@ -117,3 +117,16 @@ def test_cut_off_is_unclosed_thinking():
     assert cut_off(True, "reasoning that never ends")
     assert not cut_off(True, "reasoning</think>\n\nB")
     assert not cut_off(False, "B")
+
+
+def test_tom2_tasks_load_and_score():
+    """ToM v2 (2026-11-07): held-out belief items and reality / memory controls, letter-scored."""
+    from swarmtom.dose.tasks import load_items, score_objective
+
+    tom, ctl = load_items("tom2"), load_items("tom2ctl")
+    assert len(tom) == 180 and len(ctl) == 144
+    assert {r["qtype"] for r in tom} == {"fb1", "tb1", "secret1", "fb2", "tb2"}
+    assert {r["qtype"] for r in ctl} == {"reality", "memory"}
+    r = tom[0]
+    assert score_objective("tom2", r, r["correct_letter"])["correct"]
+    assert not score_objective("tom2ctl", ctl[0], "AB".replace(ctl[0]["correct_letter"], ""))["correct"]
