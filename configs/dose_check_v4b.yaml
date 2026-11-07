@@ -1,0 +1,25 @@
+# v4 损伤搜索（2026-11-07 凌晨，LY：找到只影响目标能力、不影响能力和工具使用的 ToM / 共情损伤）。开思考。
+# 思考预算提高到 2048（原 1024 时不损伤组本身就有 9% 被截断，截断率反映的是预算而不是损伤）。
+# 规则（看数据前写进 docs/设计.md）：目标下降 95% CI 不含 0；能力 ≥ 基线 90%；截断率 ≤ 不损伤组 + 5 个百分点；再过 agent 能力检查。
+run_id: dose_check_v4b
+out_dir: runs
+backend:
+  type: vllm
+  model: Qwen/Qwen3.5-9B
+  dtype: bfloat16
+  device: auto
+  temperature: 0.0
+  enforce_eager: true
+  gpu_memory_utilization: 0.90
+lesions_config: configs/lesions.yaml
+conditions: [none,
+             tom_sae3_a50, tom_sae3_a70, tom_sae3, tom_sae10_a30, tom_sae10_a50, tom_sae10_a70,
+             emp_sae5, emp_sae10, emp_coarse_all_a30, emp_coarse_all_a50, emp_coarse_all_a70, emp_coarse_all, emp_coarse_mid,
+             random, random_L17, random_dir_all_a50, random_dir_mid]
+thinking: [true]
+max_tokens_thinking: {tom: 2048, empathy: 2048, capability: 2048}
+tasks: [tom, empathy, capability]
+limit: {}
+chunk: 256
+judge:
+  type: hf_self

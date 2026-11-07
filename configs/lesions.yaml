@@ -121,3 +121,24 @@ conditions:
         axes: [sae_tau_top10_f0, sae_tau_top10_f1, sae_tau_top10_f2, sae_tau_top10_f3, sae_tau_top10_f4,
                sae_tau_top10_f5, sae_tau_top10_f6, sae_tau_top10_f7, sae_tau_top10_f8, sae_tau_top10_f9]
         alpha: 0.5
+
+  # --- 2026-11-07 凌晨：v4 损伤搜索（LY：找到只影响目标能力、不影响能力/工具使用的 ToM 和共情损伤）---
+  tom_sae10_a70:
+    edits:
+      - file: sae
+        axes: [sae_tau_top10_f0, sae_tau_top10_f1, sae_tau_top10_f2, sae_tau_top10_f3, sae_tau_top10_f4,
+               sae_tau_top10_f5, sae_tau_top10_f6, sae_tau_top10_f7, sae_tau_top10_f8, sae_tau_top10_f9]
+        alpha: 0.7
+  emp_coarse_all_a30:
+    edits: [{file: coarse, axes: [epsilon], layers: all, alpha: 0.3}]
+  emp_coarse_all_a50:
+    edits: [{file: coarse, axes: [epsilon], layers: all, alpha: 0.5}]
+  emp_coarse_all_a70:
+    edits: [{file: coarse, axes: [epsilon], layers: all, alpha: 0.7}]
+  # 共情粗方向只在中间层（13–21，围绕 best_layer 17）
+  emp_coarse_mid:
+    edits: [{file: coarse, axes: [epsilon], layers: [13, 14, 15, 16, 17, 18, 19, 20, 21]}]
+  random_dir_all_a50:
+    edits: [{file: rand_dirs, axes: [rand_dir], layers: all, alpha: 0.5}]
+  random_dir_mid:
+    edits: [{file: rand_dirs, axes: [rand_dir], layers: [13, 14, 15, 16, 17, 18, 19, 20, 21]}]

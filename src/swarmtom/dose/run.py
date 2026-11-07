@@ -37,6 +37,9 @@ class DoseConfig:
     limit: dict = field(default_factory=dict)  # task -> max items (e.g. subsample BigToM with thinking on)
     chunk: int = 128  # requests handed to the backend per call (it batches internally)
     judge: dict = field(default_factory=lambda: {"type": "hf_self"})
+    # Optional per-task token budgets for thinking-on answers (2026-11-07: the default 1024 for BigToM cut off 9% of
+    # the unlesioned model's answers, so "cut off" measured the budget rather than lesion damage).
+    max_tokens_thinking: dict = field(default_factory=dict)
 
     @classmethod
     def load(cls, path: Path) -> "DoseConfig":
@@ -46,7 +49,8 @@ class DoseConfig:
                    backend=raw["backend"], lesions_config=(root / raw["lesions_config"]).resolve(),
                    conditions=raw["conditions"], thinking=raw.get("thinking", [False, True]),
                    tasks=raw.get("tasks", ["tom", "empathy", "capability"]), limit=raw.get("limit", {}),
-                   chunk=raw.get("chunk", 128), judge=raw.get("judge", {"type": "hf_self"}))
+                   chunk=raw.get("chunk", 128), judge=raw.get("judge", {"type": "hf_self"}),
+                   max_tokens_thinking=raw.get("max_tokens_thinking", {}))
 
     @property
     def run_dir(self) -> Path:
@@ -108,7 +112,8 @@ def generate(cfg: DoseConfig, backend=None) -> int:
                 for i in range(0, len(reqs), cfg.chunk):
                     part = reqs[i: i + cfg.chunk]
                     t0 = time.monotonic()
-                    results = backend.generate([r for r, _ in part], max_new_tokens=MAX_TOKENS[thinking][task])
+                    budget = (cfg.max_tokens_thinking.get(task) if thinking else None) or MAX_TOKENS[thinking][task]
+                    results = backend.generate([r for r, _ in part], max_new_tokens=budget)
                     for (req, it), res in zip(part, results):
                         answer = res.content if res.content or not res.raw else final_answer(res.raw)
                         rec = {"key": req.key, "condition": req.lesion, "thinking": thinking, "task": task,
