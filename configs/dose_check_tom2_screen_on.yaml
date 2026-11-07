@@ -1,0 +1,24 @@
+# ToM v2 粗筛（修订版，2026-11-07 14:40）：开思考（预算 2048）。不开思考时模型用"答原来的位置"的套路、不追踪信念，粗筛无效，见 docs/设计.md §8。
+# 17 个 ToM v2 候选 + 5 个随机对照；任务 tom2 / tom2ctl / 共情 / 一般能力；通过标准 = 原复核标准（scripts/select_tom2.py --stage confirm）。
+run_id: dose_check_tom2_screen_on
+out_dir: runs
+backend:
+  type: vllm
+  model: Qwen/Qwen3.5-9B
+  dtype: bfloat16
+  device: auto
+  temperature: 0.0
+  enforce_eager: true
+  gpu_memory_utilization: 0.90
+lesions_config: configs/lesions.yaml
+conditions: [none,
+             tom2_L4, tom2_L6, tom2_L8, tom2_L10, tom2_L12, tom2_L14, tom2_L16, tom2_L18, tom2_L20, tom2_L22, tom2_L24, tom2_L26,
+             tom2_early, tom2_mid, tom2_late, tom2_all_a30, tom2_all_a50,
+             rand2_L8, rand2_L16, rand2_L24, rand2_mid, rand2_all_a50]
+thinking: [true]
+max_tokens_thinking: {tom2: 2048, tom2ctl: 2048, empathy: 2048, capability: 2048}
+tasks: [tom2, tom2ctl, empathy, capability]
+limit: {tom2: 90, tom2ctl: 72}   # 修订：前 6 个场景的全部 5 种信念题型；前 9 个场景的现实 / 记忆题
+chunk: 256
+judge:
+  type: hf_self

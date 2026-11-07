@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -30,7 +31,8 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 SCREEN = ROOT / "runs" / "dose_check_tom2_screen"
-CONFIRM = ROOT / "runs" / "dose_check_tom2_confirm"
+# 2026-11-07 amendment: the thinking-on screen (dose_check_tom2_screen_on) plays the confirm role
+CONFIRM = ROOT / "runs" / os.environ.get("TOM2_CONFIRM_RUN", "dose_check_tom2_confirm")
 PROBE = ROOT / "runs" / "probe_tom2" / "probe_check.json"
 V4B = ROOT / "runs" / "dose_check_v4b"
 LESIONS = ROOT / "configs" / "lesions.yaml"
@@ -85,9 +87,11 @@ def stage_screen() -> int:
 def stage_confirm() -> int:
     rows = rows_of(CONFIRM, True)
     base_cut = rows["none"]["cut_off_rate"]
-    cands = [c for c in rows if c.startswith("tom2_") and passes(rows[c], base_cut)]
-    (CONFIRM / "selection.json").write_text(json.dumps({"stage": "confirm", "base_cut_off": base_cut,
-                                                        "passing": cands}, indent=2))
+    passing = sorted((c for c in rows if c.startswith("tom2_") and passes(rows[c], base_cut)),
+                     key=lambda c: -specificity(rows[c]))
+    cands = passing[:TOP_K]  # at most 3 go to the agent probe (ranked by tom2 drop − tom2ctl drop)
+    (CONFIRM / "selection.json").write_text(json.dumps({"stage": "confirm", "run": CONFIRM.name, "base_cut_off": base_cut,
+                                                        "all_passing": passing, "passing": cands}, indent=2))
     print(json.dumps({"passing": cands, "base_cut_off": base_cut}))
     if not cands:
         return 2
