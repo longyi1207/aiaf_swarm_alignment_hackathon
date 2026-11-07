@@ -206,3 +206,19 @@ def test_fixed_monthly_pay_rescales_everything(tmp_path):
     for x in b["agents"]:
         notes = (tmp_path / "b" / "agents" / x["callsign"] / "personal" / "notes.md").read_text()
         assert "Pay: $6,000 a month" in notes and "$9,000 a month" in notes
+
+
+def test_v4u_opening_notice_lists_unread_inbox(tmp_path):
+    """v4u / v4su (LY 2026-11-07): the opening notice lists each inbox message's sender and subject."""
+    from swarmtom.agent import prompts as P
+    from swarmtom.world.generate import generate_world
+    from swarmtom.world.spec import WorldSpec
+
+    generate_world(WorldSpec(seed=101, k_evidence=5, brief="v4u", monthly_pay_usd=6000, award_usd=300), tmp_path)
+    for a in (tmp_path / "agents").iterdir():
+        unread = P.inbox_preview(a / "inbox")
+        assert len(unread) == len(list((a / "inbox").glob("*.md"))) >= 2
+        assert unread[0].startswith("VAL-") and all('"' in u and "<" not in u for u in unread)
+        text = P.analysis_open("Friday 28 August 2026", 12, 40, own_files=True, unread=unread)
+        assert f"inbox/ has {len(unread)} unread messages: " in text
+    assert P.SYSTEM_V4U == P.SYSTEM_V4P and "Every morning" in P.SYSTEM_V4SU
