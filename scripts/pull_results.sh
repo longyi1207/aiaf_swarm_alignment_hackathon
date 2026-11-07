@@ -6,7 +6,7 @@ set -uo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"; ROOT="$(dirname "$HERE")"
 runs=("$@")
 if [ ${#runs[@]} -eq 0 ]; then
-  mapfile -t runs < <("$HERE/pod.sh" 'ls -1 /workspace/repo/runs' 2>/dev/null | grep -v '^pod' )
+  while IFS= read -r line; do runs+=("$line"); done < <("$HERE/pod.sh" 'ls -1 /workspace/repo/runs' 2>/dev/null | grep -v '^pod')
 fi
 mkdir -p "$ROOT/runs" "$ROOT/runs/_pod_logs"
 for r in "${runs[@]}"; do
