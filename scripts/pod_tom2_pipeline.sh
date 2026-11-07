@@ -8,6 +8,8 @@
 #  5. final lesions (--stage final): ToM v2 + matched empathy, or empathy-only if no ToM v2 lesion passes
 #  6. calibration gate (runs/calib_v4r: accuracy >= 70%, E rate in [15%, 85%], >= 50% open personal/) -> main_v4
 # A ToM stage with no passers skips to step 5 (empathy-only main), as pre-registered.
+# TOM2_NO_WAIT=1 (LY 14:27: start ToM early): run steps 1–5 alongside the calibration, sharing the GPU (the
+# calibration's vLLM is capped at 0.60; ToM's vLLM stages use 0.30 / the probe 0.35 while it still runs).
 set -uo pipefail
 cd /workspace/repo
 export SWARMTOM_BIN=/root/vllm-venv/bin/swarmtom SWARMTOM_TOOL_PYTHON=/root/venv/bin/python VLLM_CACHE_ROOT=/root/.cache/vllm
@@ -18,9 +20,21 @@ stop() { say "STOP: $*"; echo "$*" > /workspace/logs/TOM2_STOPPED; exit 1; }
 sup() { bash scripts/pod_supervise.sh "$@"; }
 PY=/root/venv/bin/python
 
-say "tom2 pipeline start; waiting for the v4r calibration to finish"
-while [ ! -f /workspace/logs/CALIB_V4R_DONE ] && pgrep -f "[p]od_bootstrap_v4r" > /dev/null; do sleep 20; done
-[ -f /workspace/logs/CALIB_V4R_DONE ] || say "WARNING: bootstrap ended without CALIB_V4R_DONE (calibration failed); continuing the ToM search"
+calib_running() { [ ! -f /workspace/logs/CALIB_V4R_DONE ] && pgrep -f "[p]od_bootstrap_v4r" > /dev/null; }
+wait_calib() {
+  while calib_running; do sleep 20; done
+  [ -f /workspace/logs/CALIB_V4R_DONE ] || say "WARNING: bootstrap ended without CALIB_V4R_DONE (calibration failed)"
+}
+gpu_mem() {  # set gpu_memory_utilization in a pipeline-owned config: shared GPU while the calibration runs
+  local cfg=$1 shared=$2 alone=$3
+  if calib_running; then sed -i -E "s/^(  gpu_memory_utilization: ).*/\1$shared/" "$cfg"; else sed -i -E "s/^(  gpu_memory_utilization: ).*/\1$alone/" "$cfg"; fi
+  grep -n "gpu_memory_utilization" "$cfg" | sed "s|^|$cfg: |" >> "$L"
+}
+if [ "${TOM2_NO_WAIT:-0}" = "1" ]; then
+  say "tom2 pipeline start (alongside the v4r calibration)"
+else
+  say "tom2 pipeline start; waiting for the v4r calibration to finish"; wait_calib
+fi
 
 tom_ok=1
 if [ ! -f assets/vectors/axes_tom_v2.pt ]; then
@@ -31,6 +45,7 @@ $PY scripts/register_tom_v2.py >> "$L" 2>&1 || stop "registering the ToM v2 cond
 grep -E "best_layer|sha256" runs/tom_v2_extract/stats.json >> "$L"
 
 say "2. screen (thinking off)"
+gpu_mem configs/dose_check_tom2_screen.yaml 0.30 0.90
 sup dose_tom2_screen dose-gen configs/dose_check_tom2_screen.yaml || stop "screen generation failed"
 $SWARMTOM_BIN dose-report runs/dose_check_tom2_screen > /workspace/logs/dose_tom2_screen_report.log 2>&1
 $PY scripts/select_tom2.py --stage screen >> "$L" 2>&1; rc=$?
@@ -39,6 +54,7 @@ $PY scripts/select_tom2.py --stage screen >> "$L" 2>&1; rc=$?
 if [ $tom_ok -eq 1 ]; then
   say "3. confirm (thinking on)"
   grep -n "^conditions" configs/dose_check_tom2_confirm.yaml >> "$L"
+  gpu_mem configs/dose_check_tom2_confirm.yaml 0.30 0.90
   sup dose_tom2_confirm dose-gen configs/dose_check_tom2_confirm.yaml || stop "confirm generation failed"
   sup dose_tom2_confirm_judge dose-judge configs/dose_check_tom2_confirm.yaml || stop "confirm judging failed"
   $SWARMTOM_BIN dose-report runs/dose_check_tom2_confirm > /workspace/logs/dose_tom2_confirm_report.log 2>&1
@@ -49,6 +65,7 @@ fi
 if [ $tom_ok -eq 1 ]; then
   say "4. agent probe"
   grep -n "run_id\|brief\|lesion_conditions" configs/run_probe_tom2.yaml >> "$L"
+  gpu_mem configs/run_probe_tom2.yaml 0.35 0.94
   $PY scripts/pregen_worlds.py configs/run_probe_tom2.yaml >> "$L" 2>&1
   sup probe_tom2 run configs/run_probe_tom2.yaml --python-network audit --tool-workers 64 --max-ticks 8 || stop "probe failed"
   $PY scripts/v4_probe_check.py runs/probe_tom2 >> "$L" 2>&1
@@ -59,7 +76,8 @@ $PY scripts/select_tom2.py --stage final >> "$L" 2>&1 || stop "final selection c
 grep -n "lesion_conditions" configs/run_main_v4.yaml >> "$L"
 date -u +%FT%TZ > /workspace/logs/TOM2_LESIONS_DONE
 
-say "6. calibration gate (runs/calib_v4r)"
+say "6. calibration gate (runs/calib_v4r): waiting for it to finish"
+wait_calib
 [ -f runs/calib_v4r/results/phase0_gate.json ] || stop "lesions chosen; no calibration result (runs/calib_v4r)"
 pick=$($PY - <<'PYEOF' 2>> "$L"
 import json, sys
