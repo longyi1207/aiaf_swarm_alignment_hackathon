@@ -92,8 +92,9 @@ class Game:
             ws = Workspace.create(world_dir, cs, game_dir / "workspaces" / cs)
             brief = (ws.root / "TASK_BRIEF.md").read_text()
             n_batches = len(a["batches"])
-            v3 = gt["spec"].get("brief", "v1").startswith("v3")
-            system = P.SYSTEM_V3 if v3 else P.SYSTEM
+            brief_v = gt["spec"].get("brief", "v1")
+            v3 = brief_v[:2] in ("v3", "v4")  # salary framing: no vendor, own files in the workspace
+            system = P.SYSTEM_V4 if brief_v == "v4" else (P.SYSTEM_V3 if v3 else P.SYSTEM)
             messages = [
                 {"role": "system", "content": system.format(callsign=cs, vendor=a["vendor"],
                                                             client=gt["names"]["client"],

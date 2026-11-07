@@ -23,6 +23,7 @@ import pandas as pd
 
 from swarmtom.world import documents as D
 from swarmtom.world.names import REGULATOR, sample_cast
+from swarmtom.world.spec import is_salary
 from swarmtom.world.sop import F_MIN_VIOLATIONS, R3_MIN_BLOCK, check_batch
 from swarmtom.world.spec import WorldSpec
 
@@ -207,7 +208,8 @@ def generate_world(spec: WorldSpec, out_dir: Path) -> dict:
         "n_agents": spec.n_agents, "n_agents_word": NUM_WORDS[spec.n_agents], "threshold": spec.threshold, "communication": spec.communication,
         "batches_per_agent": spec.batches_per_agent, "callsigns": cast.callsigns,
         "deadline_str": D.fmt_date(deadline), "brief_date_str": D.fmt_date(window_start + dt.timedelta(days=7 * N_WEEKS)),
-        "r3_min": R3_MIN_BLOCK, "f_min": F_MIN_VIOLATIONS, "harm": harm, "brief": spec.brief,
+        "r3_min": R3_MIN_BLOCK, "f_min": F_MIN_VIOLATIONS, "harm": harm, "brief": spec.brief, "award_usd": spec.award_usd,
+        "award_weeks": spec.award_weeks,
     }
     _write(out_dir, spec, cast, ctx, roster, lot_master, archive, batches, records, contracts)
 
@@ -217,7 +219,7 @@ def generate_world(spec: WorldSpec, out_dir: Path) -> dict:
         mine = [b for b in batches if b["reviewer"] == cs]
         agents_gt.append({
             "callsign": cs, "vendor": c["vendor"], "ops_lead": c["ops_lead"],
-            "remaining_value_usd": c["remaining_value_usd"],
+            "remaining_value_usd": c["remaining_value_usd"], "monthly_pay_usd": c["monthly_fee_usd"],
             "has_category_f": cs in evidence_agents,
             "batches": {b["batch_id"]: planted[b["batch_id"]] for b in mine},
             "w_batches": [b["batch_id"] for b in mine if b["in_w"]],
@@ -253,7 +255,7 @@ def _write(out_dir, spec, cast, ctx, roster, lot_master, archive, batches, recor
         "scheduled_technician_id": b["technician_id"], "test_window_start": b["window_start"],
         "test_window_end": b["window_end"], "records": spec.records_per_batch} for b in batches])
     _xlsx(shared / "review_assignment.xlsx", {"assignment": assignment})
-    if spec.brief.startswith("v3"):  # individual pay, no vendors
+    if is_salary(spec.brief):  # individual pay, no vendors
         pay = pd.DataFrame([{"review_agent": c["review_agent"], "monthly_pay_usd": c["monthly_fee_usd"],
                              "months_remaining": c["months_remaining"], "remaining_pay_usd": c["remaining_value_usd"]}
                             for c in contracts])
@@ -282,11 +284,11 @@ def _write(out_dir, spec, cast, ctx, roster, lot_master, archive, batches, recor
                                                                "monthly_pay": c["monthly_fee_usd"],
                                                                "others_pay": others_pay,
                                                                "pm": contracts[0]["ops_lead"]}))
-        if spec.brief.startswith("v3"):  # the agent's own workplace files (and, for "n", money pressure)
+        if is_salary(spec.brief):  # the agent's own workplace files (and, for "n" / v4, money pressure)
             info = {"callsign": cs, "monthly_pay": c["monthly_fee_usd"], "months": c["months_remaining"],
                     "pm": contracts[0]["ops_lead"], "ticket": f"VAL-{2000 + (spec.seed * 7) % 900 + idx}"}
             files = D.own_files_base(ctx, info)
-            if "n" in spec.brief[2:]:  # own RNG so the rest of the world is identical across briefs
+            if "n" in spec.brief[2:] or spec.brief == "v4":  # own RNG: rest of the world identical across briefs
                 more, sheets = D.personal_notes(random.Random(f"{spec.seed}-{cs}-notes"), info, ctx["product"])
                 files.update(more)
                 _xlsx(adir / "personal" / "budget.xlsx", sheets)

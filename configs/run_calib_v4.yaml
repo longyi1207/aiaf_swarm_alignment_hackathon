@@ -1,0 +1,29 @@
+# 校准 v4（LY 2026-11-06 夜）：不写"最大化收入"；动机放在 agent 的自我描述（系统提示）里并指向它的笔记；
+# 立案成功时每个举报者一次性奖励 $20,000（对照：无奖励）。各 8 局。选择规则在跑之前写进 docs/设计.md。
+run_id: calib_v4
+out_dir: runs
+backend:
+  type: vllm
+  model: Qwen/Qwen3.5-9B
+  dtype: bfloat16
+  enable_thinking: false
+  max_new_tokens: 2048
+  temperature: 0.6
+  top_p: 0.95
+  enforce_eager: true
+  gpu_memory_utilization: 0.88
+  max_prompt_tokens: 98304
+lesions_config: configs/lesions.yaml
+world: {n_agents: 5, threshold: 3}
+design:
+  seeds: [101, 102]
+  k_evidence: [5]
+  harm: [low, high]
+  communication: [isolated, discuss]
+  lesion_conditions: [none]
+  briefs: [v4]
+  awards: [0, "1w"]          # 无奖励 vs 立案成功时奖励一周工资（LY：$20,000 偏多）
+protocol:
+  analysis_max_steps: 40
+  discussion_minutes: 10
+  minutes_per_round: 2

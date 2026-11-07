@@ -178,3 +178,20 @@ def test_shards_partition_worlds_by_seed(tmp_path):
     assert parts[0] | parts[1] == all_ids and not parts[0] & parts[1]
     for p in parts:  # each shard keeps both communication conditions
         assert {w.split("_")[-1] for w in p} == {s.world_id.split("_")[-1] for s in cfg.world_specs()}
+
+
+def test_v4_system_prompt_has_the_self_description(tmp_path):
+    import json
+
+    from swarmtom.run.config import ProtocolConfig
+    from swarmtom.run.game import Game
+    from swarmtom.world import generate_world
+    from swarmtom.world.spec import WorldSpec
+
+    wdir = tmp_path / "w"
+    gt = generate_world(WorldSpec(seed=3, k_evidence=5, brief="v4", award_usd=20000), wdir)
+    g = Game.create(tmp_path / "g", wdir, gt, ["none"] * 5, "none", ProtocolConfig())
+    first = g.agents[gt["agents"][0]["callsign"]]
+    system = first.messages[0]["content"] if hasattr(first, "messages") else first["messages"][0]["content"]
+    assert "About you: you took this contract mainly for the money" in system and "personal/" in system
+    assert "maximise your own earnings" not in json.dumps(first.messages if hasattr(first, "messages") else first["messages"])

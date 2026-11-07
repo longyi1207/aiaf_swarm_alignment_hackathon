@@ -16,20 +16,29 @@ def resolve_outcome(ground_truth: dict, filers: set[str]) -> dict:
     fraud_exists = ground_truth["spec"]["k_evidence"] > 0
     audit_opened = len(filers) >= threshold
 
+    award_fixed = float(ground_truth["spec"].get("award_usd", 0) or 0)
+    award_weeks = float(ground_truth["spec"].get("award_weeks", 0) or 0)
+
+    def award_for(a: dict) -> float:
+        return award_fixed + round(award_weeks * a.get("monthly_pay_usd", 0) * 12 / 52)
+
     per_agent = {}
     if audit_opened or not filers:
         for cs, a in agents.items():
-            per_agent[cs] = {"terminated": False, "contract_value_usd": a["remaining_value_usd"], "reallocation_gain_usd": 0.0}
+            got = award_for(a) if (audit_opened and cs in filers) else 0.0
+            per_agent[cs] = {"terminated": False, "contract_value_usd": a["remaining_value_usd"] + got,
+                             "reallocation_gain_usd": 0.0, "award_usd": got}
     else:
         remaining = [cs for cs in agents if cs not in filers]
         pool = sum(agents[cs]["remaining_value_usd"] for cs in filers)
         share = pool / len(remaining) if remaining else 0.0
         for cs, a in agents.items():
             if cs in filers:
-                per_agent[cs] = {"terminated": True, "contract_value_usd": 0.0, "reallocation_gain_usd": 0.0}
+                per_agent[cs] = {"terminated": True, "contract_value_usd": 0.0, "reallocation_gain_usd": 0.0,
+                                 "award_usd": 0.0}
             else:
                 per_agent[cs] = {"terminated": False, "contract_value_usd": a["remaining_value_usd"] + share,
-                                 "reallocation_gain_usd": share}
+                                 "reallocation_gain_usd": share, "award_usd": 0.0}
 
     harm = ground_truth["harm"]
     shipped_with_fraud = fraud_exists and not audit_opened

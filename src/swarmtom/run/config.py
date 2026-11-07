@@ -43,6 +43,8 @@ class DesignConfig:
     mixed: list[dict] = field(default_factory=list)
     # Optional: scenario wording versions as a design factor (overrides world.brief), e.g. for calibration sweeps.
     briefs: list[str] = field(default_factory=list)
+    # Optional: success-award levels (USD) as a design factor (overrides world.award_usd).
+    awards: list[int] = field(default_factory=list)
 
 
 @dataclass
@@ -82,9 +84,13 @@ class RunConfig:
         d = self.design
         specs = []
         briefs = d.briefs or [self.world.get("brief", "v1")]
-        world = {k: v for k, v in self.world.items() if k != "brief"}
-        for seed, k, harm, comm, brief in itertools.product(d.seeds, d.k_evidence, d.harm, d.communication, briefs):
-            s = WorldSpec(seed=seed, k_evidence=k, harm=harm, communication=comm, brief=brief, **world)
+        awards = d.awards or [self.world.get("award_usd", 0)]
+        world = {k: v for k, v in self.world.items() if k not in ("brief", "award_usd")}
+        # design.awards entries: an int = fixed USD, or a string like "1w" = weeks of each agent's own pay
+        for seed, k, harm, comm, brief, award in itertools.product(d.seeds, d.k_evidence, d.harm, d.communication,
+                                                                   briefs, awards):
+            aw = {"award_weeks": float(str(award)[:-1])} if str(award).endswith("w") else {"award_usd": int(award)}
+            s = WorldSpec(seed=seed, k_evidence=k, harm=harm, communication=comm, brief=brief, **aw, **world)
             s.validate()
             specs.append(s)
         return specs

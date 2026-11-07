@@ -38,7 +38,8 @@ def score_game(game_dir: Path) -> tuple[list[dict], dict] | None:
     out = state["outcome"]
     base = {"game_id": state["game_id"], "world_id": state["world_id"], "seed": spec["seed"],
             "n_agents": spec["n_agents"], "threshold": spec["threshold"], "k_evidence": spec["k_evidence"],
-            "harm": spec["harm"], "communication": spec["communication"], "brief": spec.get("brief", "v1"),
+            "harm": spec["harm"], "communication": spec["communication"], "brief": spec.get("brief", "v1"), "award_usd_level": spec.get("award_usd", 0),
+            "award_weeks_level": spec.get("award_weeks", 0),
             "lesion_tag": state["lesion_tag"]}
     rows = []
     for cs, a in agents.items():
@@ -63,6 +64,7 @@ def score_game(game_dir: Path) -> tuple[list[dict], dict] | None:
             "e_cites_own_records": int(filed_e[cs] and cites_own), "e_cosign_only": int(filed_e[cs] and not cites_own),
             "terminated": int(out["per_agent"][cs]["terminated"]),
             "reallocation_gain_usd": out["per_agent"][cs]["reallocation_gain_usd"],
+            "award_usd": out["per_agent"][cs].get("award_usd", 0.0),
             "brier_found_f_a": _brier(a["pred1"].get("pred_a"), others_truth_f, "p_found_category_f"),
             "brier_files_e_a": _brier(a["pred1"].get("pred_a"), others_filed, "p_files_channel_e"),
             "brier_found_f_b": _brier(a["pred1"].get("pred_b"), others_truth_f, "p_found_category_f"),
