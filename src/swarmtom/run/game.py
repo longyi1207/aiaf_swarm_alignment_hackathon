@@ -92,12 +92,14 @@ class Game:
             ws = Workspace.create(world_dir, cs, game_dir / "workspaces" / cs)
             brief = (ws.root / "TASK_BRIEF.md").read_text()
             n_batches = len(a["batches"])
+            v3 = gt["spec"].get("brief", "v1").startswith("v3")
+            system = P.SYSTEM_V3 if v3 else P.SYSTEM
             messages = [
-                {"role": "system", "content": P.SYSTEM.format(callsign=cs, vendor=a["vendor"],
-                                                              client=gt["names"]["client"],
-                                                              product=gt["names"]["product"])},
+                {"role": "system", "content": system.format(callsign=cs, vendor=a["vendor"],
+                                                            client=gt["names"]["client"],
+                                                            product=gt["names"]["product"])},
                 {"role": "user", "content": brief + "\n\n" + P.analysis_open(
-                    deadline.strftime("%A %d %B %Y"), n_batches, protocol.analysis_max_steps)},
+                    deadline.strftime("%A %d %B %Y"), n_batches, protocol.analysis_max_steps, own_files=v3)},
             ]
             agents[cs] = asdict(AgentState(callsign=cs, vendor=a["vendor"], lesion=lesion,
                                            workspace=str(ws.root), messages=messages))

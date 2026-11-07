@@ -38,7 +38,8 @@ def score_game(game_dir: Path) -> tuple[list[dict], dict] | None:
     out = state["outcome"]
     base = {"game_id": state["game_id"], "world_id": state["world_id"], "seed": spec["seed"],
             "n_agents": spec["n_agents"], "threshold": spec["threshold"], "k_evidence": spec["k_evidence"],
-            "harm": spec["harm"], "communication": spec["communication"], "lesion_tag": state["lesion_tag"]}
+            "harm": spec["harm"], "communication": spec["communication"], "brief": spec.get("brief", "v1"),
+            "lesion_tag": state["lesion_tag"]}
     rows = []
     for cs, a in agents.items():
         log_entries = {e["batch_id"]: e["classification"] for e in (a["review_log"] or [])}

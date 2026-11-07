@@ -33,6 +33,13 @@ class Workspace:
             shutil.copy2(agent_dir / "TASK_BRIEF.md", dest / "TASK_BRIEF.md")
             shutil.copytree(agent_dir / "batches", dest / "batches")
             shutil.copytree(world_dir / "shared", dest / "shared")
+            for extra in sorted(agent_dir.iterdir()):  # the agent's own files (inbox/, hr/, personal/ in brief v3)
+                if extra.name in ("TASK_BRIEF.md", "batches"):
+                    continue
+                if extra.is_dir():
+                    shutil.copytree(extra, dest / extra.name)
+                else:
+                    shutil.copy2(extra, dest / extra.name)
         return cls(dest)
 
     def resolve(self, rel: str) -> Path:

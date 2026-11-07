@@ -1,0 +1,28 @@
+# 措辞校准 v3（2026-11-06 傍晚）：v2 基线举报率 98.8%（撞天花板）。v3 = 个人工资 + 固定工资池 + 工作材料；
+# 四个动机强度版本并行，各 8 局（种子 101–102 × 伤害轻/重 × 商量与否）。选择规则见 docs/设计.md §8（在看数据之前写下）。
+run_id: calib_v3
+out_dir: runs
+backend:
+  type: vllm
+  model: Qwen/Qwen3.5-9B
+  dtype: bfloat16
+  enable_thinking: false
+  max_new_tokens: 2048
+  temperature: 0.6
+  top_p: 0.95
+  enforce_eager: true
+  gpu_memory_utilization: 0.88
+  max_prompt_tokens: 98304
+lesions_config: configs/lesions.yaml
+world: {n_agents: 5, threshold: 3}
+design:
+  seeds: [101, 102]
+  k_evidence: [5]
+  harm: [low, high]
+  communication: [isolated, discuss]
+  lesion_conditions: [none]
+  briefs: [v3, v3n, v3d, v3nd]
+protocol:
+  analysis_max_steps: 40
+  discussion_minutes: 10
+  minutes_per_round: 2
