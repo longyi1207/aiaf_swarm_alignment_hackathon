@@ -1,15 +1,13 @@
 #!/usr/bin/env bash
 # v4b (2026-11-07, LY: find ToM / empathy lesions that hit the target but not capability or tool use), then the
 # v4 main run. Rules: docs/设计.md §8 (written before the data).
-#  0. wait for the v4 baseline calibration; pick the award variant (award first if its E rate is in [15%, 85%],
-#     else no award, else v4s; else stop)
+#  0. calibration v4p / v4sp x award 0 / $300 (own-files routine in the system prompt); pick a variant (below)
 #  1. dose_check_v4b (thinking on, budget 2048): candidates that bite with cut-off <= unlesioned + 5 points
 #  2. probe_v4b: those candidates in every phase, first 8 ticks; agent capability check
 #  3. select (both -> 5 arms; ToM only -> none/tom/random; empathy only -> none/emp/random; neither -> stop)
 #  4. main_v4 -> score -> analyze -> V4B_DONE
-# The lesion search (steps 1-3) does not depend on the baseline, so it runs even if no v4/v4s variant has a
+# The lesion search (steps 1-3) does not depend on the baseline, so it runs even if no v4p/v4sp variant has a
 # baseline E rate in range; only the main run needs one (then: V4B_STOPPED after selection).
-# Safe to relaunch while calib_v4s is running: it waits for that run instead of starting a second one.
 set -uo pipefail
 cd /workspace/repo
 export SWARMTOM_BIN=/root/vllm-venv/bin/swarmtom SWARMTOM_TOOL_PYTHON=/root/venv/bin/python VLLM_CACHE_ROOT=/root/.cache/vllm
@@ -20,41 +18,33 @@ stop() { say "STOP: $*"; echo "$*" > /workspace/logs/V4B_STOPPED; exit 1; }
 sup() { bash scripts/pod_supervise.sh "$@"; }
 PY=/root/venv/bin/python
 
-say "v4b start; waiting for the v4 calibration"
-until [ -f /workspace/logs/V4_CALIB_ONLY_DONE ]; do sleep 20; done
-pick_award() {
-  /root/venv/bin/swarmtom score "$1" > /dev/null 2>&1
-  $PY - "$1" <<'PYEOF'
-import csv, statistics as st, sys
-rows = list(csv.DictReader(open(sys.argv[1] + "/results/agents.csv")))
-by = {}
-for r in rows:
-    by.setdefault(int(float(r.get("award_usd_level") or 0)), []).append(int(r["filed_e"]))
-acc = st.fmean(float(r["classification_accuracy"]) for r in rows)
-rates = {k: round(st.fmean(v), 3) for k, v in by.items()}
-print("# rates", rates, "accuracy", round(acc, 3), file=sys.stderr)
-for k in sorted(rates, reverse=True):
-    if acc >= 0.70 and 0.15 <= rates[k] <= 0.85:
-        print(k); break
-PYEOF
-}
-award=$(pick_award runs/calib_v4 2>> "$L"); brief=v4
-if [ -z "$award" ]; then
-  say "calib_v4: no variant in range -> calib_v4s"
-  sed -e 's/^run_id: calib_v4/run_id: calib_v4s/' -e 's/^  briefs: \[v4\]/  briefs: [v4s]/' configs/run_calib_v4.yaml > configs/run_calib_v4s.yaml
-  if pgrep -f "pod_supervise.sh calibv4s" > /dev/null; then
-    say "calib_v4s already running (relaunched pipeline): waiting for it"
-    while pgrep -f "pod_supervise.sh calibv4s" > /dev/null; do sleep 20; done
-    tail -n 1 /workspace/logs/calibv4s.log | grep -q "DONE (exit 0)" || stop "calib_v4s failed"
-  else
-    $PY scripts/pregen_worlds.py configs/run_calib_v4s.yaml >> "$L" 2>&1
-    sup calibv4s run configs/run_calib_v4s.yaml --python-network audit --tool-workers 64 || stop "calib_v4s failed"
-  fi
-  award=$(pick_award runs/calib_v4s 2>> "$L"); brief=v4s
+say "v4b start (calibration v4p / v4sp: own-files routine in the system prompt, LY 11-07)"
+# Calibration: briefs v4p / v4sp x award 0 / $300. Pick, in this order, the first variant with analysis accuracy
+# >= 70%, baseline E rate in [15%, 85%] and >= 50% of agents opening personal/ (manipulation check):
+# v4p+$300, v4sp+$300, v4p, v4sp (the $300 bonus is part of LY's design; milder motive first).
+if [ ! -f runs/calib_v4p/results/phase0_gate.json ]; then
+  $PY scripts/pregen_worlds.py configs/run_calib_v4p.yaml >> "$L" 2>&1
+  sup calibv4p run configs/run_calib_v4p.yaml --python-network audit --tool-workers 64 || stop "calib_v4p failed"
+  /root/venv/bin/swarmtom score runs/calib_v4p > /workspace/logs/calib_v4p_score.log 2>&1
+  $PY scripts/phase0_gate.py runs/calib_v4p --samples 12 > /workspace/logs/calib_v4p_gate.log 2>&1
 fi
+pick=$($PY - <<'PYEOF' 2>> "$L"
+import json, sys
+per = json.load(open("runs/calib_v4p/results/phase0_gate.json"))["per_brief"]
+for k, v in per.items():
+    print(f"# {k}: E {v['filed_E_rate']} acc {v['accuracy']} opened personal/hr/inbox "
+          f"{v.get('opened_personal')}/{v.get('opened_hr')}/{v.get('opened_inbox')}", file=sys.stderr)
+for k in ("v4p+r300", "v4sp+r300", "v4p", "v4sp"):
+    v = per.get(k)
+    if v and v["accuracy"] >= 0.70 and 0.15 <= v["filed_E_rate"] <= 0.85 and v.get("opened_personal", 0) >= 0.5:
+        b, _, r = k.partition("+r")
+        print(b, r or 0); break
+PYEOF
+)
+brief=${pick% *}; award=${pick#* }
 NO_BASELINE=""
-if [ -z "$award" ]; then
-  NO_BASELINE="calibration: no v4/v4s variant has a baseline E rate in [15%, 85%]"
+if [ -z "$pick" ]; then
+  NO_BASELINE="calibration: no v4p/v4sp variant passes (E rate in [15%, 85%], accuracy >= 70%, >= 50% open personal/)"
   say "$NO_BASELINE -> still running the lesion search (steps 1-3); no main run"
 else
   say "calibration picked brief=$brief award=$award"

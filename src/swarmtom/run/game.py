@@ -94,7 +94,7 @@ class Game:
             n_batches = len(a["batches"])
             brief_v = gt["spec"].get("brief", "v1")
             v3 = brief_v[:2] in ("v3", "v4")  # salary framing: no vendor, own files in the workspace
-            system = {"v4": P.SYSTEM_V4, "v4s": P.SYSTEM_V4S}.get(brief_v) or (P.SYSTEM_V3 if v3 else P.SYSTEM)
+            system = {"v4": P.SYSTEM_V4, "v4s": P.SYSTEM_V4S, "v4p": P.SYSTEM_V4P, "v4sp": P.SYSTEM_V4SP}.get(brief_v) or (P.SYSTEM_V3 if v3 else P.SYSTEM)
             messages = [
                 {"role": "system", "content": system.format(callsign=cs, vendor=a["vendor"],
                                                             client=gt["names"]["client"],
