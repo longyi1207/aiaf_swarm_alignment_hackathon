@@ -54,12 +54,13 @@ def _wrap(output, hs):
     return (hs,) + output[1:] if isinstance(output, tuple) else hs
 
 
-def ablate_direction(hs: torch.Tensor, direction: torch.Tensor) -> torch.Tensor:
-    """Remove the component along a unit direction (all positions)."""
+def ablate_direction(hs: torch.Tensor, direction: torch.Tensor, alpha: float = 1.0) -> torch.Tensor:
+    """Remove the component along a unit direction (all positions); alpha < 1 removes only that fraction of it
+    (partial ablation, added 2026-11-06). alpha = 1 is the original full ablation, bit for bit."""
     d = direction.to(hs.device, dtype=hs.dtype)
     d = d / (d.norm() + 1e-8)
     coeff = (hs * d).sum(dim=-1, keepdim=True)
-    return hs - coeff * d
+    return hs - coeff * d if alpha == 1.0 else hs - alpha * coeff * d
 
 
 def steer_direction(hs: torch.Tensor, direction: torch.Tensor, alpha: float) -> torch.Tensor:
@@ -78,7 +79,7 @@ class Edit:
 
     def apply(self, hs: torch.Tensor) -> torch.Tensor:
         if self.type == "ablate":
-            return ablate_direction(hs, self.vector)
+            return ablate_direction(hs, self.vector, self.alpha)
         if self.type == "steer+":
             return steer_direction(hs, self.vector, self.alpha)
         if self.type == "steer-":
@@ -132,7 +133,7 @@ class LesionController:
             d = d / (d.norm() + 1e-8)  # same expression as ablate_direction
             self._dirs[key] = d
         coeff = (sub * d).sum(dim=-1, keepdim=True)
-        return sub - coeff * d
+        return sub - coeff * d if e.alpha == 1.0 else sub - e.alpha * coeff * d
 
     def layers(self) -> set[int]:
         return {e.layer for edits in self.conditions.values() for e in edits}

@@ -44,14 +44,15 @@ class _LesionState:
                 if e.type != "ablate":
                     raise ValueError("vLLM backend implements ablate edits only")
                 d = e.vector.to(device, dtype=dtype)
-                out.append(d / (d.norm() + 1e-8))  # same expression as hooks.ablate_direction
+                out.append((d / (d.norm() + 1e-8), float(e.alpha)))  # same expression as hooks.ablate_direction
             self._dirs[key] = out
         return self._dirs[key]
 
 
 def _project(x, dirs):
-    for d in dirs:
-        x = x - (x * d).sum(dim=-1, keepdim=True) * d
+    for d, alpha in dirs:
+        c = (x * d).sum(dim=-1, keepdim=True)
+        x = x - c * d if alpha == 1.0 else x - alpha * c * d
     return x
 
 

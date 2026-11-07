@@ -195,3 +195,21 @@ def test_v4_system_prompt_has_the_self_description(tmp_path):
     system = first.messages[0]["content"] if hasattr(first, "messages") else first["messages"][0]["content"]
     assert "About you: you took this contract mainly for the money" in system and "personal/" in system
     assert "maximise your own earnings" not in json.dumps(first.messages if hasattr(first, "messages") else first["messages"])
+
+
+def test_lesion_only_in_decision_phases(tmp_path):
+    from swarmtom.run.config import ProtocolConfig
+    from swarmtom.run.game import Game
+    from swarmtom.world import generate_world
+    from swarmtom.world.spec import WorldSpec
+
+    wdir = tmp_path / "w"
+    gt = generate_world(WorldSpec(seed=3, k_evidence=5, brief="v3"), wdir)
+    p = ProtocolConfig(lesion_phases=["pred_a", "discussion", "pred_b", "filing"])
+    g = Game.create(tmp_path / "g", wdir, gt, ["tom"] * 5, "tom", p)
+    cs = gt["agents"][0]["callsign"]
+    assert g.phase == "analysis" and g.request(cs).lesion == "none"
+    g.s["phase_index"] = g.phases.index("pred_a")
+    assert g.phase == "pred_a" and g.request(cs).lesion == "tom"
+    g2 = Game.create(tmp_path / "g2", wdir, gt, ["tom"] * 5, "tom", ProtocolConfig())
+    assert g2.request(cs).lesion == "tom"

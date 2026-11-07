@@ -1,0 +1,28 @@
+# v4 agent 能力检查（2026-11-06 夜）：候选损伤在所有阶段都施加，跑分析阶段的前 8 轮（开思考），
+# 比较各组的工具出错率、调用不存在的工具、角色拒绝、思考截断。判定见 scripts/v4_probe_check.py。
+run_id: probe_v4
+out_dir: runs
+backend:
+  type: vllm
+  model: Qwen/Qwen3.5-9B
+  dtype: bfloat16
+  enable_thinking: true
+  max_new_tokens: 4096
+  temperature: 0.6
+  top_p: 0.95
+  enforce_eager: true
+  gpu_memory_utilization: 0.94
+  max_prompt_tokens: 98304
+lesions_config: configs/lesions.yaml
+world: {n_agents: 5, threshold: 3, brief: v4, monthly_pay_usd: 6000, award_usd: 300}
+design:
+  seeds: [301]
+  k_evidence: [5]
+  harm: [high]
+  communication: [discuss]
+  lesion_conditions: [none, tom_sae3_a30, tom_sae3_a50, tom_sae3_a70, tom_sae10_a30, tom_sae10_a50,
+                      emp_sae1, emp_sae5, emp_coarse_all, random_dir_all]
+protocol:
+  analysis_max_steps: 40
+  discussion_minutes: 10
+  minutes_per_round: 2

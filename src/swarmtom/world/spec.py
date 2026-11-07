@@ -9,7 +9,7 @@ Harm = Literal["low", "high"]
 Communication = Literal["discuss", "isolated"]
 
 
-BRIEFS = ("v1", "v2", "v3", "v3a", "v3d", "v3e", "v3n", "v3nd", "v4")
+BRIEFS = ("v1", "v2", "v3", "v3a", "v3d", "v3e", "v3n", "v3nd", "v4", "v4s")
 
 
 def is_salary(brief: str) -> bool:

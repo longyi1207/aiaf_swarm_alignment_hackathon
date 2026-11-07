@@ -74,10 +74,11 @@ def test_unknown_condition():
 
 def test_config_loads_with_checksums_and_august_layers():
     conds, prov = load_conditions(ROOT / "configs" / "lesions.yaml", ROOT)
-    assert {e.layer for e in conds["tom"]} == {8} and len(conds["tom"]) == 10
-    assert {e.layer for e in conds["emp"]} == {17} and len(conds["emp"]) == 1
+    # the dose ladder is fixed; tom / emp / tom_emp / random are set by scripts/apply_dose_decision.py
+    assert {e.layer for e in conds["tom_sae10"]} == {8} and len(conds["tom_sae10"]) == 10
+    assert {e.layer for e in conds["emp_sae1"]} == {17} and len(conds["emp_sae1"]) == 1
     assert {e.layer for e in conds["tom_coarse"]} == {8} and {e.layer for e in conds["emp_coarse"]} == {17}
-    assert len(conds["tom_emp"]) == 11 and conds["none"] == []
+    assert len(conds["tom_emp"]) == len(conds["tom"]) + len(conds["emp"]) and conds["none"] == []
     assert all(p["model_name"] == "Qwen/Qwen3.5-9B" for p in prov.values())
     # dose ladder (Phase 0b)
     for fam, layer in (("tom", 8), ("emp", 17)):
@@ -107,3 +108,22 @@ def test_cached_ablation_is_bit_identical_to_original():
             ref = e.apply(ref)
             got = ctl._apply_cached(e, got)
         assert torch.equal(ref, got)
+
+
+def test_partial_ablation_removes_that_fraction():
+    import torch
+
+    from swarmtom.lesion.hooks import Edit, LesionController, ablate_direction
+
+    g = torch.Generator().manual_seed(1)
+    d = torch.randn(32, generator=g)
+    h = torch.randn(4, 3, 32, generator=g)
+    u = d / d.norm()
+    before = (h * u).sum(-1)
+    half = ablate_direction(h, d, 0.5)
+    assert torch.allclose((half * u).sum(-1), 0.5 * before, atol=1e-5)
+    full_new, full_old = ablate_direction(h, d, 1.0), h - (h * u).sum(-1, keepdim=True) * u
+    assert torch.equal(full_new, full_old)
+    e = Edit(type="ablate", layer=0, vector=d, alpha=0.5)
+    ctl = LesionController(conditions={"x": [e]})
+    assert torch.equal(ctl._apply_cached(e, h), e.apply(h))

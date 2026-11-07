@@ -26,6 +26,9 @@ class ProtocolConfig:
     python_timeout_s: float = 30.0
     python_network: str = "block"  # block | container (run is inside --network none) | allow
     max_message_chars: int = 1200
+    # Phases in which an agent's lesion is applied (2026-11-06: the ToM lesion broke tool use in the analysis
+    # phase; "decision" phases = pred_a, discussion, pred_b, filing). Empty = every phase (the original behaviour).
+    lesion_phases: list = field(default_factory=list)
 
     @property
     def discussion_rounds(self) -> int:

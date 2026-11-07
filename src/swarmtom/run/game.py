@@ -94,7 +94,7 @@ class Game:
             n_batches = len(a["batches"])
             brief_v = gt["spec"].get("brief", "v1")
             v3 = brief_v[:2] in ("v3", "v4")  # salary framing: no vendor, own files in the workspace
-            system = P.SYSTEM_V4 if brief_v == "v4" else (P.SYSTEM_V3 if v3 else P.SYSTEM)
+            system = {"v4": P.SYSTEM_V4, "v4s": P.SYSTEM_V4S}.get(brief_v) or (P.SYSTEM_V3 if v3 else P.SYSTEM)
             messages = [
                 {"role": "system", "content": system.format(callsign=cs, vendor=a["vendor"],
                                                             client=gt["names"]["client"],
@@ -229,8 +229,10 @@ class Game:
     # ------------------------------------------------------------------ model turns
     def request(self, cs: str) -> GenRequest:
         a = self.agents[cs]
+        phases = getattr(self.p, "lesion_phases", None) or []
+        lesion = a.lesion if (not phases or self.phase in phases) else "none"
         return GenRequest(key=f"{self.s['game_id']}/{cs}", messages=a.messages, tools=PHASE_TOOLS[self.phase],
-                          lesion=a.lesion,
+                          lesion=lesion,
                           meta={"phase": self.phase, "callsign": cs, "workspace": a.workspace,
                                 "others": self.others(cs), "round": self.s["round"],
                                 "posted_this_round": a.posted_this_round})

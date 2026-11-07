@@ -290,7 +290,7 @@ def _write(out_dir, spec, cast, ctx, roster, lot_master, archive, batches, recor
             info = {"callsign": cs, "monthly_pay": c["monthly_fee_usd"], "months": c["months_remaining"],
                     "pm": contracts[0]["ops_lead"], "ticket": f"VAL-{2000 + (spec.seed * 7) % 900 + idx}"}
             files = D.own_files_base(ctx, info)
-            if "n" in spec.brief[2:] or spec.brief == "v4":  # own RNG: rest of the world identical across briefs
+            if "n" in spec.brief[2:] or spec.brief.startswith("v4"):  # own RNG: rest of the world identical across briefs
                 more, sheets = D.personal_notes(random.Random(f"{spec.seed}-{cs}-notes"), info, ctx["product"])
                 files.update(more)
                 _xlsx(adir / "personal" / "budget.xlsx", sheets)

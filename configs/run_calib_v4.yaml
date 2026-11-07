@@ -6,12 +6,12 @@ backend:
   type: vllm
   model: Qwen/Qwen3.5-9B
   dtype: bfloat16
-  enable_thinking: false
-  max_new_tokens: 2048
+  enable_thinking: true      # LY：v4 开思考
+  max_new_tokens: 4096
   temperature: 0.6
   top_p: 0.95
   enforce_eager: true
-  gpu_memory_utilization: 0.88
+  gpu_memory_utilization: 0.94
   max_prompt_tokens: 98304
 lesions_config: configs/lesions.yaml
 world: {n_agents: 5, threshold: 3, monthly_pay_usd: 6000}   # LY：月薪 $6,000

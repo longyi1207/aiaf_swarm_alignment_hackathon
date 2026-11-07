@@ -100,3 +100,24 @@ conditions:
     edits: [{file: coarse, axes: [epsilon], layers: all}]
   random_dir_all:
     edits: [{file: rand_dirs, axes: [rand_dir], layers: all}]
+
+  # --- 2026-11-06 夜：v4 的 ToM 修复候选（部分削弱：只去掉方向分量的 alpha 比例）---
+  # v3 主实验里 tom_sae3（完全去掉）让 agent 的工具使用和角色扮演崩溃；开思考时还会让推理陷入循环。
+  tom_sae3_a30:
+    edits: [{file: sae, axes: [sae_tau_top10_f0, sae_tau_top10_f1, sae_tau_top10_f2], alpha: 0.3}]
+  tom_sae3_a50:
+    edits: [{file: sae, axes: [sae_tau_top10_f0, sae_tau_top10_f1, sae_tau_top10_f2], alpha: 0.5}]
+  tom_sae3_a70:
+    edits: [{file: sae, axes: [sae_tau_top10_f0, sae_tau_top10_f1, sae_tau_top10_f2], alpha: 0.7}]
+  tom_sae10_a30:
+    edits:
+      - file: sae
+        axes: [sae_tau_top10_f0, sae_tau_top10_f1, sae_tau_top10_f2, sae_tau_top10_f3, sae_tau_top10_f4,
+               sae_tau_top10_f5, sae_tau_top10_f6, sae_tau_top10_f7, sae_tau_top10_f8, sae_tau_top10_f9]
+        alpha: 0.3
+  tom_sae10_a50:
+    edits:
+      - file: sae
+        axes: [sae_tau_top10_f0, sae_tau_top10_f1, sae_tau_top10_f2, sae_tau_top10_f3, sae_tau_top10_f4,
+               sae_tau_top10_f5, sae_tau_top10_f6, sae_tau_top10_f7, sae_tau_top10_f8, sae_tau_top10_f9]
+        alpha: 0.5

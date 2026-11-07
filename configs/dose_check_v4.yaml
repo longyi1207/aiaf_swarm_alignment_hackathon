@@ -1,0 +1,24 @@
+# Phase 0b for v4（2026-11-06 夜，LY：修复 ToM + 开思考）：在开思考下测部分削弱的 ToM 候选、共情候选和随机对照。
+# 规则同设计 §6（有效 = 目标任务下降的 95% CI 不含 0、能力 ≥90%、思考截断 ≤10%）；另需通过 agent 能力检查（scripts/v4_probe_check.py）。
+run_id: dose_check_v4
+out_dir: runs
+backend:
+  type: vllm
+  model: Qwen/Qwen3.5-9B
+  dtype: bfloat16
+  device: auto
+  temperature: 0.0
+  enforce_eager: true
+  gpu_memory_utilization: 0.88
+lesions_config: configs/lesions.yaml
+conditions: [none,
+             tom_sae1, tom_sae3_a30, tom_sae3_a50, tom_sae3_a70, tom_sae10_a30, tom_sae10_a50,
+             emp_sae1, emp_sae5, emp_coarse_all,
+             random, random_L17, random_dir_all]
+thinking: [true]
+tasks: [tom, empathy, capability]
+limit: {}
+chunk: 256
+judge:
+  type: hf_self              # 用同一模型（同一后端，不损伤、关思考）打分
+
