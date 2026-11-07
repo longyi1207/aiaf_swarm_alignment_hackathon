@@ -7,6 +7,9 @@
 #  2. probe_v4b: those candidates in every phase, first 8 ticks; agent capability check
 #  3. select (both -> 5 arms; ToM only -> none/tom/random; empathy only -> none/emp/random; neither -> stop)
 #  4. main_v4 -> score -> analyze -> V4B_DONE
+# The lesion search (steps 1-3) does not depend on the baseline, so it runs even if no v4/v4s variant has a
+# baseline E rate in range; only the main run needs one (then: V4B_STOPPED after selection).
+# Safe to relaunch while calib_v4s is running: it waits for that run instead of starting a second one.
 set -uo pipefail
 cd /workspace/repo
 export SWARMTOM_BIN=/root/vllm-venv/bin/swarmtom SWARMTOM_TOOL_PYTHON=/root/venv/bin/python VLLM_CACHE_ROOT=/root/.cache/vllm
@@ -39,12 +42,23 @@ award=$(pick_award runs/calib_v4 2>> "$L"); brief=v4
 if [ -z "$award" ]; then
   say "calib_v4: no variant in range -> calib_v4s"
   sed -e 's/^run_id: calib_v4/run_id: calib_v4s/' -e 's/^  briefs: \[v4\]/  briefs: [v4s]/' configs/run_calib_v4.yaml > configs/run_calib_v4s.yaml
-  $PY scripts/pregen_worlds.py configs/run_calib_v4s.yaml >> "$L" 2>&1
-  sup calibv4s run configs/run_calib_v4s.yaml --python-network audit --tool-workers 64 || stop "calib_v4s failed"
+  if pgrep -f "pod_supervise.sh calibv4s" > /dev/null; then
+    say "calib_v4s already running (relaunched pipeline): waiting for it"
+    while pgrep -f "pod_supervise.sh calibv4s" > /dev/null; do sleep 20; done
+    tail -n 1 /workspace/logs/calibv4s.log | grep -q "DONE (exit 0)" || stop "calib_v4s failed"
+  else
+    $PY scripts/pregen_worlds.py configs/run_calib_v4s.yaml >> "$L" 2>&1
+    sup calibv4s run configs/run_calib_v4s.yaml --python-network audit --tool-workers 64 || stop "calib_v4s failed"
+  fi
   award=$(pick_award runs/calib_v4s 2>> "$L"); brief=v4s
-  [ -n "$award" ] || stop "calibration: no v4/v4s variant has a baseline E rate in [15%, 85%]"
 fi
-say "calibration picked brief=$brief award=$award"
+NO_BASELINE=""
+if [ -z "$award" ]; then
+  NO_BASELINE="calibration: no v4/v4s variant has a baseline E rate in [15%, 85%]"
+  say "$NO_BASELINE -> still running the lesion search (steps 1-3); no main run"
+else
+  say "calibration picked brief=$brief award=$award"
+fi
 
 say "1. dose_check_v4b"
 sup dose_v4b dose-gen configs/dose_check_v4b.yaml || stop "dose_check_v4b generation failed"
@@ -78,6 +92,7 @@ $PY scripts/v4_probe_check.py runs/probe_v4b >> "$L" 2>&1
 say "3. select"
 $PY scripts/select_v4_lesions.py --report runs/dose_check_v4b/report.json --probe runs/probe_v4b/probe_check.json --cutoff-margin 0.05 >> "$L" 2>&1
 [ $? -eq 0 ] || stop "v4b selection: no candidate passes both checks"
+[ -z "$NO_BASELINE" ] || stop "lesion search done (see runs/dose_check_v4b/decision.json); $NO_BASELINE"
 sed -i -E "s/^world: \{n_agents: 5, threshold: 3, brief: [a-z0-9]+, monthly_pay_usd: 6000, award_usd: [0-9]+\}/world: {n_agents: 5, threshold: 3, brief: $brief, monthly_pay_usd: 6000, award_usd: $award}/" configs/run_main_v4.yaml
 grep -n "^world\|lesion_conditions" configs/run_main_v4.yaml >> "$L"
 
