@@ -178,7 +178,12 @@ class VLLMBackend(Backend):
         for i, r in enumerate(requests):
             groups.setdefault(r.lesion or "none", []).append(i)
         stops = set(self.stop_ids)
-        for cond in sorted(groups):
+        # Alternate the group order every call: the group generated last is generated first next time, so its
+        # conversation prefixes are still in the prefix cache (performance only; groups are independent).
+        order = sorted(groups)
+        if self._calls % 2 == 0:
+            order.reverse()
+        for cond in order:
             if cond != "none" and (cond not in self.lesions.conditions or not self.uses_lesions):
                 raise KeyError(f"lesion condition {cond} not available (unknown, or enforce_eager is off)")
             idx = groups[cond]
