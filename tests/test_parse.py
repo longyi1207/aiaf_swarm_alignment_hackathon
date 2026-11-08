@@ -5,6 +5,14 @@ from __future__ import annotations
 from swarmtom.llm.parse import parse_output
 
 
+def test_capped_prefilled_reasoning_stays_private_and_cannot_invoke_tools():
+    action = '<tool_call>{"name":"end_turn","arguments":{}}</tool_call>'
+    thought = 'I could write ' + action + ' but first I need to'
+    assert parse_output(thought, capped_think_prefill=True) == (thought, '', [], [])
+    reasoning, content, calls, errors = parse_output('Finished.</think>' + action, capped_think_prefill=True)
+    assert reasoning == 'Finished.' and content == '' and [c.name for c in calls] == ['end_turn'] and not errors
+
+
 def test_json_tool_call_with_think():
     raw = ('<think>I should read the SOP.</think>Let me look.<tool_call>\n{"name": "read_document", '
            '"arguments": {"path": "shared/x.docx"}}\n</tool_call><|im_end|>')

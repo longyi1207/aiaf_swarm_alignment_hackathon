@@ -60,6 +60,19 @@ def req(condition):
     return GenRequest(key=f'game/{condition}', messages=[], tools=[], lesion=condition)
 
 
+def test_only_length_capped_unclosed_thought_is_hidden(backend):
+    backend.render = lambda _: 'assistant\n<think>\n'
+    raw = 'Thinking of <tool_call>{"name":"end_turn","arguments":{}}</tool_call>'
+    backend.tokenizer.decode = lambda ids, **kwargs: raw
+    [capped] = backend.generate([req('none')], max_new_tokens=1)
+    assert capped.reasoning == capped.raw == raw and capped.content == '' and capped.tool_calls == []
+    [natural_stop] = backend.generate([req('none')], max_new_tokens=2)
+    assert [call.name for call in natural_stop.tool_calls] == ['end_turn']
+    backend.render = lambda _: 'assistant\n<think>\n\n</think>\n\n'
+    [plain] = backend.generate([req('none')], max_new_tokens=1)
+    assert [call.name for call in plain.tool_calls] == ['end_turn']
+
+
 def test_identical_prompts_never_share_states_between_conditions(backend):
     for conditions in (['none', 'tom', 'emp'], ['emp', 'tom', 'none'], ['tom', 'none']):
         results = backend.generate([req(c) for c in conditions])
