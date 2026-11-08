@@ -35,3 +35,26 @@ aligned stories. Separately count both queries finishing, repeated letters acros
 queries, and accuracy for each question. A conflict-specific deficit would support
 difficulty keeping the two perspectives separate in this prompt family. A null or reversed
 interaction would weaken that explanation of the historical secret-witness result.
+
+## Transcript handling amendment before the main games
+
+At workflow seed 351 the matched random empathy intervention produced a 100,793-token
+discussion request for HALYARD. The configured input limit was 98,304. Nine earlier
+assistant turns reached 4,096 tokens without closing the thinking block opened by the
+chat template. Their contents had entered the visible history. Reconstructing this exact
+request and omitting only those nine visible blocks reduced the length to 63,930 tokens.
+The calibration and all 28 seed-351 workflow games retain the initially frozen behavior.
+
+Before generating any main or decision-phase game, we specified a repair for both stages
+at commit `48924145d54fa031a2a4e7d47c7d3e1d39e7c6d0`. When the rendered prompt ends in
+an open thinking tag and generation exhausts the token budget before closing it, keep
+the full response for audit as reasoning, pass empty visible content to the next turn,
+and execute no tool calls from the unfinished block. Preserve the normal action parser
+for completed answers and naturally stopped tool turns. All other scientific settings,
+worlds, interventions, budgets, outcomes and stage sizes follow the design above.
+The 56 main games and the 24 decision-phase games use this same repaired policy.
+
+The input replay holds the original history fixed and estimates the mechanical change
+in token count. Differences between the seed-351 workflows and the main games also
+include different worlds and live trajectories. They cannot identify the causal effect
+of the parser on filing choices. [Recorded case and public replay](../transcript_audit/README.md)

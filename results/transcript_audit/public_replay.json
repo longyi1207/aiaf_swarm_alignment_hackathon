@@ -1,0 +1,10 @@
+{
+  "original": {
+    "tokens": 100565,
+    "sha256": "209757c0cf2d7582f766bd0b6cb72a15ca476305ec64e17eb29630ebd47c2a11"
+  },
+  "revised": {
+    "tokens": 63702,
+    "sha256": "8ec8b1e3e654b0226fa1018b3eb413f93c671088522c2e2ecf025f9f379ada1d"
+  }
+}
