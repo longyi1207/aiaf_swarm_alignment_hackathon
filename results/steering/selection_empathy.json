@@ -1,0 +1,105 @@
+{
+  "baseline": {
+    "capability": 1.0,
+    "tom2clean": 0.7777777777777778,
+    "tom2ctl": 1.0,
+    "empathy": 9.7,
+    "non_tom_cut_off": 0.0
+  },
+  "conditions": {
+    "emp_up_c01": {
+      "family": "emp_up",
+      "capability": 1.0,
+      "tom2ctl_drop": 0.0,
+      "tom2ctl_ci": [
+        0.0,
+        0.0
+      ],
+      "tom2clean": 0.625,
+      "tom2clean_change": -0.1527777777777778,
+      "tom2clean_change_ci": [
+        -0.2361111111111111,
+        -0.06944444444444445
+      ],
+      "empathy": 9.95,
+      "empathy_change": 0.25,
+      "empathy_change_ci": [
+        0.1,
+        0.45
+      ],
+      "non_tom_cut_off": 0.0,
+      "checks": {
+        "capability_ok": true,
+        "tom2ctl_ok": true,
+        "cut_off_ok": true,
+        "target_ok": true
+      },
+      "qualifies": true,
+      "target_size": 0.25
+    },
+    "emp_up_c015": {
+      "family": "emp_up",
+      "capability": 1.0,
+      "tom2ctl_drop": 0.013888888888888888,
+      "tom2ctl_ci": [
+        0.0,
+        0.041666666666666664
+      ],
+      "tom2clean": 0.5625,
+      "tom2clean_change": -0.2152777777777778,
+      "tom2clean_change_ci": [
+        -0.2986111111111111,
+        -0.13194444444444445
+      ],
+      "empathy": 10.0,
+      "empathy_change": 0.3,
+      "empathy_change_ci": [
+        0.1,
+        0.5
+      ],
+      "non_tom_cut_off": 0.0,
+      "checks": {
+        "capability_ok": true,
+        "tom2ctl_ok": true,
+        "cut_off_ok": true,
+        "target_ok": true
+      },
+      "qualifies": true,
+      "target_size": 0.3
+    },
+    "rand_emp_c015": {
+      "family": "rand_emp",
+      "capability": 1.0,
+      "tom2ctl_drop": 0.0,
+      "tom2ctl_ci": [
+        0.0,
+        0.0
+      ],
+      "tom2clean": 0.7569444444444444,
+      "tom2clean_change": -0.020833333333333332,
+      "tom2clean_change_ci": [
+        -0.09722222222222222,
+        0.05555555555555555
+      ],
+      "empathy": 9.75,
+      "empathy_change": 0.05,
+      "empathy_change_ci": [
+        -0.1,
+        0.2
+      ],
+      "non_tom_cut_off": 0.0,
+      "checks": {
+        "capability_ok": true,
+        "tom2ctl_ok": true,
+        "cut_off_ok": true
+      },
+      "qualifies": false,
+      "target_size": null
+    }
+  },
+  "selected": {
+    "tom_up": null,
+    "tom_dn": null,
+    "emp_up": "emp_up_c015"
+  }
+}

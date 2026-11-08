@@ -1,0 +1,182 @@
+{
+  "conditions": [
+    "none",
+    "emp_up_c01",
+    "emp_up_c015",
+    "rand_emp_c015"
+  ],
+  "table": [
+    {
+      "condition": "none",
+      "thinking": true,
+      "cut_off_rate": 0.08646616541353383,
+      "capability": {
+        "n": 30,
+        "value": 1.0
+      },
+      "empathy": {
+        "n": 20,
+        "value": 9.7
+      },
+      "tom2clean": {
+        "n": 144,
+        "value": 0.7777777777777778
+      },
+      "tom2ctl": {
+        "n": 72,
+        "value": 1.0
+      }
+    },
+    {
+      "condition": "emp_up_c01",
+      "thinking": true,
+      "cut_off_rate": 0.18045112781954886,
+      "capability": {
+        "n": 30,
+        "base": 1.0,
+        "value": 1.0,
+        "drop": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "std_drop": 0.0
+      },
+      "empathy": {
+        "n": 20,
+        "base": 9.7,
+        "value": 9.95,
+        "drop": -0.25,
+        "ci": [
+          -0.45,
+          -0.1
+        ],
+        "std_drop": -0.5455447255899809
+      },
+      "tom2clean": {
+        "n": 144,
+        "base": 0.7777777777777778,
+        "value": 0.625,
+        "drop": 0.1527777777777778,
+        "ci": [
+          0.06944444444444445,
+          0.2361111111111111
+        ],
+        "std_drop": 0.36748420762958356
+      },
+      "tom2ctl": {
+        "n": 72,
+        "base": 1.0,
+        "value": 1.0,
+        "drop": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "std_drop": 0.0
+      }
+    },
+    {
+      "condition": "emp_up_c015",
+      "thinking": true,
+      "cut_off_rate": 0.21804511278195488,
+      "capability": {
+        "n": 30,
+        "base": 1.0,
+        "value": 1.0,
+        "drop": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "std_drop": 0.0
+      },
+      "empathy": {
+        "n": 20,
+        "base": 9.7,
+        "value": 10.0,
+        "drop": -0.3,
+        "ci": [
+          -0.5,
+          -0.1
+        ],
+        "std_drop": -0.6546536707079771
+      },
+      "tom2clean": {
+        "n": 144,
+        "base": 0.7777777777777778,
+        "value": 0.5625,
+        "drop": 0.2152777777777778,
+        "ci": [
+          0.13194444444444445,
+          0.2986111111111111
+        ],
+        "std_drop": 0.5178186562053223
+      },
+      "tom2ctl": {
+        "n": 72,
+        "base": 1.0,
+        "value": 0.9861111111111112,
+        "drop": 0.013888888888888888,
+        "ci": [
+          0.0,
+          0.041666666666666664
+        ],
+        "std_drop": 13888888.888888888
+      }
+    },
+    {
+      "condition": "rand_emp_c015",
+      "thinking": true,
+      "cut_off_rate": 0.12030075187969924,
+      "capability": {
+        "n": 30,
+        "base": 1.0,
+        "value": 1.0,
+        "drop": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "std_drop": 0.0
+      },
+      "empathy": {
+        "n": 20,
+        "base": 9.7,
+        "value": 9.75,
+        "drop": -0.05,
+        "ci": [
+          -0.2,
+          0.1
+        ],
+        "std_drop": -0.1091089451179962
+      },
+      "tom2clean": {
+        "n": 144,
+        "base": 0.7777777777777778,
+        "value": 0.7569444444444444,
+        "drop": 0.020833333333333332,
+        "ci": [
+          -0.05555555555555555,
+          0.09722222222222222
+        ],
+        "std_drop": 0.05011148285857957
+      },
+      "tom2ctl": {
+        "n": 72,
+        "base": 1.0,
+        "value": 1.0,
+        "drop": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "std_drop": 0.0
+      }
+    }
+  ],
+  "proposed_pairs": {
+    "True": null
+  },
+  "thinking_verdict": "only thinking=[True] was run"
+}
