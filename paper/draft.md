@@ -92,13 +92,13 @@ FIGURE: figures/fig3_steering.png | 4.5 | **Figure 3.** Steering along the theor
 
 ### 4.3 Effects of the directions in the games
 
-We then played the games with each intervention applied to all five auditors (Figure 4). The lesions ran in 12 worlds, a first run of 8 (seeds 201 and 202, medium and high harm, with and without discussion) and a replication of 4 (seed 351), which we pool here; theory-of-mind steering ran in the same 8 worlds as the first run, with its own no-intervention arm. Every intervention also ran with a random direction of the same strength.
+We then played the games with each intervention applied to all five auditors (Figure 4). The lesions ran in 12 worlds, a first run of 8 (seeds 201 and 202, medium and high harm, with and without discussion) and a replication of 4 (seed 351), which we pool here; theory-of-mind steering ran in the same 8 worlds as the first run, with its own no-intervention arm.
 
 FIGURE: figures/fig4_games.png | 6.3 | **Figure 4.** Filing outcomes with the theory-of-mind and empathy directions decreased (lesions; 12 worlds, 60 auditors per row) or increased (steering; the 8 worlds of the first lesion run, 40 per row, with their own no-intervention arm). Numbers give external reports. STEERING_FIGURE_NOTE
 
-Removing the theory-of-mind direction nearly eliminated external reporting, to 2 of 60 auditors against 30 of 60 without intervention and 25 of 60 under its random direction, and the result held in both sets of worlds. Most of these auditors never filed at all (41 of 60), and the change began before the decision: only 11 of 60 identified any of their own fabricated batches, against 58 of 60 under the random direction. In the replication, all 84 filing attempts by the auditors who reached the filing step limit were rejected because the model kept writing a malformed closing tag, and on belief questions the same lesion produced long verbatim loops. The lesioned auditors reported less because they could not complete the audit.
+Removing the theory-of-mind direction nearly eliminated external reporting, to 2 of 60 auditors against 30 of 60 without intervention, and the result held in both sets of worlds. Most of these auditors never filed at all (41 of 60), and the change began before the decision: only 11 of 60 identified any of their own fabricated batches, against 59 of 60 without intervention. In the replication, all 84 filing attempts by the auditors who reached the filing step limit were rejected because the model kept writing a malformed closing tag, and on belief questions the same lesion produced long verbatim loops. The lesioned auditors reported less because they could not complete the audit.
 
-Removing the empathy direction lowered external reporting from 30 to 16 of 60 auditors; under its random direction of the same strength, 10 of 60 reported externally.
+With the empathy direction removed, 16 of 60 auditors reported externally, against 30 of 60 without intervention.
 
 STEERING_GAMES_PARAGRAPH
 
@@ -110,7 +110,7 @@ STEERING_GAMES_PARAGRAPH
 
 We studied one 9B model, one scenario and homogeneous groups, with few worlds per condition, and agents within a game are far from independent. The discussion result pools no-intervention games from five runs that differ in seed and infrastructure; the pairing controls for differences between worlds, not for every procedural change. Our directions are mean differences from short stories; because language models store many features in superposition, a single direction captures only part of how a model represents beliefs or distress, at early layers such as layer 6 it also carries information about who saw what, and other models may organise these representations differently. Finally, the auditors' choices may reflect how the model reads a policy as much as any social reasoning.
 
-**From question sets to games.** The interventions' effects on group reporting did not follow directly from their effects on the question sets: the theory-of-mind lesion acted in the games mainly by stopping auditors from finishing the long audit, and random directions of the same strength shifted reporting substantially in a handful of worlds. How effects on controlled questions carry over to long, multi-agent tasks is an open question.
+**From question sets to games.** The interventions' effects on group reporting did not follow directly from their effects on the question sets. The theory-of-mind lesion acted in the games mainly by stopping auditors from finishing the long audit. Random directions of the same strength, which we ran alongside every intervention, also shifted reporting in this handful of worlds: 25 of 60 auditors reported externally under the theory-of-mind-matched direction and 10 of 60 under the empathy-matched one, fewer than under the empathy lesion itself, so the empathy lesion's effect on the decision remains unresolved. How effects on controlled questions carry over to long, multi-agent tasks is an open question.
 
 ### Future Work
 
