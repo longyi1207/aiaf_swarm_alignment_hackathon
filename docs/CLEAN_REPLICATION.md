@@ -239,3 +239,52 @@ done
 Each study writes to the fresh tag. A failed specificity or workflow gate is itself a
 descriptive result and prevents a selective causal interpretation. The original gated
 launcher above enforces its own stopping rules.
+
+### Run the game tools on a separate controller
+
+On the November 8 GPU host, the kernel lacked the filesystem isolation required for
+agent Python tools. We ran those tools on macOS and sent generation requests to a
+persistent H100 process over SSH. The worker needs the same repository revision,
+vector files, pinned model snapshot and vLLM environment. The controller needs the
+project dependencies for generating worlds and running the document tools. The
+benchmark and judge commands in the preceding recipe run directly on the GPU.
+
+For the **game stages**, run the descriptive preparation command on the controller with
+a fresh tag, then set the three site-specific variables below. The SSH host value can
+be an existing alias. Run this before launching a game.
+
+```bash
+export GAME_CONFIG_DIR="configs/replication/$tag"
+export WORKER_HOST=gpu-host
+export WORKER_CHECKOUT=/path/to/worker/checkout
+export WORKER_PYTHON=/path/to/worker/venv/bin/python
+"$py" - <<'PY'
+import json, os, shlex
+from pathlib import Path
+import yaml
+from swarmtom.run.config import RunConfig
+from swarmtom.run.provenance import identity
+
+directory = Path(os.environ["GAME_CONFIG_DIR"])
+plan_path = directory / "plan.json"
+plan = json.loads(plan_path.read_text())
+if plan.get("mode") != "descriptive" or Path(plan["outputs"]).exists():
+    raise SystemExit("Prepare a fresh descriptive game tag first.")
+command = ["ssh", "-T", "-o", "BatchMode=yes", "-o", "StrictHostKeyChecking=yes",
+           "-o", "ServerAliveInterval=30", os.environ["WORKER_HOST"],
+           "cd " + shlex.quote(os.environ["WORKER_CHECKOUT"]) + " && exec " +
+           shlex.quote(os.environ["WORKER_PYTHON"]) + " -m swarmtom.llm.stdio"]
+for stage in plan["games"]:
+    path = directory / (stage + ".yaml")
+    config = yaml.safe_load(path.read_text())
+    config["backend"].update(type="vllm_stdio", command=command)
+    path.write_text(yaml.safe_dump(config, sort_keys=False))
+plan["main_identity"] = identity(RunConfig.load(directory / "main.yaml"), "game")
+plan_path.write_text(json.dumps(plan, indent=2) + "\n")
+PY
+```
+
+Run the four-stage game loop above on this controller. The worker checkout is its
+working directory, so it resolves the same relative lesion registry and vectors.
+Compare the two checkouts' inference and lesion source hashes before starting.
+The controller checks filesystem and network isolation before invoking any agent tool.
