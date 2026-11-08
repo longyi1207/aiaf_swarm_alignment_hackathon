@@ -1,0 +1,73 @@
+{
+  "backend": {
+    "name": "vllm_stdio",
+    "worker": {
+      "name": "vllm",
+      "vllm": "0.33.0",
+      "model": "Qwen/Qwen3.5-9B",
+      "enable_thinking": true,
+      "max_new_tokens": 4096,
+      "temperature": 0.6,
+      "top_p": 0.95,
+      "enforce_eager": true,
+      "prefix_caching": false,
+      "prefix_cache_key": "lesion_condition_v1",
+      "seed": 20261108,
+      "seed_policy": "request_prompt_v1",
+      "max_prompt_tokens": 98304,
+      "revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+      "lesion_vectors": {
+        "coarse": {
+          "path": "/job/assets/vectors/axes_vectors.pt",
+          "sha256": "ce239044e347834996ba890741e43865fff33d1b87e751bdd378b3623d4c6ece",
+          "model_name": "Qwen/Qwen3.5-9B"
+        },
+        "sae": {
+          "path": "/job/assets/vectors/axes_vectors_sae.pt",
+          "sha256": "bc27ce6ee27a2c6731cac6a4e55cdb24b63b225d55701396d6b66c81a7e9a13b",
+          "model_name": "Qwen/Qwen3.5-9B"
+        },
+        "random": {
+          "path": "/job/assets/vectors/axes_vectors_random.pt",
+          "sha256": "a6d476744b97cbfdd1acf1cadc6b8708000bcb1098638693ad277faf0989eaa5",
+          "model_name": "Qwen/Qwen3.5-9B"
+        },
+        "sae_v2": {
+          "path": "/job/assets/vectors/axes_vectors_sae_v2.pt",
+          "sha256": "e4123b513dc3171decced3b45c0309ff74d32ba0ead47a0da8958e97216863e8",
+          "model_name": "Qwen/Qwen3.5-9B"
+        },
+        "rand_dirs": {
+          "path": "/job/assets/vectors/axes_random_dirs.pt",
+          "sha256": "689da9bee449b7bf20bb1caf26a7af1d132e3485dd7fa33176be648f918e916f",
+          "model_name": "Qwen/Qwen3.5-9B"
+        },
+        "tom_v2": {
+          "path": "/job/assets/vectors/axes_tom_v2.pt",
+          "sha256": "8e5846282d0d050e7e65348afc9f18da158ae0784b8e919b9fd6b743af950a2a",
+          "model_name": "Qwen/Qwen3.5-9B"
+        }
+      },
+      "packages": {
+        "python": "3.12.3",
+        "torch": "2.14.0",
+        "transformers": "5.20.2",
+        "vllm": "0.33.0",
+        "numpy": "2.3.5",
+        "pandas": "3.1.1",
+        "openpyxl": "3.1.5",
+        "python-docx": "1.2.0"
+      }
+    }
+  },
+  "controller_packages": {
+    "python": "3.13.6",
+    "torch": "2.15.0",
+    "transformers": "5.22.1",
+    "vllm": null,
+    "numpy": "2.5.4",
+    "pandas": "3.1.0",
+    "openpyxl": "3.1.5",
+    "python-docx": "1.2.0"
+  }
+}

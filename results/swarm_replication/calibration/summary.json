@@ -1,0 +1,21 @@
+{
+  "none": {
+    "agents": 40,
+    "games": 8,
+    "E": 12,
+    "I": 28,
+    "missing": 0,
+    "forced": 0,
+    "reviews": 40,
+    "mean_classification_accuracy": 0.9979166666666667,
+    "discovered_F": 40,
+    "audits": 2,
+    "unanimous_external": 1,
+    "unanimous_internal": 3,
+    "final_peer_forecasts": 40,
+    "robustly_costly_E": 35,
+    "E_given_robustly_costly": 7,
+    "robustly_profitable_E": 3,
+    "median_pivotal_interval_width": 0.1
+  }
+}

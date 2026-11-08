@@ -1,0 +1,16 @@
+{
+  "pass": true,
+  "failures": [],
+  "checks": {
+    "none": {
+      "agents": 40,
+      "completion": 1.0,
+      "review_completion": 1.0,
+      "accuracy": 0.9979166666666666,
+      "forced_rate": 0.0,
+      "filed_E": 0.3,
+      "backend_errors": 0
+    }
+  },
+  "note": "Full workflows required; no max-ticks probe. Completion conditioning is descriptive only."
+}
