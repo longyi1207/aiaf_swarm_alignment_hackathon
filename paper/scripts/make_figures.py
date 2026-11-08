@@ -21,6 +21,7 @@ OUT.mkdir(exist_ok=True)
 # Palette: reference categorical slot 1 (blue) for the outcome that matters, a pale step of the same ramp for the
 # secondary outcome, neutral gray with hatching for failures. Text stays in ink colours, never series colours.
 BLUE, PALE, GRAY = "#2a78d6", "#b7d3f6", "#d4d3cf"
+GRAY_DOT = "#8a8984"
 INK, INK2, MUTED, GRID = "#1b1b1a", "#52514e", "#8a8984", "#e6e5e1"
 
 plt.rcParams.update({
@@ -34,31 +35,59 @@ plt.rcParams.update({
 
 
 def fig_discussion():
+    """Figure 2: (a) baseline filings by harm, pooled over the five runs with the final wording (dots = runs);
+    (b, c) external reports per game without and with discussion in the same matched worlds."""
     d = json.loads((DATA / "discussion_dispersion.json").read_text())
-    fig, axes = plt.subplots(1, 2, figsize=(6.4, 2.1), sharey=True)
-    panels = [("isolated", "Auditors decide alone"), ("discuss", "Auditors can talk first")]
-    for ax, (key, title) in zip(axes, panels):
+    base = json.loads((DATA / "baseline_runs.json").read_text())
+    fig, axes = plt.subplots(1, 3, figsize=(6.5, 2.7), gridspec_kw={"width_ratios": [0.9, 1.2, 1.2]})
+    # (a) baseline: pooled share reporting externally (bars) and each run's share (dots); everyone else filed internally
+    ax = axes[0]
+    harms = ["low", "medium", "high"]
+    ticks = []
+    for x, h in enumerate(harms):
+        p = base["pooled"][h]; n = p["agents"]; e = p["E"] / n
+        ax.bar(x, e, width=0.6, color=BLUE, edgecolor="white", linewidth=1.0, zorder=3)
+        runs = [r for r in base["by_run"] if r["harm"] == h]
+        for k, r in enumerate(runs):
+            off = (k - (len(runs) - 1) / 2) * 0.1
+            ax.scatter(x + off, r["E"] / r["agents"], s=14, color=INK, edgecolor="white", linewidth=0.6, zorder=6)
+        ticks.append(f"{h.capitalize()}\n{e * 100:.0f}%")
+    ax.set_xticks(range(3)); ax.set_xticklabels(ticks, linespacing=1.3)
+    ax.set_xlim(-0.55, 2.55)
+    ax.set_ylim(0, 1); ax.set_yticks([0, 0.5, 1]); ax.set_yticklabels(["0", "50%", "100%"])
+    ax.set_ylabel("Reported externally")
+    ax.yaxis.grid(True, color=GRID, lw=0.6, zorder=0)
+    ax.tick_params(axis="x", length=0)
+    ax.set_title("a  Baseline reporting", loc="left", color=INK, pad=24, fontsize=9)
+    ax.text(0, 1.06, "180 auditors in 5 runs, by harm", transform=ax.transAxes, ha="left", va="bottom", fontsize=7.4, color=INK2)
+    # (b, c) per-game distributions
+    panels = [("isolated", "b  Auditors decide alone"), ("discuss", "c  Auditors can talk first")]
+    for ax, (key, title) in zip(axes[1:], panels):
         s = d[key]
         hist = s["histogram"]
         colors = [GRAY if k < 3 else BLUE for k in range(6)]
-        ax.bar(range(6), hist, width=0.72, color=colors, edgecolor="white", linewidth=1.2, zorder=3)
+        ax.bar(range(6), hist, width=0.66, color=colors, edgecolor="white", linewidth=1.2, zorder=3)
         for k, h in enumerate(hist):
             if h:
-                ax.text(k, h + 0.15, str(h), ha="center", va="bottom", fontsize=8, color=INK2)
+                ax.text(k, h + 0.25, str(h), ha="center", va="bottom", fontsize=7.6, color=INK2)
         ax.axvline(2.5, color=MUTED, lw=0.8, ls=(0, (3, 2)), zorder=2)
         ax.set_xticks(range(6))
-        ax.set_xlabel("Auditors who reported externally (of 5)")
-        ax.set_title(title, loc="left", color=INK, pad=17)
-        ax.text(0, 1.035, f"{s['games']} games  ·  mean {s['mean_external']:.1f} external reports  ·  {s['audits_opened']} audits",
-                transform=ax.transAxes, ha="left", va="bottom", fontsize=7.5, color=INK2)
-        ax.set_ylim(0, 9.4)
+        ax.set_xlabel("External reports in the game (of 5)", labelpad=5)
+        ax.set_title(title, loc="left", color=INK, pad=24, fontsize=9)
+        ax.text(0, 1.06, f"{s['games']} games, mean {s['mean_external']:.1f}, {s['audits_opened']} audits",
+                transform=ax.transAxes, ha="left", va="bottom", fontsize=7.4, color=INK2)
+        ax.set_ylim(0, 9.6); ax.set_yticks([0, 2, 4, 6, 8])
         ax.yaxis.grid(True, color=GRID, lw=0.6, zorder=0)
         ax.tick_params(axis="x", length=0)
-    axes[0].set_ylabel("Games")
-    axes[1].text(2.42, 8.9, "3 needed to\nopen an audit", fontsize=7.3, color=MUTED, va="top", ha="right", linespacing=1.2)
-    fig.legend(handles=[Patch(color=BLUE, label="Audit opened"), Patch(color=GRAY, label="No audit; external reporters lose their contracts")],
-               loc="lower center", ncol=2, frameon=False, bbox_to_anchor=(0.5, -0.1), fontsize=7.8, handlelength=1.2)
-    fig.tight_layout(w_pad=2.2)
+    axes[1].set_ylabel("Games")
+    axes[2].set_yticklabels([])
+    fig.legend(handles=[plt.Line2D([], [], marker="o", ls="", color=INK, markersize=3.5, label="(a) one run"),
+                        Patch(color=BLUE, label="(b, c) 3 or more reported: audit opened"),
+                        Patch(color=GRAY, label="(b, c) fewer than 3: no audit")],
+               loc="lower center", ncol=3, frameon=False, bbox_to_anchor=(0.5, -0.02), fontsize=7.3, handlelength=1.2,
+               columnspacing=2.0)
+    fig.tight_layout(w_pad=1.6)
+    fig.subplots_adjust(bottom=0.27)
     fig.savefig(OUT / "fig2_discussion.png")
     plt.close(fig)
 
