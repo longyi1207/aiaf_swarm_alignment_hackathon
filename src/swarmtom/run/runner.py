@@ -191,6 +191,16 @@ class Runner:
         self._log(f"finished {sum(g.finished for g in self.games)}/{len(self.games)} games in {tick} ticks, "
                   f"{time.monotonic() - t0:.0f}s")
 
+    def run_serial_arms(self):
+        """Keep the model resident but run only one intervention's worlds per batch."""
+        all_games = self.games
+        try:
+            for tag in dict.fromkeys(g.s["lesion_tag"] for g in all_games):
+                self.games = [g for g in all_games if g.s["lesion_tag"] == tag]
+                self.run()
+        finally:
+            self.games = all_games
+
     def close(self) -> None:
         for g in self.games:
             g.close()

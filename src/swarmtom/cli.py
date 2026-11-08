@@ -65,7 +65,12 @@ def _run(args) -> int:
                     arms=args.arms.split(",") if args.arms else None)
     try:
         runner.prepare(Path(args.config))
-        runner.run(max_ticks=args.max_ticks)
+        if args.serial_arms:
+            if args.max_ticks is not None:
+                raise ValueError("--serial-arms runs complete arms; omit --max-ticks")
+            runner.run_serial_arms()
+        else:
+            runner.run(max_ticks=args.max_ticks)
     finally:
         runner.close()
     if n == 1 and all(g.finished for g in runner.games):
@@ -118,6 +123,7 @@ def main(argv: list[str] | None = None) -> int:
     c.set_defaults(fn=_check)
     r = sub.add_parser("run", help="run (or resume) every game of a run config")
     r.add_argument("config")
+    r.add_argument("--serial-arms", action="store_true", help="keep the model resident while running complete arms sequentially")
     r.add_argument("--arms", help="run only comma-separated arms, retaining the full immutable design")
     r.add_argument("--max-ticks", type=int, default=None, help="stop after N ticks (resume later)")
     r.add_argument("--tool-workers", type=int, default=16)
