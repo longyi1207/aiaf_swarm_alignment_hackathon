@@ -59,3 +59,13 @@ conditions:
     edits: [{file: rand_dirs, axes: [rand_dir], layers: [12, 13, 14, 15, 16, 17, 18, 19, 20], type: steer+, alpha: 2, scale_ref: {file: tom_v2, axis: tau2}}]
   rand_emp_c05:
     edits: [{file: rand_dirs, axes: [rand_dir2], layers: [13, 14, 15, 16, 17, 18, 19, 20, 21], type: steer+, alpha: 0.5, scale_ref: {file: coarse, axis: epsilon}}]
+
+  # 2026-11-08 14:50 amendment: weaker empathy steering (LY request)
+  emp_up_c01:
+    edits: [{file: coarse, axes: [epsilon], layers: [13, 14, 15, 16, 17, 18, 19, 20, 21], type: steer+, alpha: 0.1, scale: natural}]
+  emp_up_c015:
+    edits: [{file: coarse, axes: [epsilon], layers: [13, 14, 15, 16, 17, 18, 19, 20, 21], type: steer+, alpha: 0.15, scale: natural}]
+  rand_emp_c01:
+    edits: [{file: rand_dirs, axes: [rand_dir2], layers: [13, 14, 15, 16, 17, 18, 19, 20, 21], type: steer+, alpha: 0.1, scale_ref: {file: coarse, axis: epsilon}}]
+  rand_emp_c015:
+    edits: [{file: rand_dirs, axes: [rand_dir2], layers: [13, 14, 15, 16, 17, 18, 19, 20, 21], type: steer+, alpha: 0.15, scale_ref: {file: coarse, axis: epsilon}}]

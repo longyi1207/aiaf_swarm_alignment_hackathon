@@ -112,6 +112,7 @@ def fig_games():
         ("Empathy decreased", _pool(d, "emp"), _pool(d, "random"), 0),
         ("No intervention", steer.get("none"), None, 1),
         ("Theory of mind increased", steer.get("tom_up_c1"), steer.get("rand_tom_c1"), 1),
+        ("Empathy increased", steer.get("emp_up"), steer.get("rand_emp"), 1),
     ]
     ys, y, prev = [], 0.0, None
     for *_, g in rows:
@@ -134,21 +135,18 @@ def fig_games():
             ax.text(e - 0.012, yy, lab, ha="right", va="center", fontsize=7.4, color="white", fontweight="bold", zorder=4)
         else:
             ax.text(e + 0.012, yy, lab, ha="left", va="center", fontsize=7.4, color=INK, fontweight="bold", zorder=4)
-        if r:
-            ax.scatter([r["E"] / r["agents"]], [yy - 0.47], marker="v", s=30, color=INK, zorder=6, clip_on=False)
     ax.set_yticks(ys); ax.set_yticklabels([r[0] for r in rows])
     ax.invert_yaxis()
     ax.text(-0.005, ys[0] - 0.75, "Lesion runs: 12 worlds, 60 auditors per row", transform=ax.get_yaxis_transform(), ha="right",
             va="center", fontsize=7.6, fontweight="bold", color=INK, clip_on=False)
-    ax.text(-0.005, ys[3] - 0.75, "Steering run: 8 worlds, 40 per row", transform=ax.get_yaxis_transform(), ha="right",
+    ax.text(-0.005, ys[3] - 0.75, "Steering runs: 8 worlds, 40 per row", transform=ax.get_yaxis_transform(), ha="right",
             va="center", fontsize=7.6, fontweight="bold", color=INK, clip_on=False)
     ax.set_xlim(0, 1); ax.set_xticks([0, 0.25, 0.5, 0.75, 1]); ax.set_xticklabels(["0", "25%", "50%", "75%", "100%"])
     ax.set_xlabel("Share of auditors")
     ax.tick_params(axis="y", length=0); ax.spines["left"].set_visible(False)
     fig.legend(handles=[Patch(color=BLUE, label="Reported externally"), Patch(color=PALE, label="Reported internally"),
-                        Patch(facecolor=GRAY, hatch="////", edgecolor="white", label="No valid report"),
-                        plt.Line2D([], [], marker="v", ls="", color=INK, markersize=5, label="Random direction, same strength")],
-               loc="lower center", ncol=4, frameon=False, bbox_to_anchor=(0.55, -0.03), fontsize=7.3, handlelength=1.2, columnspacing=1.5)
+                        Patch(facecolor=GRAY, hatch="////", edgecolor="white", label="No valid report")],
+               loc="lower center", ncol=3, frameon=False, bbox_to_anchor=(0.55, -0.03), fontsize=7.3, handlelength=1.2, columnspacing=1.5)
     fig.tight_layout()
     fig.subplots_adjust(bottom=0.24)
     fig.savefig(OUT / "fig4_games.png")
