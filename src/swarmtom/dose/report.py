@@ -16,7 +16,7 @@ import random
 import statistics as st
 from pathlib import Path
 
-from swarmtom.dose.run import cut_off
+from swarmtom.dose.run import cut_off, judgment_scores
 
 TARGET = {"tom": "tom", "emp": "empathy"}
 
@@ -56,10 +56,7 @@ def _paired_drop(base: dict, cond: dict, n_boot: int = 2000, seed: int = 0) -> d
 
 def build_report(run_dir: Path) -> dict:
     gens = _read(run_dir / "generations.jsonl")
-    judg: dict = {}
-    for j in _read(run_dir / "judgments.jsonl"):  # a successful (retried) judgment wins over a failed one
-        if not j.get("error") or j["key"] not in judg:
-            judg[j["key"]] = j["score"]
+    judg = judgment_scores(run_dir / "judgments.jsonl")
     scores = _item_scores(gens, judg)
     conds = sorted({g["condition"] for g in gens}, key=lambda c: (c != "none", c))
     thinks = sorted({g["thinking"] for g in gens})

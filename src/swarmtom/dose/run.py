@@ -71,6 +71,12 @@ def _read_jsonl(path: Path) -> list[dict]:
     return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
 
 
+def judgment_scores(path: Path) -> dict[str, int]:
+    """Keep the latest successful score per answer, including zero, across attempts."""
+    return {row["key"]: row["score"] for row in _read_jsonl(path)
+            if not row.get("error") and type(row.get("score")) is int and 0 <= row["score"] <= 10}
+
+
 def _hf(cfg: DoseConfig):
     b = dict(cfg.backend)
     kind = b.pop("type")
@@ -139,7 +145,7 @@ def judge(cfg: DoseConfig, backend=None) -> int:
     ensure_manifest(cfg, "dose")
     gens = [g for g in _read_jsonl(cfg.run_dir / "generations.jsonl") if g["task"] == "empathy"]
     out = cfg.run_dir / "judgments.jsonl"
-    done = {r["key"] for r in _read_jsonl(out) if not r.get("error")}  # failed judgments are retried
+    done = judgment_scores(out)
     todo = [g for g in gens if g["key"] not in done]
     if not todo:
         return 0
@@ -164,8 +170,10 @@ def judge(cfg: DoseConfig, backend=None) -> int:
         for i in range(0, len(reqs), cfg.chunk):
             part = reqs[i: i + cfg.chunk]
             results = backend.generate(part, max_new_tokens=200) if kind == "hf_self" else backend.generate(part)
-            for req, res in zip(part, results):
-                f.write(json.dumps({"key": req.key, "score": parse_judge(res.raw or res.content), "raw": res.raw,
-                                    "judge": kind, "error": res.error}) + "\n")
+            for req, res in zip(part, results, strict=True):
+                score = parse_judge(res.raw or res.content)
+                error = res.error or ("Judge returned no valid score" if score is None else None)
+                f.write(json.dumps({"key": req.key, "score": score, "raw": res.raw,
+                                    "judge": kind, "error": error}) + "\n")
                 n += 1
     return n

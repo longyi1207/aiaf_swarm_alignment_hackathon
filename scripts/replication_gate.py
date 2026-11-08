@@ -15,7 +15,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'src'))
 from swarmtom.dose.report import _item_scores, _paired_drop
-from swarmtom.dose.run import cut_off
+from swarmtom.dose.run import cut_off, judgment_scores
 from swarmtom.run.config import RunConfig
 
 CONTROLS = {'emp': 'random', 'tom': 'random_tom', 'tom_all30': 'random_all30'}
@@ -29,7 +29,7 @@ def dose_gate(run):
     manifest = json.loads((run / 'manifest.json').read_text())
     cfg = manifest['identity']['config']
     gens = jsonl(run / 'generations.jsonl')
-    judgments = {r['key']: r['score'] for r in jsonl(run / 'judgments.jsonl') if not r.get('error')}
+    judgments = judgment_scores(run / 'judgments.jsonl')
     scores = _item_scores(gens, judgments)
     failures, checks = [], {}
     # Exact expected keys catch failed/truncated files, missing conditions and incomplete restarts.

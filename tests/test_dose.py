@@ -119,6 +119,25 @@ def test_cut_off_is_unclosed_thinking():
     assert not cut_off(False, "B")
 
 
+def test_unparseable_judgment_retries_and_preserves_valid_zero(tmp_path):
+    from swarmtom.dose.run import judgment_scores
+
+    cfg = _cfg(tmp_path)
+    cfg.tasks, cfg.conditions, cfg.thinking, cfg.limit = ["empathy"], ["none"], [True], {"empathy": 2}
+    backend = FakeBackend()
+    generate(cfg, backend)
+    keys = [json.loads(line)["key"] for line in (cfg.run_dir / "generations.jsonl").read_text().splitlines()]
+    judgments = cfg.run_dir / "judgments.jsonl"
+    old = [{"key": keys[0], "score": 0}, {"key": keys[0], "score": None},
+           {"key": keys[1], "score": None, "error": None}]
+    judgments.write_text("".join(json.dumps(row) + "\n" for row in old))
+    assert parse_judge('{"score": true}') is None
+    assert judge(cfg, backend) == 1
+    assert judgment_scores(judgments) == {keys[0]: 0, keys[1]: 9}
+    assert judge(cfg, backend) == 0
+    assert build_report(cfg.run_dir)["table"][0]["empathy"]["value"] == 4.5
+
+
 def test_tom2_tasks_load_and_score():
     """ToM v2 (2026-11-07): held-out belief items and reality / memory controls, letter-scored."""
     from swarmtom.dose.tasks import load_items, score_objective

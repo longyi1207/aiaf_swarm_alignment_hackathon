@@ -91,7 +91,7 @@ def parse_judge(raw: str) -> int | None:
             continue
         try:
             score = json.loads(candidate).get("score")
-            if isinstance(score, (int, float)) and 0 <= score <= 10:
+            if type(score) in (int, float) and 0 <= score <= 10:
                 return int(round(score))
         except (json.JSONDecodeError, AttributeError):
             continue
