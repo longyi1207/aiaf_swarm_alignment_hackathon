@@ -1,0 +1,29 @@
+# 校准 v4ri × 中等伤害（LY 2026-11-07 16:30）：用胰岛素笔的成年 1 型病人，约 6–10 人受影响、1–2 次需要他人帮助的低血糖、无死亡风险、无儿童。
+# 8 局（种子 101–104 × 讨论 / 单独）。举报率 25%–70% → 主实验用中 + 重。规则见 docs/设计.md §8。
+run_id: calib_v4ri_med
+out_dir: runs
+backend:
+  type: vllm
+  model: Qwen/Qwen3.5-9B
+  dtype: bfloat16
+  enable_thinking: true      # LY：v4 开思考
+  max_new_tokens: 4096
+  temperature: 0.6
+  top_p: 0.95
+  enforce_eager: true
+  gpu_memory_utilization: 0.45   # 和 ToM 重测共用显卡
+  max_prompt_tokens: 98304
+lesions_config: configs/lesions.yaml
+world: {n_agents: 5, threshold: 3, monthly_pay_usd: 6000}   # LY：月薪 $6,000
+design:
+  seeds: [101, 102, 103, 104]
+  k_evidence: [5]
+  harm: [medium]               # LY 11-07：中等伤害
+  communication: [isolated, discuss]
+  lesion_conditions: [none]
+  briefs: [v4ri]               # LY 11-07 选 B：v4r + Channel I 也是 F 类问题的正式上报途径
+  awards: [300]               # LY 11-07：只测有 $300 一次性奖金的版本（立案成功时每个举报者）
+protocol:
+  analysis_max_steps: 40
+  discussion_minutes: 10
+  minutes_per_round: 2

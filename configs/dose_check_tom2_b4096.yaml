@@ -1,0 +1,21 @@
+# ToM v2 补充测试（2026-11-07 16:30）：思考预算 4096（和游戏里 agent 一致）。2048 时信念题"下降"主要来自没想完。
+# 3 个候选 + 各自随机对照 + none；通过标准不变（scripts/select_tom2.py --stage confirm，TOM2_CONFIRM_RUN=dose_check_tom2_b4096）。
+run_id: dose_check_tom2_b4096
+out_dir: runs
+backend:
+  type: vllm
+  model: Qwen/Qwen3.5-9B
+  dtype: bfloat16
+  device: auto
+  temperature: 0.0
+  enforce_eager: true
+  gpu_memory_utilization: 0.40
+lesions_config: configs/lesions.yaml
+conditions: [none, tom2_mid, rand2_mid, tom2_L6, rand2_L6, tom2_all_a30, rand2_all_a30]
+thinking: [true]
+max_tokens_thinking: {tom2: 4096, tom2ctl: 4096, empathy: 4096, capability: 4096}
+tasks: [tom2, tom2ctl, empathy, capability]
+limit: {tom2: 90, tom2ctl: 72}   # 修订：前 6 个场景的全部 5 种信念题型；前 9 个场景的现实 / 记忆题
+chunk: 4096
+judge:
+  type: hf_self
