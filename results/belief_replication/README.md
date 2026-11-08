@@ -145,7 +145,23 @@ should first calibrate both conditions away from floor and ceiling on new settin
 
 ## Cache audit
 
-The uncached worker exactly repeated all 70 prompt/arm outputs on its second pass. With salted caching, forward order differed from the uncached reference on 70/140 comparisons. Within that cached worker, 39/70 repeats differed from its own first pass. Across two passes, actual cache reuse totalled 14,784 tokens: seven long probes reused 2,112 tokens each. All first-pass requests and all nine short prompts per arm recorded zero reused tokens. Divergent raw greedy continuations in the presence of zero recorded hits cannot establish cross-arm cache leakage. Batch composition and execution path are candidate explanations. The reverse-order attempt encountered CUDA OOM during concurrent GPU allocation. The cache-disabled measurements therefore provide the replication reference. The two completed workers' per-request hashes and hit counts are in `cache/`.
+The complete three-worker audit tested 10 prompts in seven arms over two passes on fresh
+workers with a 38% GPU memory target. **Reversing the order of interventions changed
+0/140 salted outputs.** The uncached worker reproduced 70/70 outputs on its second pass.
+Salted forward and salted reverse each differed from cache-off on 70/140 raw outputs.
+Within either salted worker, 39/70 repeats differed from the first pass.
+
+Both salted workers reused 14,784 prompt tokens, all on the second pass through the
+seven long probes (2,112 per probe). Every first-pass request and all nine short prompts
+per arm recorded zero reused tokens. The observed hits respect arm separation for these
+probes. Raw greedy divergence alone cannot distinguish differences in numerical
+execution or batching from other causes. The stricter cache-on/off equality gate failed,
+so all scientific measurements used cache-off inference.
+
+An earlier 90%-memory run completed the uncached and forward workers before losing the
+reverse worker to GPU memory contention. All 140 outputs for each completed worker
+matched its counterpart in the later three-way run. [Full cache audit and configuration](cache_bounded/)
+· [Earlier workers](cache/)
 
 ## Design audit
 
@@ -161,6 +177,8 @@ Use the environment in `beliefs/runtime.json` with the pinned weights and the co
 python scripts/replicate_beliefs.py --revision c202236235762e1c871ad0ccb60c8ee5ba337b9a --cache off --gpu-memory-utilization .38 --out runs/belief_replication_repeat
 python scripts/describe_belief_pairs.py runs/belief_replication_repeat/items.csv
 python scripts/audit_design_inputs.py --out runs/input_audit_repeat.json
+python scripts/perspective_probe.py --revision c202236235762e1c871ad0ccb60c8ee5ba337b9a --out runs/perspective_repeat
+python scripts/check_prefix_cache.py --config results/belief_replication/cache_bounded/config.yaml --out runs/cache_repeat
 ```
 
 The original results are in [the November 7 report](../../docs/结果_2026-11-07.md). The prospective wording comparison is in [the experiment design](design.md).
