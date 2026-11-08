@@ -9,9 +9,9 @@ backend:
   device: auto
   temperature: 0.0
   enforce_eager: true
-  gpu_memory_utilization: 0.90
+  gpu_memory_utilization: 0.30
 lesions_config: configs/lesions.yaml
-conditions: [none]
+conditions: [none, tom2_mid, rand2_mid]
 thinking: [true]
 max_tokens_thinking: {tom2: 2048, tom2ctl: 2048, empathy: 2048, capability: 2048}
 tasks: [tom2, tom2ctl, empathy, capability]

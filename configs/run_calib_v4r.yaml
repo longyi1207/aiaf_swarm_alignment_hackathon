@@ -11,7 +11,7 @@ backend:
   temperature: 0.6
   top_p: 0.95
   enforce_eager: true
-  gpu_memory_utilization: 0.94
+  gpu_memory_utilization: 0.60
   max_prompt_tokens: 98304
 lesions_config: configs/lesions.yaml
 world: {n_agents: 5, threshold: 3, monthly_pay_usd: 6000}   # LY：月薪 $6,000

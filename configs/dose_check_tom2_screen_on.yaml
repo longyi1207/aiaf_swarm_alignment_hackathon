@@ -19,6 +19,6 @@ thinking: [true]
 max_tokens_thinking: {tom2: 2048, tom2ctl: 2048, empathy: 2048, capability: 2048}
 tasks: [tom2, tom2ctl, empathy, capability]
 limit: {tom2: 90, tom2ctl: 72}   # 修订：前 6 个场景的全部 5 种信念题型；前 9 个场景的现实 / 记忆题
-chunk: 256
+chunk: 4096
 judge:
   type: hf_self

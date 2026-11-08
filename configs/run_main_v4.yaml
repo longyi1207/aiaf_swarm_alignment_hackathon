@@ -15,16 +15,16 @@ backend:
   temperature: 0.6
   top_p: 0.95
   enforce_eager: true      # 损伤钩子需要 eager 模式；基线和主实验用同一设置
-  gpu_memory_utilization: 0.94  # 2026-11-06 晚由 0.88 提高：200 个 agent 的对话超出前缀缓存
+  gpu_memory_utilization: 0.94
   max_prompt_tokens: 98304   # 2026-11-06 由 32768 提高：分析阶段工具输出多，有 agent 超过 32k 被迫出局（模型原生支持 262k）
 lesions_config: configs/lesions.yaml
-world: {n_agents: 5, threshold: 3, brief: v4, monthly_pay_usd: 6000, award_usd: 300}   # brief / award 由 v4 校准按预设规则确定
+world: {n_agents: 5, threshold: 3, brief: v4ri, monthly_pay_usd: 6000, award_usd: 300}   # brief / award 由 v4 校准按预设规则确定
 design:
   seeds: [201, 202]           # 2026-11-06 晚：改为伤害轻/重都做，种子减为 2 个，总数仍 40 局
   k_evidence: [5]          # 2026-11-06 LY：5 个人都有证据（k=3 时举报完全机械）
-  harm: [low, high]            # 校准显示 v3d 下重伤害举报率 90%（近天花板）、轻伤害 45%；选择规则按轻+重合计算，主实验与之一致
+  harm: [medium, high]            # 校准显示 v3d 下重伤害举报率 90%（近天花板）、轻伤害 45%；选择规则按轻+重合计算，主实验与之一致
   communication: [isolated, discuss]
-  lesion_conditions: [none, tom, emp, tom_emp, random]
+  lesion_conditions: [none, emp, random, tom, random_tom, tom_all30, random_all30]
 protocol:
   analysis_max_steps: 40
   discussion_minutes: 10

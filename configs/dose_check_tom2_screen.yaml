@@ -9,7 +9,7 @@ backend:
   device: auto
   temperature: 0.0
   enforce_eager: true
-  gpu_memory_utilization: 0.90
+  gpu_memory_utilization: 0.30
 lesions_config: configs/lesions.yaml
 conditions: [none,
              tom2_L4, tom2_L6, tom2_L8, tom2_L10, tom2_L12, tom2_L14, tom2_L16, tom2_L18, tom2_L20, tom2_L22, tom2_L24, tom2_L26,

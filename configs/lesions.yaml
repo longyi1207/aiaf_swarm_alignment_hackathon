@@ -21,38 +21,58 @@ vector_files:
     path: assets/vectors/axes_random_dirs.pt
     sha256: 689da9bee449b7bf20bb1caf26a7af1d132e3485dd7fa33176be648f918e916f
 
+  # 2026-11-07：ToM v2（错误信念 vs 正确信念的最小对，去掉旁观者对照方向），scripts/extract_tom_v2.py
+  tom_v2:
+    path: assets/vectors/axes_tom_v2.pt
+    sha256: 8e5846282d0d050e7e65348afc9f18da158ae0784b8e919b9fd6b743af950a2a
+
 conditions:
   none:
     edits: []
 
-  # --- 主设计 2×2：由 scripts/select_v4_lesions.py 写入（runs/dose_check_v4/report.md + runs/probe_v4/probe_check.json）---
-  # v4（开思考）：ToM = tom_sae3_a50，共情 = emp_coarse_all_a30（标准化下降差 0.697）
+  # --- 主设计 2×2：由 scripts/select_tom2.py 写入（runs/dose_check_tom2_confirm + runs/probe_tom2 + runs/dose_check_v4b）---
+  # 没找到合格的 ToM v2 损伤，只用共情 = emp_coarse_all_a70
+  # 方案 B（LY 2026-11-07）：探索性 ToM 组 = tom2_L6（没通过预设的截断标准）
   tom:
     edits:
-      - file: sae
-        axes: [sae_tau_top10_f0, sae_tau_top10_f1, sae_tau_top10_f2]
-        alpha: 0.5
+      - file: tom_v2
+        axes: [tau2]
+        layer: 6
   emp:
     edits:
       - file: coarse
         axes: [epsilon]
         layers: all
-        alpha: 0.3
+        alpha: 0.7
   tom_emp:
     edits:
-      - file: sae
-        axes: [sae_tau_top10_f0, sae_tau_top10_f1, sae_tau_top10_f2]
-        alpha: 0.5
       - file: coarse
         axes: [epsilon]
         layers: all
-        alpha: 0.3
+        alpha: 0.7
   # 对照：按所选损伤逐项配同层、同数量、同强度的随机扰动
   random:
     edits:
-      - file: random
-        axes: [sae_random_top10_f0, sae_random_top10_f1, sae_random_top10_f2]
-        alpha: 0.5
+      - file: rand_dirs
+        axes: [rand_dir]
+        layers: all
+        alpha: 0.7
+
+  # 方案 B：ToM 组的随机对照（同层同强度）
+  random_tom:
+    edits:
+      - file: rand_dirs
+        axes: [rand_dir]
+        layer: 6
+  # 方案 C（LY 2026-11-07）：跨层 ToM 组 = tom2_all_a30（每层去掉 30%），及其随机对照
+  tom_all30:
+    edits:
+      - file: tom_v2
+        axes: [tau2]
+        layers: all
+        alpha: 0.3
+  random_all30:
+    edits:
       - file: rand_dirs
         axes: [rand_dir]
         layers: all
@@ -150,3 +170,73 @@ conditions:
     edits: [{file: rand_dirs, axes: [rand_dir], layers: all, alpha: 0.5}]
   random_dir_mid:
     edits: [{file: rand_dirs, axes: [rand_dir], layers: [13, 14, 15, 16, 17, 18, 19, 20, 21]}]
+
+  # --- ToM v2 筛选（2026-11-07，scripts/register_tom_v2.py）---
+  tom2_L4:
+    edits: [{file: tom_v2, axes: [tau2], layer: 4}]
+  tom2_L6:
+    edits: [{file: tom_v2, axes: [tau2], layer: 6}]
+  tom2_L8:
+    edits: [{file: tom_v2, axes: [tau2], layer: 8}]
+  tom2_L10:
+    edits: [{file: tom_v2, axes: [tau2], layer: 10}]
+  tom2_L12:
+    edits: [{file: tom_v2, axes: [tau2], layer: 12}]
+  tom2_L14:
+    edits: [{file: tom_v2, axes: [tau2], layer: 14}]
+  tom2_L16:
+    edits: [{file: tom_v2, axes: [tau2], layer: 16}]
+  tom2_L18:
+    edits: [{file: tom_v2, axes: [tau2], layer: 18}]
+  tom2_L20:
+    edits: [{file: tom_v2, axes: [tau2], layer: 20}]
+  tom2_L22:
+    edits: [{file: tom_v2, axes: [tau2], layer: 22}]
+  tom2_L24:
+    edits: [{file: tom_v2, axes: [tau2], layer: 24}]
+  tom2_L26:
+    edits: [{file: tom_v2, axes: [tau2], layer: 26}]
+  tom2_early:
+    edits: [{file: tom_v2, axes: [tau2], layers: [4, 5, 6, 7, 8, 9, 10, 11, 12]}]
+  tom2_mid:
+    edits: [{file: tom_v2, axes: [tau2], layers: [12, 13, 14, 15, 16, 17, 18, 19, 20]}]
+  tom2_late:
+    edits: [{file: tom_v2, axes: [tau2], layers: [20, 21, 22, 23, 24, 25, 26, 27, 28]}]
+  tom2_all_a30:
+    edits: [{file: tom_v2, axes: [tau2], layers: all, alpha: 0.3}]
+  tom2_all_a50:
+    edits: [{file: tom_v2, axes: [tau2], layers: all, alpha: 0.5}]
+  rand2_L4:
+    edits: [{file: rand_dirs, axes: [rand_dir], layer: 4}]
+  rand2_L6:
+    edits: [{file: rand_dirs, axes: [rand_dir], layer: 6}]
+  rand2_L8:
+    edits: [{file: rand_dirs, axes: [rand_dir], layer: 8}]
+  rand2_L10:
+    edits: [{file: rand_dirs, axes: [rand_dir], layer: 10}]
+  rand2_L12:
+    edits: [{file: rand_dirs, axes: [rand_dir], layer: 12}]
+  rand2_L14:
+    edits: [{file: rand_dirs, axes: [rand_dir], layer: 14}]
+  rand2_L16:
+    edits: [{file: rand_dirs, axes: [rand_dir], layer: 16}]
+  rand2_L18:
+    edits: [{file: rand_dirs, axes: [rand_dir], layer: 18}]
+  rand2_L20:
+    edits: [{file: rand_dirs, axes: [rand_dir], layer: 20}]
+  rand2_L22:
+    edits: [{file: rand_dirs, axes: [rand_dir], layer: 22}]
+  rand2_L24:
+    edits: [{file: rand_dirs, axes: [rand_dir], layer: 24}]
+  rand2_L26:
+    edits: [{file: rand_dirs, axes: [rand_dir], layer: 26}]
+  rand2_early:
+    edits: [{file: rand_dirs, axes: [rand_dir], layers: [4, 5, 6, 7, 8, 9, 10, 11, 12]}]
+  rand2_mid:
+    edits: [{file: rand_dirs, axes: [rand_dir], layers: [12, 13, 14, 15, 16, 17, 18, 19, 20]}]
+  rand2_late:
+    edits: [{file: rand_dirs, axes: [rand_dir], layers: [20, 21, 22, 23, 24, 25, 26, 27, 28]}]
+  rand2_all_a30:
+    edits: [{file: rand_dirs, axes: [rand_dir], layers: all, alpha: 0.3}]
+  rand2_all_a50:
+    edits: [{file: rand_dirs, axes: [rand_dir], layers: all, alpha: 0.5}]
