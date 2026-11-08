@@ -240,6 +240,19 @@ Each study writes to the fresh tag. A failed specificity or workflow gate is its
 descriptive result and prevents a selective causal interpretation. The original gated
 launcher above enforces its own stopping rules.
 
+**Match the archived transcript policy.** Running the loop with the repaired checkout
+applies its transcript policy to all four game stages. The November 8 observations have
+a documented transition. Calibration and workflow used the original parser at
+`71b4fe5cfe2aa51d5c5fd2b4a1190dd72c7495c4`. The main and decision-phase runs
+use the repaired parser at `48924145d54fa031a2a4e7d47c7d3e1d39e7c6d0`.
+To reproduce this chronology, create two checkouts and prepare a fresh tag in each.
+Run the calibration and workflow iterations of the loop in the first checkout, and
+the main and decision-phase iterations in the second. Use the corresponding source
+in both controller and worker. With a shared Python environment, set
+`PYTHONPATH="$PWD/src"` after entering each checkout. Keep each stage in its original
+checkout if it needs to resume. The case that prompted this transition has a GPU-free
+[tokenizer replay](../results/transcript_audit/README.md).
+
 ### Run the game tools on a separate controller
 
 On the November 8 GPU host, the kernel lacked the filesystem isolation required for
