@@ -2,7 +2,7 @@
 
 - tom:        BigToM-style belief questions (216 items, true- and false-belief); letter answer, regex-scored.
 - empathy:    20 people confiding something painful; the reply is judge-scored 0–10 for registering feeling.
-- capability: 30 short factual / arithmetic questions; substring-scored. A lesion that breaks these
+- capability: 30 short factual / arithmetic questions; scored for the reference answer in the final reply. A lesion that breaks these
               is damaging the model in general, not a specific capacity.
 """
 
@@ -69,8 +69,25 @@ def extract_letter(answer: str) -> str | None:
     return m.group(1).upper() if m else None
 
 
-def _norm(s: str) -> str:
-    return re.sub(r"[^a-z0-9]", "", s.lower())
+SMALL_NUMBERS = ("zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten")
+
+
+def capability_answer_present(expected: str, answer: str) -> bool:
+    expected = expected.strip().casefold()
+    candidates = [expected]
+    if expected in SMALL_NUMBERS:
+        candidates.append(str(SMALL_NUMBERS.index(expected)))
+    elif expected.isdecimal() and int(expected) < len(SMALL_NUMBERS):
+        candidates.append(SMALL_NUMBERS[int(expected)])
+    for candidate in candidates:
+        if candidate.isdecimal():
+            pattern = rf"(?<![\w.+-]){candidate}(?:\.0+)?(?!\w|\.\d)"
+        else:
+            words = r"\s+".join(re.escape(word) for word in candidate.split())
+            pattern = rf"(?<!\w){words}(?!\w)"
+        if candidate and re.search(pattern, answer, re.IGNORECASE):
+            return True
+    return False
 
 
 def score_objective(task: str, item: dict, answer: str) -> dict:
@@ -78,7 +95,7 @@ def score_objective(task: str, item: dict, answer: str) -> dict:
         letter = extract_letter(answer)
         return {"predicted": letter, "correct": letter == item["correct_letter"]}
     if task == "capability":
-        return {"correct": _norm(item["answer"]) in _norm(answer)}
+        return {"correct": capability_answer_present(item["answer"], answer)}
     return {}
 
 
@@ -91,7 +108,7 @@ def parse_judge(raw: str) -> int | None:
             continue
         try:
             score = json.loads(candidate).get("score")
-            if isinstance(score, (int, float)) and 0 <= score <= 10:
+            if type(score) in (int, float) and 0 <= score <= 10:
                 return int(round(score))
         except (json.JSONDecodeError, AttributeError):
             continue

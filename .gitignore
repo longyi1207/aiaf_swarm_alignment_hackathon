@@ -1,9 +1,13 @@
 __pycache__/
 *.pyc
 .venv/
+.venv-replication/
 .pytest_cache/
 .env
 *.egg-info/
 # Generated worlds and run outputs (examples/ is committed on purpose)
 worlds/
 runs/
+
+# Prepared machine-specific replication configs are archived with the run manifests.
+configs/replication/

@@ -1,0 +1,68 @@
+{
+  "game": "w0351_n5_t3_k5_medium_discuss_b4ri_r300_p6000__random",
+  "agent": "HALYARD",
+  "phase": "discussion",
+  "messages": 127,
+  "recorded_prompt_tokens": 100793,
+  "replayed_prompt_tokens": 100793,
+  "fixed_history_prompt_tokens": 63930,
+  "configured_limit": 98304,
+  "original_sha256": "c75cad75e9dcb16c3f3593edee8752528ab105dcd6f8c66e57257369eb5d7794",
+  "fixed_sha256": "387659bdc70921fb4814175b0c7382acc9c5eb95f1d22eebc494aab064e6be9a",
+  "removed_from_visible_history": [
+    {
+      "message_index": 101,
+      "recorded_tokens": 4096,
+      "visible_characters": 18850,
+      "raw_sha256": "b57edc31bded3c3a6a852b69f057c9c4f5be9a7676ac28ed28357cffc74957e7"
+    },
+    {
+      "message_index": 107,
+      "recorded_tokens": 4096,
+      "visible_characters": 18850,
+      "raw_sha256": "b57edc31bded3c3a6a852b69f057c9c4f5be9a7676ac28ed28357cffc74957e7"
+    },
+    {
+      "message_index": 109,
+      "recorded_tokens": 4096,
+      "visible_characters": 18848,
+      "raw_sha256": "476dc373794e19f24b817619814ba9873f4f5638aa229d3cf57bad1d9b355c0a"
+    },
+    {
+      "message_index": 111,
+      "recorded_tokens": 4096,
+      "visible_characters": 19822,
+      "raw_sha256": "4be845dec466474d966090238fd5f68f848825874b29d2216aac40a890382062"
+    },
+    {
+      "message_index": 113,
+      "recorded_tokens": 4096,
+      "visible_characters": 19813,
+      "raw_sha256": "9c7342fa73cf0d9e1f8b257990e843b7364cc8af551dee67874144540afe149d"
+    },
+    {
+      "message_index": 118,
+      "recorded_tokens": 4096,
+      "visible_characters": 19824,
+      "raw_sha256": "233086fbdc4858cb2a5ca1e65502e02c1f984cef9a7385c71adf2fca3274dfe6"
+    },
+    {
+      "message_index": 120,
+      "recorded_tokens": 4096,
+      "visible_characters": 19823,
+      "raw_sha256": "6310fe4291ce8fd2a093c60f2f808d80a7ec38490be282616ebf4b3c3a5f34d4"
+    },
+    {
+      "message_index": 122,
+      "recorded_tokens": 4096,
+      "visible_characters": 19823,
+      "raw_sha256": "9658db3df33ef8b74e24de24884a4da66a41e49e2cdb9cd66df262f2125e9f88"
+    },
+    {
+      "message_index": 125,
+      "recorded_tokens": 4096,
+      "visible_characters": 19827,
+      "raw_sha256": "537044c5168a30db63aa27b0ce1a4a7e28463f5809be6cd8d97839674b12676b"
+    }
+  ]
+}

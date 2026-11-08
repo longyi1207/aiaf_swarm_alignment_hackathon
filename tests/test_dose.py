@@ -30,6 +30,19 @@ def test_scoring():
     assert parse_judge('<think>ok</think>{"score": 12}') is None and parse_judge("nope") is None
 
 
+def test_capability_accepts_equivalent_counts_and_rejects_partial_tokens():
+    def correct(expected, text):
+        return score_objective("capability", {"answer": expected}, text)["correct"]
+
+    assert correct("six", "A hexagon has **6** sides.")
+    assert correct("eight", "A spider has 8 legs.")
+    assert correct("2", "It is two.") and correct("100", "100.0 °C")
+    assert not correct("O", "The chemical symbol is Co.")
+    assert not correct("Au", "The Latin name is aurum.")
+    assert not correct("eight", "18 legs.")
+    assert not correct("0", "10.5°C") and not correct("9", "-9.") and not correct("2", "2.5.")
+
+
 class FakeBackend(Backend):
     """'tom*' lesions answer ToM items wrong, 'emp*' lesions give flat replies; capability always right."""
 
@@ -119,6 +132,25 @@ def test_cut_off_is_unclosed_thinking():
     assert not cut_off(False, "B")
 
 
+def test_unparseable_judgment_retries_and_preserves_valid_zero(tmp_path):
+    from swarmtom.dose.run import judgment_scores
+
+    cfg = _cfg(tmp_path)
+    cfg.tasks, cfg.conditions, cfg.thinking, cfg.limit = ["empathy"], ["none"], [True], {"empathy": 2}
+    backend = FakeBackend()
+    generate(cfg, backend)
+    keys = [json.loads(line)["key"] for line in (cfg.run_dir / "generations.jsonl").read_text().splitlines()]
+    judgments = cfg.run_dir / "judgments.jsonl"
+    old = [{"key": keys[0], "score": 0}, {"key": keys[0], "score": None},
+           {"key": keys[1], "score": None, "error": None}]
+    judgments.write_text("".join(json.dumps(row) + "\n" for row in old))
+    assert parse_judge('{"score": true}') is None
+    assert judge(cfg, backend) == 1
+    assert judgment_scores(judgments) == {keys[0]: 0, keys[1]: 9}
+    assert judge(cfg, backend) == 0
+    assert build_report(cfg.run_dir)["table"][0]["empathy"]["value"] == 4.5
+
+
 def test_tom2_tasks_load_and_score():
     """ToM v2 (2026-11-07): held-out belief items and reality / memory controls, letter-scored."""
     from swarmtom.dose.tasks import load_items, score_objective
@@ -130,3 +162,16 @@ def test_tom2_tasks_load_and_score():
     r = tom[0]
     assert score_objective("tom2", r, r["correct_letter"])["correct"]
     assert not score_objective("tom2ctl", ctl[0], "AB".replace(ctl[0]["correct_letter"], ""))["correct"]
+
+
+def test_unfinished_reasoning_is_not_scored_as_an_answer_letter(tmp_path):
+    cfg = _cfg(tmp_path)
+    cfg.thinking, cfg.tasks, cfg.conditions = [True], ['tom'], ['none']
+    cfg.limit = {'tom': 1}
+    be = FakeBackend()
+    correct = load_items('tom')[0]['correct_letter']
+    be.generate = lambda requests, max_new_tokens=None: [GenResult(key=r.key, content=correct + ' while thinking',
+        raw=correct + ' while thinking') for r in requests]
+    generate(cfg, be)
+    row = json.loads((cfg.run_dir / 'generations.jsonl').read_text())
+    assert row['cut_off_thinking'] and row['answer'] == '' and not row['correct']

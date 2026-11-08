@@ -46,6 +46,9 @@ conditions:
         alpha: 0.7
   tom_emp:
     edits:
+      - file: tom_v2
+        axes: [tau2]
+        layer: 6
       - file: coarse
         axes: [epsilon]
         layers: all
@@ -64,6 +67,16 @@ conditions:
       - file: rand_dirs
         axes: [rand_dir]
         layer: 6
+  # Matched control for the combined intervention (not part of the seven-arm pilot).
+  random_joint:
+    edits:
+      - file: rand_dirs
+        axes: [rand_dir]
+        layer: 6
+      - file: rand_dirs
+        axes: [rand_dir]
+        layers: all
+        alpha: 0.7
   # 方案 C（LY 2026-11-07）：跨层 ToM 组 = tom2_all_a30（每层去掉 30%），及其随机对照
   tom_all30:
     edits:

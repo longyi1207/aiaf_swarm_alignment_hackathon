@@ -1,0 +1,54 @@
+run_id: main
+out_dir: /job/runs/first
+backend:
+  type: vllm
+  model: Qwen/Qwen3.5-9B
+  dtype: bfloat16
+  enable_thinking: true
+  max_new_tokens: 1024
+  temperature: 0.6
+  top_p: 0.95
+  enforce_eager: true
+  gpu_memory_utilization: 0.38
+  max_prompt_tokens: 4096
+  revision: c202236235762e1c871ad0ccb60c8ee5ba337b9a
+  enable_prefix_caching: true
+  seed: 20261108
+lesions_config: configs/lesions.yaml
+world:
+  n_agents: 5
+  threshold: 3
+  brief: v4ri
+  monthly_pay_usd: 6000
+  award_usd: 300
+design:
+  seeds:
+  - 401
+  - 402
+  k_evidence:
+  - 5
+  harm:
+  - medium
+  - high
+  communication:
+  - isolated
+  - discuss
+  lesion_conditions:
+  - none
+  - emp
+  - random
+  - tom
+  - random_tom
+  - tom_all30
+  - random_all30
+  matched_controls:
+    emp: random
+    tom: random_tom
+    tom_all30: random_all30
+protocol:
+  analysis_max_steps: 40
+  discussion_minutes: 10
+  minutes_per_round: 2
+  python_network: audit
+  own_file_free_turns: 16
+repo_root: /job

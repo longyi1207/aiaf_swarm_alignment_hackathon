@@ -1,0 +1,46 @@
+{
+  "none": {
+    "both_finished": {
+      "n": 51,
+      "intervention_correct": 42,
+      "control_correct": 47
+    },
+    "intervention_only_finished": {
+      "n": 8,
+      "intervention_correct": 5,
+      "control_correct": 0
+    },
+    "control_only_finished": {
+      "n": 22,
+      "intervention_correct": 0,
+      "control_correct": 21
+    },
+    "neither_finished": {
+      "n": 9,
+      "intervention_correct": 0,
+      "control_correct": 0
+    }
+  },
+  "rand2_L6": {
+    "both_finished": {
+      "n": 48,
+      "intervention_correct": 41,
+      "control_correct": 46
+    },
+    "intervention_only_finished": {
+      "n": 11,
+      "intervention_correct": 6,
+      "control_correct": 0
+    },
+    "control_only_finished": {
+      "n": 26,
+      "intervention_correct": 0,
+      "control_correct": 25
+    },
+    "neither_finished": {
+      "n": 5,
+      "intervention_correct": 0,
+      "control_correct": 0
+    }
+  }
+}

@@ -1,0 +1,60 @@
+# Fixed-candidate replication and paired wording test
+
+Frozen before model outputs. The reference is the November 7 round-two 4,096-token retest. Run its first 90 belief items using Qwen3.5-9B, thinking on, greedy decoding, and the unmodified none, tom2_L6 and rand2_L6 conditions. Record accuracy under the original scorer and under final-answer-only scoring, truncation and token counts. The historical note gives 75/90 for none and 60/90 for L6. It reports a range across random interventions.
+
+For 18 secret1/fb2/tb2 items the narrator says “Without X seeing” and later says X saw the move. Replace only this cue with “While X is outside”. In 18 matched items with the same scenario and question type, replace the consistent “With X out of the room” cue with the same phrase. Preserve the original questions, options and labels. Compare within-item changes in accuracy and completion, then compare the changes across the two wording groups. Bootstrap the six scenario blocks together. Treat the comparison as exploratory. A selective improvement following repair would implicate the wording. A persistent L6 deficit on consistent prompts would motivate testing the intervention against difficulty-matched non-social reasoning.
+
+Use independent workers on one H100 to compare salted caching with caching disabled, in both intervention orders. Include a long shared prefix and measure cached prompt tokens. If greedy outputs diverge or a cache hit cannot be verified, record that outcome and run the measurement with prefix caching disabled. Cache-off computation removes cross-condition prefix reuse by construction. Record the exact model revision, package versions, inputs, observed completions and output hashes.
+
+For the swarm replication, the controller generates worlds and runs agent tools in its verified filesystem sandbox. A persistent SSH standard-I/O worker performs vLLM inference on the H100. Only model inputs and outputs cross this connection. Keep the original v4ri stakes, harm levels, discussion modes and lesion definitions. Count failed filings separately. For the mechanism follow-up, apply the L6 and matched random interventions only in prediction, discussion and filing phases, with analysis intact. This tests whether the operational deficit originates in finding the evidence or in making a social decision once the evidence is available.
+
+Before the full dose results or any completed swarm game, we specified a descriptive replication of the seven game arms even if a specificity or workflow criterion fails. Failed submissions are one of the historical outcomes to replicate. The original criteria stay in the gate reports and govern any selective causal interpretation. The controller runs seeds 331–332 for calibration, 351 for complete workflow validation, and 401–402 for the 56 main games. A subsequent 24-game phase comparison uses the same main seeds, harms and discussion conditions with none, L6 and its matched random direction active only after analysis. Histories in this phase comparison are generated live and can differ across arms. Compare actual discoveries, forecast quality, completed internal/external filings and audits.
+
+The forecast analysis enumerates every joint action of the four peers. For each possible peer action profile it computes the change in the focal agent's pay and expected patient harm from filing externally. PRED-1 elicits only individual peer probabilities. Report both the estimate under independence and sharp bounds over all joint distributions that satisfy those four marginals. This can distinguish robustly costly decisions from decisions whose financial sign depends on unmeasured peer coordination.
+
+Exploratory follow-up specified after inspecting the 4,096-token outputs. In the 18 matched story variants, require both true- and false-belief second-order questions to finish and be correct. Baseline and random L6 each finished both on 12 variants, and ToM L6 on two. All such completed pairs were correct. On first-order pairs the corresponding correct-pair counts were 9, 11 and 8. Excluding all six variants with the conflicting visibility cue leaves second-order correct-pair counts of 9, 8 and 2 out of 12. These are post-hoc descriptive comparisons.
+
+To distinguish a delay from a persistent failure, extend every unfinished original response in all three arms by up to 4,096 further tokens. Preserve the exact decoded text as a forced prefix, keep the same intervention active, apply no new instruction, and leave previously finished originals unchanged. The original archive contains text, so retokenize each prefix, verify its decoded text and report how often its token count matches. This estimates recoverability under text continuation. It is a separate experiment from a fresh uninterrupted 8,192-token rollout.
+
+## Crossed-perspective follow-up
+
+Specified after inspecting the 180-item belief responses and before generating any
+responses on these new prompts. On 13 consistent secret-witness questions both L6 and
+its matched random control finished, L6 answered four correctly and random answered 13.
+This motivates a direct intervention on the story. Independently vary whether the observer
+sees an object move through a one-way panel and whether the mover believes the observer
+saw it. Ask each story twice, once about the observer's own search and once about the
+mover's expectation of that search. Keep option order fixed across that pair. Balance
+answer position and alternate the order of the access and attribution clauses by setting.
+
+The three arms each see all 96 prompts, with the same greedy, cache-disabled, 4,096-token
+settings as the earlier probe. There are 24 stories with aligned perspectives and 24
+with conflicting perspectives across 12 reused physical settings. The primary descriptive
+comparison is the L6-minus-random change in both-queries-correct rate in conflict versus
+aligned stories. Separately count both queries finishing, repeated letters across the two
+queries, and accuracy for each question. A conflict-specific deficit would support
+difficulty keeping the two perspectives separate in this prompt family. A null or reversed
+interaction would weaken that explanation of the historical secret-witness result.
+
+## Transcript handling amendment before the main games
+
+At workflow seed 351 the matched random empathy intervention produced a 100,793-token
+discussion request for HALYARD. The configured input limit was 98,304. Nine earlier
+assistant turns reached 4,096 tokens without closing the thinking block opened by the
+chat template. Their contents had entered the visible history. Reconstructing this exact
+request and omitting only those nine visible blocks reduced the length to 63,930 tokens.
+The calibration and all 28 seed-351 workflow games retain the initially frozen behavior.
+
+Before generating any main or decision-phase game, we specified a repair for both stages
+at commit `48924145d54fa031a2a4e7d47c7d3e1d39e7c6d0`. When the rendered prompt ends in
+an open thinking tag and generation exhausts the token budget before closing it, keep
+the full response for audit as reasoning, pass empty visible content to the next turn,
+and execute no tool calls from the unfinished block. Preserve the normal action parser
+for completed answers and naturally stopped tool turns. All other scientific settings,
+worlds, interventions, budgets, outcomes and stage sizes follow the design above.
+The 56 main games and the 24 decision-phase games use this same repaired policy.
+
+The input replay holds the original history fixed and estimates the mechanical change
+in token count. Differences between the seed-351 workflows and the main games also
+include different worlds and live trajectories. They cannot identify the causal effect
+of the parser on filing choices. [Recorded case and public replay](../transcript_audit/README.md)

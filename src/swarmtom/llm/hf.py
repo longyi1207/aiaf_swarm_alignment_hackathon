@@ -19,7 +19,8 @@ import torch
 from swarmtom.lesion.conditions import load_conditions
 from swarmtom.lesion.hooks import LesionController
 from swarmtom.llm.base import Backend, GenRequest, GenResult
-from swarmtom.llm.parse import parse_output
+from swarmtom.llm.parse import REASONING_HISTORY_POLICY, parse_output
+from swarmtom.llm.formatting import _for_template, cut_at_stop, stop_token_ids
 
 log = logging.getLogger(__name__)
 
@@ -33,34 +34,6 @@ def _device(pref: str) -> torch.device:
         return torch.device("cpu")
     return torch.device(pref)
 
-
-STOP_TOKENS = ("<|im_end|>", "<|endoftext|>", "<|im_start|>", "<|eot_id|>", "</s>")
-
-
-def stop_token_ids(tokenizer, model_eos) -> list[int]:
-    """Every id that ends an assistant turn.
-
-    Qwen3.5-9B ships no generation_config.json and its model config lists only <|endoftext|> as EOS,
-    while chat turns end with <|im_end|> (the tokenizer's EOS). Without this, generation runs past the
-    end of the turn and invents further turns until max_new_tokens.
-    """
-    ids: set[int] = set()
-    for x in ([model_eos] if isinstance(model_eos, int) else list(model_eos or [])) + [tokenizer.eos_token_id]:
-        if isinstance(x, int):
-            ids.add(x)
-    unk = getattr(tokenizer, "unk_token_id", None)
-    for tok in STOP_TOKENS:
-        tid = tokenizer.convert_tokens_to_ids(tok)
-        if isinstance(tid, int) and tid >= 0 and tid != unk:
-            ids.add(tid)
-    return sorted(ids)
-
-
-def cut_at_stop(ids: list[int], stop_ids: set[int]) -> list[int]:
-    for i, t in enumerate(ids):
-        if t in stop_ids:
-            return ids[:i]
-    return ids
 
 
 def plan_batches(lengths: list[int], max_rows: int, max_new_tokens: int, token_budget: int | None) -> list[list[int]]:
@@ -83,19 +56,6 @@ def plan_batches(lengths: list[int], max_rows: int, max_new_tokens: int, token_b
     return batches
 
 
-def _for_template(messages: list[dict]) -> list[dict]:
-    """Chat templates expect tool-call arguments as dicts and no extra keys."""
-    out = []
-    for m in messages:
-        m2 = {"role": m["role"], "content": m.get("content") or ""}
-        if m.get("tool_calls"):
-            m2["tool_calls"] = [{"type": "function", "function": {"name": tc["function"]["name"],
-                                                                  "arguments": tc["function"]["arguments"]}}
-                                for tc in m["tool_calls"]]
-        if m["role"] == "tool":
-            m2["name"] = m.get("name", "")
-        out.append(m2)
-    return out
 
 
 class HFBackend(Backend):
@@ -163,6 +123,7 @@ class HFBackend(Backend):
 
     def describe(self) -> dict:
         return {"name": self.name, "model": self.model_name, "device": str(self.device),
+                "reasoning_history_policy": REASONING_HISTORY_POLICY,
                 "enable_thinking": self.enable_thinking, "max_new_tokens": self.max_new_tokens,
                 "temperature": self.temperature, "top_p": self.top_p, "batch_size": self.batch_size,
                 "token_budget": self.token_budget, "lesion_vectors": self.provenance}
@@ -249,8 +210,9 @@ class HFBackend(Backend):
         for i, r in enumerate(reqs):
             new = cut_at_stop(gen[i, prompt_len:].tolist(), stops)
             raw = self.tokenizer.decode(new, skip_special_tokens=False)
-            reasoning, content, calls, errors = parse_output(raw)
             n_new = len(new)
+            capped_think = n_new == max_new_tokens and texts[i].rstrip().endswith("<think>")
+            reasoning, content, calls, errors = parse_output(raw, capped_think_prefill=capped_think)
             results.append(GenResult(key=r.key, content=content, reasoning=reasoning, tool_calls=calls, raw=raw,
                                      prompt_tokens=int(enc["attention_mask"][i].sum()), completion_tokens=n_new,
                                      parse_errors=errors))

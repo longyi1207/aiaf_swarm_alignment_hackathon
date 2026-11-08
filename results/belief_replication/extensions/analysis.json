@@ -1,0 +1,101 @@
+{
+  "none": {
+    "pairs": {
+      "fb1+tb1": {
+        "stories": 18,
+        "both_correct": 12,
+        "both_finished": 16
+      },
+      "fb2+tb2": {
+        "stories": 18,
+        "both_correct": 17,
+        "both_finished": 17
+      }
+    },
+    "extended": 17,
+    "still_unfinished": 4,
+    "three_disjoint_repeats_by_words": {
+      "16": {
+        "original": 13,
+        "continuation": 6,
+        "unfinished_continuation": 4
+      },
+      "32": {
+        "original": 1,
+        "continuation": 4,
+        "unfinished_continuation": 3
+      },
+      "64": {
+        "original": 1,
+        "continuation": 3,
+        "unfinished_continuation": 3
+      }
+    }
+  },
+  "rand2_L6": {
+    "pairs": {
+      "fb1+tb1": {
+        "stories": 18,
+        "both_correct": 14,
+        "both_finished": 17
+      },
+      "fb2+tb2": {
+        "stories": 18,
+        "both_correct": 16,
+        "both_finished": 16
+      }
+    },
+    "extended": 16,
+    "still_unfinished": 3,
+    "three_disjoint_repeats_by_words": {
+      "16": {
+        "original": 8,
+        "continuation": 2,
+        "unfinished_continuation": 2
+      },
+      "32": {
+        "original": 1,
+        "continuation": 2,
+        "unfinished_continuation": 2
+      },
+      "64": {
+        "original": 0,
+        "continuation": 2,
+        "unfinished_continuation": 2
+      }
+    }
+  },
+  "tom2_L6": {
+    "pairs": {
+      "fb1+tb1": {
+        "stories": 18,
+        "both_correct": 9,
+        "both_finished": 12
+      },
+      "fb2+tb2": {
+        "stories": 18,
+        "both_correct": 4,
+        "both_finished": 4
+      }
+    },
+    "extended": 31,
+    "still_unfinished": 25,
+    "three_disjoint_repeats_by_words": {
+      "16": {
+        "original": 30,
+        "continuation": 26,
+        "unfinished_continuation": 25
+      },
+      "32": {
+        "original": 17,
+        "continuation": 25,
+        "unfinished_continuation": 25
+      },
+      "64": {
+        "original": 11,
+        "continuation": 25,
+        "unfinished_continuation": 25
+      }
+    }
+  }
+}

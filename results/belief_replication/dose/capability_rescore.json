@@ -1,0 +1,113 @@
+{
+  "none": {
+    "n": 30,
+    "recorded_correct": 28,
+    "rescored_correct": 30,
+    "changed": [
+      {
+        "id": "cap_18",
+        "expected": "six",
+        "answer": "A hexagon has **6** sides.",
+        "original": false,
+        "revised": true
+      },
+      {
+        "id": "cap_25",
+        "expected": "eight",
+        "answer": "A spider has **8 legs**.",
+        "original": false,
+        "revised": true
+      }
+    ]
+  },
+  "emp": {
+    "n": 30,
+    "recorded_correct": 29,
+    "rescored_correct": 30,
+    "changed": [
+      {
+        "id": "cap_18",
+        "expected": "six",
+        "answer": "A hexagon has **6** sides.",
+        "original": false,
+        "revised": true
+      }
+    ]
+  },
+  "random": {
+    "n": 30,
+    "recorded_correct": 28,
+    "rescored_correct": 30,
+    "changed": [
+      {
+        "id": "cap_18",
+        "expected": "six",
+        "answer": "A hexagon has **6** sides.",
+        "original": false,
+        "revised": true
+      },
+      {
+        "id": "cap_25",
+        "expected": "eight",
+        "answer": "A spider has **8 legs**.",
+        "original": false,
+        "revised": true
+      }
+    ]
+  },
+  "tom": {
+    "n": 30,
+    "recorded_correct": 27,
+    "rescored_correct": 28,
+    "changed": [
+      {
+        "id": "cap_25",
+        "expected": "eight",
+        "answer": "A spider has **8 legs**.",
+        "original": false,
+        "revised": true
+      }
+    ]
+  },
+  "random_tom": {
+    "n": 30,
+    "recorded_correct": 29,
+    "rescored_correct": 30,
+    "changed": [
+      {
+        "id": "cap_18",
+        "expected": "six",
+        "answer": "A hexagon has **6** sides.",
+        "original": false,
+        "revised": true
+      }
+    ]
+  },
+  "tom_all30": {
+    "n": 30,
+    "recorded_correct": 23,
+    "rescored_correct": 23,
+    "changed": []
+  },
+  "random_all30": {
+    "n": 30,
+    "recorded_correct": 28,
+    "rescored_correct": 30,
+    "changed": [
+      {
+        "id": "cap_18",
+        "expected": "six",
+        "answer": "A hexagon has **6** sides.",
+        "original": false,
+        "revised": true
+      },
+      {
+        "id": "cap_25",
+        "expected": "eight",
+        "answer": "A spider has **8 legs**.",
+        "original": false,
+        "revised": true
+      }
+    ]
+  }
+}

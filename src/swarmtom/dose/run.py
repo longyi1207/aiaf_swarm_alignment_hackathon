@@ -20,6 +20,7 @@ import yaml
 from swarmtom.dose.tasks import (EMPATHY_JUDGE_SYSTEM, EMPATHY_JUDGE_TEMPLATE, MAX_TOKENS, final_answer,
                                  load_items, parse_judge, prompt_of, score_objective)
 from swarmtom.llm.base import GenRequest
+from swarmtom.run.provenance import ensure_manifest, ensure_runtime, record_session
 
 log = logging.getLogger(__name__)
 
@@ -70,6 +71,12 @@ def _read_jsonl(path: Path) -> list[dict]:
     return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
 
 
+def judgment_scores(path: Path) -> dict[str, int]:
+    """Keep the latest successful score per answer, including zero, across attempts."""
+    return {row["key"]: row["score"] for row in _read_jsonl(path)
+            if not row.get("error") and type(row.get("score")) is int and 0 <= row["score"] <= 10}
+
+
 def _hf(cfg: DoseConfig):
     b = dict(cfg.backend)
     kind = b.pop("type")
@@ -88,15 +95,18 @@ def _hf(cfg: DoseConfig):
 
 
 def generate(cfg: DoseConfig, backend=None) -> int:
-    cfg.run_dir.mkdir(parents=True, exist_ok=True)
+    ensure_manifest(cfg, "dose")
     out = cfg.run_dir / "generations.jsonl"
     done = {r["key"] for r in _read_jsonl(out)}
     backend = backend or _hf(cfg)
     missing = set(cfg.conditions) - {"none"} - set(getattr(backend, "lesions").conditions)
     if missing:
         raise ValueError(f"conditions not in {cfg.lesions_config}: {sorted(missing)}")
-    (cfg.run_dir / "dose_meta.json").write_text(json.dumps({"backend": backend.describe(),
-                                                            "conditions": cfg.conditions}, indent=2, default=str))
+    ensure_runtime(cfg.run_dir, backend.describe())
+    meta = {"backend": backend.describe(), "conditions": cfg.conditions}
+    record_session(cfg.run_dir, meta)
+    if not (cfg.run_dir / "dose_meta.json").exists():
+        (cfg.run_dir / "dose_meta.json").write_text(json.dumps(meta, indent=2, default=str))
     written = 0
     with open(out, "a", buffering=1) as f:
         for thinking in cfg.thinking:
@@ -115,12 +125,14 @@ def generate(cfg: DoseConfig, backend=None) -> int:
                     budget = (cfg.max_tokens_thinking.get(task) if thinking else None) or MAX_TOKENS[thinking][task]
                     results = backend.generate([r for r, _ in part], max_new_tokens=budget)
                     for (req, it), res in zip(part, results):
-                        answer = res.content if res.content or not res.raw else final_answer(res.raw)
+                        truncated = cut_off(thinking, res.raw)
+                        # Never score a letter mentioned in unfinished reasoning as the final answer.
+                        answer = "" if truncated else (res.content if res.content or not res.raw else final_answer(res.raw))
                         rec = {"key": req.key, "condition": req.lesion, "thinking": thinking, "task": task,
                                "item_id": it["id"], "item_condition": it.get("condition"), "answer": answer,
                                "reasoning": res.reasoning, "raw": res.raw, "error": res.error,
                                "completion_tokens": res.completion_tokens,
-                               "cut_off_thinking": cut_off(thinking, res.raw),
+                               "cut_off_thinking": truncated,
                                **score_objective(task, it, answer)}
                         f.write(json.dumps(rec, ensure_ascii=False) + "\n")
                         written += 1
@@ -130,9 +142,10 @@ def generate(cfg: DoseConfig, backend=None) -> int:
 
 
 def judge(cfg: DoseConfig, backend=None) -> int:
+    ensure_manifest(cfg, "dose")
     gens = [g for g in _read_jsonl(cfg.run_dir / "generations.jsonl") if g["task"] == "empathy"]
     out = cfg.run_dir / "judgments.jsonl"
-    done = {r["key"] for r in _read_jsonl(out) if not r.get("error")}  # failed judgments are retried
+    done = judgment_scores(out)
     todo = [g for g in gens if g["key"] not in done]
     if not todo:
         return 0
@@ -157,8 +170,10 @@ def judge(cfg: DoseConfig, backend=None) -> int:
         for i in range(0, len(reqs), cfg.chunk):
             part = reqs[i: i + cfg.chunk]
             results = backend.generate(part, max_new_tokens=200) if kind == "hf_self" else backend.generate(part)
-            for req, res in zip(part, results):
-                f.write(json.dumps({"key": req.key, "score": parse_judge(res.raw or res.content), "raw": res.raw,
-                                    "judge": kind, "error": res.error}) + "\n")
+            for req, res in zip(part, results, strict=True):
+                score = parse_judge(res.raw or res.content)
+                error = res.error or ("Judge returned no valid score" if score is None else None)
+                f.write(json.dumps({"key": req.key, "score": score, "raw": res.raw,
+                                    "judge": kind, "error": error}) + "\n")
                 n += 1
     return n

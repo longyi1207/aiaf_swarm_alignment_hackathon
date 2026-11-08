@@ -40,6 +40,7 @@ class GenResult:
     completion_tokens: int = 0
     parse_errors: list[str] = field(default_factory=list)
     error: str | None = None  # backend failure for this row; the game retries the step
+    cached_prompt_tokens: int | None = None
 
 
 class Backend(ABC):

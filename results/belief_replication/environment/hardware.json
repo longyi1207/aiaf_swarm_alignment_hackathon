@@ -1,0 +1,10 @@
+{
+  "GPU": [
+    "NVIDIA H100 80GB HBM3, 580.173.02, 81559 MiB"
+  ],
+  "system": "Linux",
+  "kernel": "5.15.0-126-generic",
+  "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+  "torch": "2.14.0+cu130",
+  "torch_cuda": "13.0"
+}

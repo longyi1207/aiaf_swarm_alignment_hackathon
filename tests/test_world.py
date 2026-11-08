@@ -73,6 +73,17 @@ def test_harm_levels(tmp_path):
     assert hi["harm"]["expected_affected_users"] > lo["harm"]["expected_affected_users"]
 
 
+def test_paired_contracts_are_independent_of_the_harm_memo(tmp_path):
+    from dataclasses import replace
+
+    spec = WorldSpec(seed=331, k_evidence=5, brief="v4ri", harm="medium", monthly_pay_usd=6000,
+                     award_usd=300, paired_contracts=True)
+    assert spec.world_id != replace(spec, paired_contracts=False).world_id
+    medium, high = [generate_world(s, tmp_path / s.world_id) for s in (spec, replace(spec, harm="high"))]
+    assert medium["harm"] != high["harm"]
+    assert medium["agents"] == high["agents"]
+
+
 def test_spec_validation():
     with pytest.raises(ValueError):
         WorldSpec(seed=1, n_agents=5, threshold=6).validate()
@@ -253,7 +264,8 @@ def test_v4r_prompt_and_free_own_file_reads(tmp_path):
     assert not _reads_own_file("read_table", {"path": "batches/VB-001.xlsx"})
     assert not _reads_own_file("list_files", {"path": ""}) and not _reads_own_file("run_python", {"path": "personal/x"})
     text = P.analysis_open("Friday 28 August 2026", 12, 40, own_files=True, unread=["a"], own_files_free=True)
-    assert "does not count" in text and P.analysis_open("d", 12, 40).endswith("tool-using steps.")
+    assert "first 16 turns" in text and "later reads count normally" in text
+    assert P.analysis_open("d", 12, 40).endswith("tool-using steps.")
 
 
 def test_v4r_variants_d_and_i(tmp_path):

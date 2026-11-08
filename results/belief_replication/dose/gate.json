@@ -1,0 +1,190 @@
+{
+  "pass": false,
+  "failures": [
+    "emp: tom2 preservation not established (upper CI > 0.05)",
+    "emp: non-target truncation exceeds baseline + 5 points",
+    "tom_all30: empathy preservation not established (upper CI > 0.5)",
+    "tom_all30: capability below 90% of baseline or unavailable",
+    "tom_all30: non-target truncation exceeds baseline + 5 points"
+  ],
+  "checks": {
+    "emp": {
+      "target_vs_none": {
+        "n": 20,
+        "base": 9.75,
+        "value": 7.0,
+        "drop": 2.75,
+        "ci": [
+          1.2,
+          4.4
+        ],
+        "std_drop": 6.3508529610858835
+      },
+      "target_vs_random": {
+        "n": 20,
+        "base": 9.7,
+        "value": 7.0,
+        "drop": 2.7,
+        "ci": [
+          1.15,
+          4.35
+        ],
+        "std_drop": 5.8918830363717944
+      },
+      "capability": {
+        "n": 30,
+        "base": 0.9333333333333333,
+        "value": 0.9666666666666667,
+        "drop": -0.03333333333333333,
+        "ci": [
+          -0.1,
+          0.0
+        ],
+        "std_drop": -0.1336306209562122
+      },
+      "non_target_cutoff": 0.15819209039548024,
+      "baseline_non_target_cutoff": 0.07909604519774012,
+      "tom2ctl": {
+        "n": 144,
+        "base": 1.0,
+        "value": 1.0,
+        "drop": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "std_drop": 0.0
+      },
+      "tom2": {
+        "n": 180,
+        "base": 0.7888888888888889,
+        "value": 0.6555555555555556,
+        "drop": 0.13333333333333333,
+        "ci": [
+          0.05555555555555555,
+          0.20555555555555555
+        ],
+        "std_drop": 0.32671966207039804
+      }
+    },
+    "tom": {
+      "target_vs_none": {
+        "n": 180,
+        "base": 0.7888888888888889,
+        "value": 0.40555555555555556,
+        "drop": 0.38333333333333336,
+        "ci": [
+          0.29444444444444445,
+          0.4666666666666667
+        ],
+        "std_drop": 0.9393190284523945
+      },
+      "target_vs_random": {
+        "n": 180,
+        "base": 0.7611111111111111,
+        "value": 0.40555555555555556,
+        "drop": 0.35555555555555557,
+        "ci": [
+          0.26666666666666666,
+          0.4444444444444444
+        ],
+        "std_drop": 0.8338452566689207
+      },
+      "capability": {
+        "n": 30,
+        "base": 0.9333333333333333,
+        "value": 0.9,
+        "drop": 0.03333333333333333,
+        "ci": [
+          -0.06666666666666667,
+          0.13333333333333333
+        ],
+        "std_drop": 0.1336306209562122
+      },
+      "non_target_cutoff": 0.010309278350515464,
+      "baseline_non_target_cutoff": 0.0,
+      "tom2ctl": {
+        "n": 144,
+        "base": 1.0,
+        "value": 1.0,
+        "drop": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "std_drop": 0.0
+      },
+      "empathy": {
+        "n": 20,
+        "base": 9.75,
+        "value": 9.75,
+        "drop": 0.0,
+        "ci": [
+          -0.2,
+          0.2
+        ],
+        "std_drop": 0.0
+      }
+    },
+    "tom_all30": {
+      "target_vs_none": {
+        "n": 180,
+        "base": 0.7888888888888889,
+        "value": 0.6111111111111112,
+        "drop": 0.17777777777777778,
+        "ci": [
+          0.1,
+          0.2611111111111111
+        ],
+        "std_drop": 0.4356262160938641
+      },
+      "target_vs_random": {
+        "n": 180,
+        "base": 0.8555555555555555,
+        "value": 0.6111111111111112,
+        "drop": 0.24444444444444444,
+        "ci": [
+          0.16666666666666666,
+          0.3277777777777778
+        ],
+        "std_drop": 0.6953534953651154
+      },
+      "capability": {
+        "n": 30,
+        "base": 0.9333333333333333,
+        "value": 0.7666666666666667,
+        "drop": 0.16666666666666666,
+        "ci": [
+          0.0,
+          0.3333333333333333
+        ],
+        "std_drop": 0.6681531047810609
+      },
+      "non_target_cutoff": 0.05154639175257732,
+      "baseline_non_target_cutoff": 0.0,
+      "tom2ctl": {
+        "n": 144,
+        "base": 1.0,
+        "value": 0.9861111111111112,
+        "drop": 0.013888888888888888,
+        "ci": [
+          0.0,
+          0.034722222222222224
+        ],
+        "std_drop": 13888888.888888888
+      },
+      "empathy": {
+        "n": 20,
+        "base": 9.75,
+        "value": 9.3,
+        "drop": 0.45,
+        "ci": [
+          -0.25,
+          1.6
+        ],
+        "std_drop": 1.0392304845413265
+      }
+    }
+  },
+  "note": "Preservation uses predeclared upper-CI margins, not a nonsignificant difference. All arms must pass."
+}

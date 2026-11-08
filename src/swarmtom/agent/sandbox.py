@@ -1,6 +1,8 @@
 """The run_python tool: run agent code in a fresh, isolated interpreter inside its workspace.
 
 Isolation (proportionate to a local open-weight model analysing spreadsheets):
+- filesystem access: workspace read/write, interpreter/runtime read-only. macOS uses
+  sandbox-exec; Linux requires Landlock ABI >= 3. Unsupported hosts fail closed;
 - `python -I`: no PYTHONPATH, no user site, and the working directory is NOT on sys.path,
   so files the agent writes cannot shadow imports;
 - a minimal environment (no credentials are inherited);
@@ -22,6 +24,8 @@ Isolation (proportionate to a local open-weight model analysing spreadsheets):
 from __future__ import annotations
 
 import os
+import json
+from functools import lru_cache
 import shutil
 import signal
 import subprocess
@@ -62,10 +66,16 @@ def truncate(text: str, max_chars: int) -> str:
     return f"{text[:head]}\n[... {len(text) - max_chars:,} characters omitted ...]\n{text[-tail:]}"
 
 
+# Filesystem restrictions are enforced by the OS, including native libc file access.
+_LANDLOCK = Path(__file__).with_name("_landlock.py").read_text()
+
 # Limits are set inside the child by this wrapper rather than with preexec_fn, which is not
 # safe when tools run from a thread pool.
 _WRAPPER = (
-    "import resource, sys\n"
+    "import resource, sys, json\n"
+    "if sys.platform.startswith('linux'):\n"
+    "    exec(sys.argv[5], globals())\n"
+    "    restrict_filesystem(sys.argv[4], json.loads(sys.argv[6]))\n"
     "cpu, mem, mode = int(sys.argv[1]), int(sys.argv[2]), sys.argv[3]\n"
     "if mode == 'audit':\n"
     "    _BLOCK = ('socket.__new__', 'socket.connect', 'socket.bind', 'socket.getaddrinfo', 'socket.gethostbyname',\n"
@@ -111,6 +121,38 @@ def _prefix(network: str) -> list[str]:
                                 "container with --network none and set protocol.python_network: container")
 
 
+
+@lru_cache(maxsize=4)
+def _runtime_paths(interpreter: str) -> list[str]:
+    probe = subprocess.run([interpreter, "-I", "-c",
+        "import json,sys,mimetypes; print(json.dumps([sys.prefix,sys.base_prefix,*sys.path,*mimetypes.knownfiles]))"],
+        check=True, capture_output=True, text=True, timeout=20)
+    paths = json.loads(probe.stdout)
+    paths += ["/System", "/Library/Apple", "/usr", "/private/var/db/dyld", "/usr/lib", "/usr/local/lib", "/lib", "/lib64",
+              "/usr/share/zoneinfo", "/dev/null", "/dev/urandom", "/dev/random",
+              "/etc/ld.so.cache", "/etc/localtime", "/etc/hosts", "/etc/resolv.conf", "/etc/nsswitch.conf"]
+    return sorted({str(Path(p).resolve()) for p in paths if p and Path(p).exists()})
+
+
+def _sandbox_prefix(network: str, cwd: Path, read_paths: list[str]) -> list[str]:
+    if sys.platform == "darwin":
+        if not shutil.which("sandbox-exec"):
+            raise NetworkIsolationError("sandbox-exec is required for filesystem isolation on macOS")
+        # Metadata is needed for import/path traversal; file contents and directory listings
+        # outside the allowlist remain denied. JSON quoting also escapes spaces/quotes in paths.
+        reads = " ".join(f"(subpath {json.dumps(p)})" for p in [*read_paths, str(cwd)])
+        parents = {str(parent) for p in [*read_paths, str(cwd)] for parent in Path(p).parents}
+        reads += " " + " ".join(f"(literal {json.dumps(p)})" for p in sorted(parents))
+        profile = ("(version 1)(allow default)"
+                   f"(deny file-read-data (require-not (require-any {reads})))"
+                   f"(deny file-write* (require-not (subpath {json.dumps(str(cwd))})))")
+        if network == "block":
+            profile += "(deny network*)"
+        return ["sandbox-exec", "-p", profile]
+    if sys.platform.startswith("linux"):
+        return _prefix(network)  # Landlock is installed by the child before agent code.
+    raise NetworkIsolationError("OS filesystem isolation is supported only on macOS and Linux")
+
 def preferred_network() -> str:
     """The strongest isolation this host supports: an OS-level block if it works here, else 'audit'."""
     try:
@@ -123,12 +165,22 @@ def preferred_network() -> str:
 
 def run_python(code: str, cwd: Path, timeout_s: float = 30.0, mem_limit_mb: int | None = 4096,
                network: str = "block") -> PythonResult:
+    if network not in NETWORK_MODES:
+        raise ValueError(f"network must be one of {NETWORK_MODES}")
+    cwd = cwd.resolve()
+    read_paths = _runtime_paths(_tool_python())
+    scratch = cwd / ".tmp"
+    scratch.mkdir(exist_ok=True)
+    if cwd not in scratch.resolve().parents:
+        raise ValueError("workspace scratch directory may not escape the workspace")
     env = {
         "PATH": os.environ.get("PATH", "/usr/bin:/bin"),
         "HOME": str(cwd),
         "LANG": "C.UTF-8",
         "LC_ALL": "C.UTF-8",
         "MPLBACKEND": "Agg",
+        "TMPDIR": str(scratch),
+        "MPLCONFIGDIR": str(scratch / "matplotlib"),
         "OMP_NUM_THREADS": "1",
         "OPENBLAS_NUM_THREADS": "1",
         "PYTHONDONTWRITEBYTECODE": "1",
@@ -136,8 +188,9 @@ def run_python(code: str, cwd: Path, timeout_s: float = 30.0, mem_limit_mb: int 
     }
     start = time.monotonic()
     proc = subprocess.Popen(
-        _prefix(network) + [_tool_python(), "-I", "-c", _WRAPPER, str(int(timeout_s) + 5), str(mem_limit_mb or 0),
-                            network],
+        _sandbox_prefix(network, cwd, read_paths) + [_tool_python(), "-I", "-c", _WRAPPER,
+                            str(int(timeout_s) + 5), str(mem_limit_mb or 0), network, str(cwd),
+                            _LANDLOCK, json.dumps(read_paths)],
         cwd=cwd, env=env, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
         start_new_session=True,
     )
@@ -185,3 +238,52 @@ def network_selftest(cwd: Path, network: str) -> str:
     if "connected" in out or "dns resolved" in out:
         raise NetworkIsolationError(f"network is reachable from the Python tool ({network}): {out}")
     return out
+
+
+def filesystem_selftest(cwd: Path, network: str) -> str:
+    """Prove both Python and native reads cannot reach a sibling answer-key sentinel."""
+    import tempfile
+    cwd.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(dir=cwd.parent, prefix=".fsprobe-") as td:
+        outside = Path(td) / "answer_key.txt"
+        outside.write_text("outside-workspace-sentinel")
+        link = cwd / ".fsprobe-link"
+        link.symlink_to(outside)
+        try:
+            code = f"""
+import ctypes, os
+for path in ({str(outside)!r}, '.fsprobe-link'):
+    try:
+        open(path).read()
+        raise RuntimeError('outside read succeeded')
+    except PermissionError:
+        pass
+libc = ctypes.CDLL(None)
+fd = libc.open({str(outside).encode()!r}, 0)
+if fd >= 0:
+    os.close(fd)
+    raise RuntimeError('native outside read succeeded')
+open('.fsprobe-inside', 'w').write('ok')
+print('filesystem isolated')
+"""
+            result = run_python(code, cwd, network=network)
+            if result.returncode != 0 or result.stdout.strip() != "filesystem isolated":
+                raise NetworkIsolationError("filesystem self-test failed: " + (result.stderr + result.stdout)[:1000])
+            return result.stdout.strip()
+        finally:
+            link.unlink(missing_ok=True)
+            (cwd / ".fsprobe-inside").unlink(missing_ok=True)
+
+
+def tool_environment() -> dict:
+    """Record the separately configured tool interpreter and spreadsheet-library versions."""
+    code = """
+import importlib.metadata as m,json,sys
+versions={}
+for name in ('numpy','pandas','openpyxl','python-docx'):
+    try: versions[name]=m.version(name)
+    except m.PackageNotFoundError: versions[name]=None
+print(json.dumps({'executable':sys.executable,'python':sys.version,'packages':versions}))
+"""
+    result = subprocess.run([_tool_python(), '-I', '-c', code], capture_output=True, text=True, check=True, timeout=20)
+    return json.loads(result.stdout)

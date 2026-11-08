@@ -1,5 +1,14 @@
 # aiaf_swarm_alignment_hackathon
 
+**November 8 H100 replication.** The layer-six intervention reduced correct belief answers
+from 142/180 to 73/180, with 137/180 under a matched random intervention. On the
+historical 90-item subset, an extra 4,096 tokens recovered five correct L6 answers
+and 12 in each control. The seven-arm specificity check failed. The progress table
+below describes the historical project. [Benchmark results and data](results/belief_replication/README.md) ·
+[Swarm games and transcripts](results/swarm_replication/README.md) ·
+[Missing-filing replay](results/filing_audit/README.md) ·
+[Runnable post-cache-fix protocol](docs/CLEAN_REPLICATION.md)
+
 **削弱 AI agent 的读心能力（ToM）和共情，看一群 agent 在"举报还是沉默"的困境里会怎么做。**
 
 AIAF × Apart **Swarm Alignment Hackathon**（2026-11-06 → 08），Track 2 "Science of agent networks"。

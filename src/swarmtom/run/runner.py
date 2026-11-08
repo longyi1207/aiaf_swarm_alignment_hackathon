@@ -20,10 +20,11 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
-from swarmtom.agent.sandbox import network_selftest
+from swarmtom.agent.sandbox import filesystem_selftest, network_selftest, tool_environment
 from swarmtom.llm.base import Backend
 from swarmtom.run.config import RunConfig
 from swarmtom.run.game import Game
+from swarmtom.run.provenance import ensure_manifest, ensure_runtime, record_session
 from swarmtom.world import generate_world
 from swarmtom.world.sop import check_workspace
 
@@ -37,6 +38,11 @@ def make_backend(cfg: RunConfig) -> Backend:
         from swarmtom.llm.hf import HFBackend
 
         return HFBackend(b.pop("model"), lesions_config=cfg.lesions_config, repo_root=cfg.repo_root, **b)
+    if kind == "vllm_stdio":
+        from swarmtom.llm.stdio import StdioBackend
+
+        return StdioBackend(b.pop("command"), model_config=b,
+                            lesions_file=str(cfg.lesions_config.relative_to(cfg.repo_root)))
     if kind == "vllm":
         from swarmtom.llm.vllm_backend import VLLMBackend
 
@@ -62,10 +68,14 @@ def verify_world(world_dir: Path, gt: dict) -> None:
 
 class Runner:
     def __init__(self, cfg: RunConfig, backend: Backend | None = None, tool_workers: int = 16,
-                 shard: tuple[int, int] = (0, 1)):
+                 shard: tuple[int, int] = (0, 1), arms: list[str] | None = None):
         """shard=(i, n): this process runs only the worlds whose seed is the i-th of every n seeds in
         the design (all arms of those worlds), so n processes can share one run directory."""
         self.cfg = cfg
+        self.arms = set(arms) if arms else None
+        available = {tag for tag, _ in cfg.lesion_assignments(cfg.world.get("n_agents", 5))}
+        if self.arms and self.arms - available:
+            raise ValueError(f"Unknown arm(s): {sorted(self.arms - available)}")
         self.backend = backend
         self.tool_workers = tool_workers
         self.games: list[Game] = []
@@ -85,10 +95,12 @@ class Runner:
 
     def prepare(self, config_path: Path | None = None) -> None:
         self.dir.mkdir(parents=True, exist_ok=True)
+        ensure_manifest(self.cfg)
         if config_path and not (self.dir / "config.yaml").exists():
             shutil.copy2(config_path, self.dir / "config.yaml")
         if self.backend is None:
             self.backend = make_backend(self.cfg)
+        ensure_runtime(self.dir, self.backend.describe(), tool_environment())
         used = self.cfg.conditions_used()
         if used - {"none"} and not self.backend.supports_lesions:
             raise ValueError(f"backend {self.backend.name} cannot apply lesions {sorted(used - {'none'})}")
@@ -99,12 +111,17 @@ class Runner:
         probe_dir = self.dir / f".netprobe{self._sfx}"
         probe_dir.mkdir(exist_ok=True)
         net = network_selftest(probe_dir, self.cfg.protocol.python_network)
+        fs = filesystem_selftest(probe_dir, self.cfg.protocol.python_network)
         self._net = net
         meta = {"started": dt.datetime.now().isoformat(timespec="seconds"), "shard": list(self.shard),
                 "backend": self.backend.describe(),
                 "conditions_used": sorted(used),
-                "python_network": {"mode": self.cfg.protocol.python_network, "selftest": net}}
-        (self.dir / f"run_meta{self._sfx}.json").write_text(json.dumps(meta, indent=2, default=str))
+                "python_network": {"mode": self.cfg.protocol.python_network, "selftest": net},
+                "python_filesystem": {"mode": "os", "selftest": fs},
+                "selected_arms": sorted(self.arms) if self.arms else None}
+        record_session(self.dir, meta)
+        if not (self.dir / f"run_meta{self._sfx}.json").exists():
+            (self.dir / f"run_meta{self._sfx}.json").write_text(json.dumps(meta, indent=2, default=str))
         self._progress = open(self.dir / f"progress{self._sfx}.log", "a", buffering=1)
 
         for spec in self._my_specs():
@@ -118,6 +135,8 @@ class Runner:
                 verify_world(wdir, gt)
                 (wdir / ".verified").write_text(dt.datetime.now().isoformat(timespec="seconds"))
             for tag, lesions in self.cfg.lesion_assignments(spec.n_agents):
+                if self.arms and tag not in self.arms:
+                    continue
                 gdir = self.dir / "games" / f"{spec.world_id}__{tag}"
                 if (gdir / "state.json").exists():
                     self.games.append(Game.load(gdir, self.cfg.protocol))
@@ -171,6 +190,16 @@ class Runner:
             g.save()
         self._log(f"finished {sum(g.finished for g in self.games)}/{len(self.games)} games in {tick} ticks, "
                   f"{time.monotonic() - t0:.0f}s")
+
+    def run_serial_arms(self):
+        """Keep the model resident but run only one intervention's worlds per batch."""
+        all_games = self.games
+        try:
+            for tag in dict.fromkeys(g.s["lesion_tag"] for g in all_games):
+                self.games = [g for g in all_games if g.s["lesion_tag"] == tag]
+                self.run()
+        finally:
+            self.games = all_games
 
     def close(self) -> None:
         for g in self.games:

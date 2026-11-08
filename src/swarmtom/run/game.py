@@ -57,6 +57,7 @@ class AgentState:
     steps_in_phase: int = 0
     warned: bool = False
     grace_left: int = 0
+    own_file_free_turns_used: int = 0
     consecutive_errors: int = 0
     review_log: list[dict] | None = None
     pred1: dict = field(default_factory=dict)  # phase -> estimates
@@ -116,7 +117,7 @@ class Game:
                     deadline.strftime("%A %d %B %Y"), n_batches, protocol.analysis_max_steps, own_files=v3,
                     unread=P.inbox_preview(ws.root / "inbox") if brief_v in ("v4u", "v4su") or brief_v.startswith("v4r")
                     else None,
-                    own_files_free=brief_v.startswith("v4r"))},
+                    own_files_free=brief_v.startswith("v4r"), own_file_free_turns=protocol.own_file_free_turns)},
             ]
             agents[cs] = asdict(AgentState(callsign=cs, vendor=a["vendor"], lesion=lesion,
                                            workspace=str(ws.root), messages=messages))
@@ -219,6 +220,7 @@ class Game:
     def _reset_for_phase(self, a: AgentState, note: str) -> None:
         a.messages.append({"role": "user", "content": note})
         a.status, a.steps_in_phase, a.warned, a.grace_left = "needs_model", 0, False, 0
+        a.own_file_free_turns_used = 0
 
     def _start_round(self, r: int) -> None:
         self.s["round"] = r
@@ -244,12 +246,14 @@ class Game:
         (self.dir / "result.json").write_text(json.dumps(result, indent=2, ensure_ascii=False))
 
     # ------------------------------------------------------------------ model turns
+    def _active_lesion(self, agent: AgentState) -> str:
+        phases = self.p.lesion_phases
+        return agent.lesion if not phases or self.phase in phases else "none"
+
     def request(self, cs: str) -> GenRequest:
         a = self.agents[cs]
-        phases = getattr(self.p, "lesion_phases", None) or []
-        lesion = a.lesion if (not phases or self.phase in phases) else "none"
         return GenRequest(key=f"{self.s['game_id']}/{cs}", messages=a.messages, tools=PHASE_TOOLS[self.phase],
-                          lesion=lesion,
+                          lesion=self._active_lesion(a),
                           meta={"phase": self.phase, "callsign": cs, "workspace": a.workspace,
                                 "others": self.others(cs), "round": self.s["round"],
                                 "posted_this_round": a.posted_this_round})
@@ -270,7 +274,7 @@ class Game:
         if res.error:
             a.stats["backend_errors"] += 1
             a.consecutive_errors += 1
-            self._event(cs, "backend_error", error=res.error, lesion=a.lesion)
+            self._event(cs, "backend_error", error=res.error, lesion=self._active_lesion(a), assigned_lesion=a.lesion)
             if a.consecutive_errors >= MAX_CONSECUTIVE_BACKEND_ERRORS:
                 self._force_end(a, "backend_error")
             return
@@ -286,13 +290,18 @@ class Game:
         if res.reasoning:
             msg["reasoning"] = res.reasoning  # kept for the transcript; backends do not send it back
         a.messages.append(msg)
-        self._event(cs, "model", lesion=a.lesion, content=res.content, reasoning=res.reasoning, raw=res.raw,
+        self._event(cs, "model", lesion=self._active_lesion(a), assigned_lesion=a.lesion,
+                    content=res.content, reasoning=res.reasoning, raw=res.raw,
                     tool_calls=[{"name": c.name, "arguments": c.arguments} for c in calls],
                     parse_errors=res.parse_errors, prompt_tokens=res.prompt_tokens,
                     completion_tokens=res.completion_tokens)
         a.steps_in_phase += 1
-        if self.s.get("own_files_free") and calls and all(_reads_own_file(c.name, c.arguments) for c in calls):
-            a.steps_in_phase -= 1  # v4r: reading one's own files (inbox/, hr/, personal/) does not use up steps
+        if (phase == "analysis" and self.s.get("own_files_free") and calls
+                and a.own_file_free_turns_used < self.p.own_file_free_turns
+                and len(calls) <= self.p.max_tool_calls_per_message
+                and all(_reads_own_file(c.name, c.arguments) for c in calls)):
+            a.steps_in_phase -= 1
+            a.own_file_free_turns_used += 1
         ended = False
         for i, c in enumerate(calls):
             if ended:
