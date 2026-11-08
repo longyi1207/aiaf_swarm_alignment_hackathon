@@ -96,12 +96,13 @@ def main():
     p.add_argument('--out', type=Path, required=True)
     p.add_argument('--revision', required=True)
     p.add_argument('--cache', choices=('on','off'), required=True)
+    p.add_argument('--gpu-memory-utilization', type=float, default=.38)
     args=p.parse_args()
     args.out.mkdir(parents=True, exist_ok=False)
     model=VLLMBackend('Qwen/Qwen3.5-9B',lesions_config=ROOT/'configs/lesions.yaml',repo_root=ROOT,
                       revision=args.revision, enable_prefix_caching=args.cache=='on',enable_thinking=True,
                       enforce_eager=True,temperature=0.0,max_prompt_tokens=2048,max_new_tokens=4096,
-                      gpu_memory_utilization=.86)
+                      gpu_memory_utilization=args.gpu_memory_utilization)
     (args.out/'runtime.json').write_text(json.dumps({'backend':model.describe(),'packages':runtime_versions()},indent=2))
     data=items(); rows=[]
     with (args.out/'raw.jsonl').open('x') as raw_file:
