@@ -1,5 +1,13 @@
 # results/：汇总结果（2026-11-06 至 11-08）
 
+> **11 月 8 日的关缓存复现（nociza）在这几个子目录里，比下面的历史结果更可靠，先看它们**：
+> [`belief_replication/`](belief_replication/README.md)（ToM v2 信念测试，关掉前缀缓存重跑）·
+> [`swarm_replication/`](swarm_replication/README.md)（7 组游戏的关缓存验证）·
+> [`filing_audit/`](filing_audit/README.md)（L6 组没提交的原因）·
+> [`transcript_audit/`](transcript_audit/README.md)（被截断的思考被当成回复送回对话的解析问题）·
+> 复现流程 [`docs/CLEAN_REPLICATION.md`](../docs/CLEAN_REPLICATION.md)。
+> 下面的 `main_v4/`、`dose_checks/` 等是 11 月 6–8 日原始运行的汇总（历史结果）。
+
 这里只放小的汇总文件（共几百 KB），方便查看和复现分析。原始数据（每个 agent 的完整对话、思考和工具调用，`runs/*/games/*/events.jsonl` 等，约 600 MB）不进 git，保存在 LY 本地的 `runs/` 目录。结果解读见 `docs/结果_2026-11-07.md`，方法见 `docs/ToM_v2_方法.md`，每一步预先写下的规则和改动见 `docs/设计.md` §8。
 
 | 目录 / 文件 | 内容 |
