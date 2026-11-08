@@ -77,7 +77,7 @@ def add_inline(par, text, size=BODY_PT, base_bold=False, base_italic=False):
                 set_font(r, size, True, False); r.font.highlight_color = WD_COLOR_INDEX.YELLOW
 
 
-def para_format(par, after=5, before=0, line=1.12, align=None, keep_next=False, indent=None, first=None):
+def para_format(par, after=4, before=0, line=1.08, align=None, keep_next=False, indent=None, first=None):
     pf = par.paragraph_format
     pf.space_after, pf.space_before, pf.line_spacing = Pt(after), Pt(before), line
     if align is not None:
@@ -204,6 +204,8 @@ class Builder:
         for gc, w in zip(grid.findall(qn("w:gridCol")), widths):
             gc.set(qn("w:w"), str(int(w * 1440)))
         for i, row in enumerate(rows):
+            trpr = tbl.rows[i]._tr.get_or_add_trPr()
+            cs = OxmlElement("w:cantSplit"); trpr.append(cs)
             for j, val in enumerate(row):
                 cell = tbl.cell(i, j)
                 cell.width = Inches(widths[j])
@@ -212,7 +214,7 @@ class Builder:
                 add_inline(p, val, 9.2, base_bold=(i == 0))
                 para_format(p, after=1, before=1, line=1.0,
                             align=WD_ALIGN_PARAGRAPH.LEFT if j == 0 else WD_ALIGN_PARAGRAPH.CENTER,
-                            indent=0.15 if indent else None)
+                            indent=0.15 if indent else None, keep_next=(i < len(rows) - 1))
         # booktabs-style rules: top, below header, bottom
         tblpr = tbl._tbl.tblPr
         borders = OxmlElement("w:tblBorders")

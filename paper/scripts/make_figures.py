@@ -39,7 +39,7 @@ def fig_discussion():
     (b, c) external reports per game without and with discussion in the same matched worlds."""
     d = json.loads((DATA / "discussion_dispersion.json").read_text())
     base = json.loads((DATA / "baseline_runs.json").read_text())
-    fig, axes = plt.subplots(1, 3, figsize=(6.5, 2.7), gridspec_kw={"width_ratios": [0.9, 1.2, 1.2]})
+    fig, axes = plt.subplots(1, 3, figsize=(6.5, 2.5), gridspec_kw={"width_ratios": [0.9, 1.2, 1.2]})
     # (a) baseline: pooled share reporting externally (bars) and each run's share (dots); everyone else filed internally
     ax = axes[0]
     harms = ["low", "medium", "high"]
@@ -139,7 +139,7 @@ def fig_interventions():
                         Patch(facecolor=GRAY, hatch="////", edgecolor="white", label="Never submitted a valid report")],
                loc="lower center", ncol=3, frameon=False, bbox_to_anchor=(0.62, -0.08), fontsize=7.6, handlelength=1.3)
     fig.tight_layout(w_pad=2.0)
-    fig.savefig(OUT / "fig3_interventions.png")
+    fig.savefig(OUT / "fig4_games.png")
     plt.close(fig)
 
 
@@ -178,7 +178,7 @@ def fig_steering():
     ax.set_xlabel("Theory-of-mind direction: subtracted (−) or added (+), in multiples of its natural size")
     ax.set_ylabel("Correct answers")
     fig.tight_layout()
-    fig.savefig(OUT / "fig4_steering.png")
+    fig.savefig(OUT / "fig3_steering.png")
     plt.close(fig)
 
 
