@@ -169,6 +169,38 @@ Reconstructing the saved ToM vector by projecting the raw contrast off the bysta
 
 The generator reproduces identical batch classifications across medium/high harm for the nine tested seeds. Remaining contract pay also matches across harm for historical main seeds 201 and 202 and fresh main seeds 401 and 402. At calibration seeds 331 and 332, pay changes for five and three agents respectively. At workflow seed 351, all five contracts change. Harm generation consumes a variable number of random draws before contract generation. Fresh gated plans now draw contracts from a separate seed stream. The descriptive replay retains the original draws and world IDs. `input_audit.json` contains each agent's values and vector hashes.
 
+## Experiments that can distinguish the mechanisms
+
+1. **Test whether releasing L6 breaks a loop.** Save exact token IDs at fixed checkpoints
+   in each trajectory. From *the same prefix*, randomize continued L6, restored normal
+   activations or a matched random intervention for an equal remaining budget. Measure
+   correct final answers and the first return to a previously repeated span. Include
+   scheduled checkpoints from all trajectories alongside checkpoints selected for repetition.
+   The current extension shows that 25 L6 trajectories remained unfinished despite more
+   time. Switching the intervention tests whether it actively maintains that state.
+2. **Match the nonsocial control to the reasoning demand.** Write paired stories about
+   a person who can miss an update and a sensor whose stored record can become stale.
+   Cross actual access with a second observer's or recorder's estimate of access. Use
+   separate pilot settings to bring baseline completion, accuracy and token use into
+   overlapping ranges. Freeze the templates and evaluate new settings. The existing
+   reality/memory ceiling and the difficult conflict condition leave room for a general
+   state-tracking or compute explanation.
+3. **Make pivotality identifiable in the swarm.** Ask each auditor for the probability
+   that exactly zero, one, two, three or four peers will file externally. At threshold
+   three, the auditor's filing opens an otherwise unopened audit exactly when two peers
+   file. Four marginal probabilities of 0.5 allow that pivotal event to have probability
+   anywhere from zero to one. Independence gives 0.375. Randomize verified peer
+   commitments and, separately, whether forfeited pay goes to silent peers or into
+   escrow. Hold the evidence, patient's risk and personal retaliation fixed. This
+   distinguishes coordination from a financial incentive to stay silent.
+4. **Isolate the actual decision and its transmission.** Give all arms the same completed
+   evidence review and the same messages up to filing. Cross L6 and random L6 with these
+   fixed histories, then repeat with one randomly assigned intervened agent in a live
+   group. Compare external, internal and missing decisions, peer forecasts, and the
+   resulting audit. This tests whether a change in one agent propagates to peers after
+   the reviewer has demonstrably found the fabrication. Use independent world seeds as
+   the unit for power calculations and reserve new seeds for confirmation.
+
 ## Reproduce
 
 Use the environment in `beliefs/runtime.json` with the pinned weights and the committed vectors. Run from the checkout root.
