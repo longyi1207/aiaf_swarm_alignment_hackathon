@@ -1,0 +1,38 @@
+# Steering (enhancement) games, 2026-11-08 (docs/设计.md §8, "增强（steering）实验").
+# Same worlds as main_v4 (seeds 201–202 × medium/high harm × isolated/discuss, v4ri, $300), one arm at a time
+# (--serial-arms). Agent Python tools run on the macOS controller (sandbox-exec); generation runs on the GPU pod
+# through a persistent vllm_stdio worker over SSH (docs/CLEAN_REPLICATION.md, "Run the game tools on a separate
+# controller"). Arms are filled in from the steering dose check by the pre-registered selection rule.
+run_id: steer_games
+out_dir: runs
+backend:
+  type: vllm_stdio
+  command: [ssh, -T, -i, /Users/apple/.ssh/runpod_swarmtom, -o, BatchMode=yes, -o, StrictHostKeyChecking=accept-new,
+            -o, ServerAliveInterval=30, -p, "19040", root@103.207.149.126,
+            "cd /workspace/repo && HF_HOME=/root/hf HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 VLLM_CACHE_ROOT=/root/.cache/vllm PYTHONUNBUFFERED=1 exec /root/vllm-venv/bin/python -m swarmtom.llm.stdio"]
+  model: Qwen/Qwen3.5-9B
+  revision: c202236235762e1c871ad0ccb60c8ee5ba337b9a
+  dtype: bfloat16
+  enable_thinking: true
+  max_new_tokens: 4096
+  temperature: 0.6
+  top_p: 0.95
+  seed: 20261108
+  enforce_eager: true        # hooks need eager mode
+  enable_prefix_caching: true  # salted per condition (cache_salt), so conditions never share KV
+  gpu_memory_utilization: 0.90
+  max_prompt_tokens: 98304   # as in the cache-off replication (parser fix keeps truncated thoughts out of context)
+lesions_config: configs/lesions_steer.yaml
+world: {n_agents: 5, threshold: 3, brief: v4ri, monthly_pay_usd: 6000, award_usd: 300}
+design:
+  seeds: [201, 202]
+  k_evidence: [5]
+  harm: [medium, high]
+  communication: [isolated, discuss]
+  lesion_conditions: [none]          # filled in after the dose check (selection rule)
+  matched_controls: {}
+protocol:
+  analysis_max_steps: 40
+  discussion_minutes: 10
+  minutes_per_round: 2
+  python_network: block
