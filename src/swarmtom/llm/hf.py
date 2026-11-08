@@ -19,7 +19,7 @@ import torch
 from swarmtom.lesion.conditions import load_conditions
 from swarmtom.lesion.hooks import LesionController
 from swarmtom.llm.base import Backend, GenRequest, GenResult
-from swarmtom.llm.parse import parse_output
+from swarmtom.llm.parse import REASONING_HISTORY_POLICY, parse_output
 from swarmtom.llm.formatting import _for_template, cut_at_stop, stop_token_ids
 
 log = logging.getLogger(__name__)
@@ -123,6 +123,7 @@ class HFBackend(Backend):
 
     def describe(self) -> dict:
         return {"name": self.name, "model": self.model_name, "device": str(self.device),
+                "reasoning_history_policy": REASONING_HISTORY_POLICY,
                 "enable_thinking": self.enable_thinking, "max_new_tokens": self.max_new_tokens,
                 "temperature": self.temperature, "top_p": self.top_p, "batch_size": self.batch_size,
                 "token_budget": self.token_budget, "lesion_vectors": self.provenance}
@@ -209,8 +210,9 @@ class HFBackend(Backend):
         for i, r in enumerate(reqs):
             new = cut_at_stop(gen[i, prompt_len:].tolist(), stops)
             raw = self.tokenizer.decode(new, skip_special_tokens=False)
-            reasoning, content, calls, errors = parse_output(raw)
             n_new = len(new)
+            capped_think = n_new == max_new_tokens and texts[i].rstrip().endswith("<think>")
+            reasoning, content, calls, errors = parse_output(raw, capped_think_prefill=capped_think)
             results.append(GenResult(key=r.key, content=content, reasoning=reasoning, tool_calls=calls, raw=raw,
                                      prompt_tokens=int(enc["attention_mask"][i].sum()), completion_tokens=n_new,
                                      parse_errors=errors))

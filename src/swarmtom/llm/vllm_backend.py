@@ -23,7 +23,7 @@ import time
 from pathlib import Path
 
 from swarmtom.llm.base import Backend, GenRequest, GenResult
-from swarmtom.llm.parse import parse_output
+from swarmtom.llm.parse import REASONING_HISTORY_POLICY, parse_output
 
 log = logging.getLogger(__name__)
 
@@ -157,6 +157,7 @@ class VLLMBackend(Backend):
                 "temperature": self.temperature, "top_p": self.top_p, "enforce_eager": self.enforce_eager,
                 "prefix_caching": self.enable_prefix_caching, "prefix_cache_key": "lesion_condition_v1",
                 "seed": self.seed, "seed_policy": "request_prompt_v1",
+                "reasoning_history_policy": REASONING_HISTORY_POLICY,
                 "max_prompt_tokens": self.max_prompt_tokens, "revision": self.revision,
                 "lesion_vectors": self.provenance}
 
@@ -198,8 +199,12 @@ class VLLMBackend(Backend):
                 raise KeyError(f"lesion condition {cond} not available (unknown, or enforce_eager is off)")
             idx = groups[cond]
             prompts, keep = [], []
+            think_prefills = set()
             for i in idx:
-                ids = self.tokenizer(self.render(requests[i]), add_special_tokens=False)["input_ids"]
+                rendered = self.render(requests[i])
+                ids = self.tokenizer(rendered, add_special_tokens=False)["input_ids"]
+                if rendered.rstrip().endswith("<think>"):
+                    think_prefills.add(i)
                 if len(ids) > self.max_prompt_tokens:
                     out[i] = GenResult(key=requests[i].key, error=f"prompt too long ({len(ids)} tokens)")
                     continue
@@ -224,7 +229,8 @@ class VLLMBackend(Backend):
             for i, p, o in zip(keep, prompts, res):
                 new = cut_at_stop(list(o.outputs[0].token_ids), stops)
                 raw = self.tokenizer.decode(new, skip_special_tokens=False)
-                reasoning, content, calls, errors = parse_output(raw)
+                capped = getattr(o.outputs[0], "finish_reason", None) == "length" or len(new) == budget
+                reasoning, content, calls, errors = parse_output(raw, capped_think_prefill=capped and i in think_prefills)
                 out[i] = GenResult(key=requests[i].key, content=content, reasoning=reasoning, tool_calls=calls,
                                    raw=raw, prompt_tokens=len(p["prompt_token_ids"]), completion_tokens=len(new),
                                    parse_errors=errors, cached_prompt_tokens=getattr(o, "num_cached_tokens", None))

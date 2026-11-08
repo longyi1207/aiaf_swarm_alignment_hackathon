@@ -17,6 +17,7 @@ _TOOL_BLOCK = re.compile(r"<tool_call>\s*(.*?)\s*(?:</tool_call>|$)", re.S)
 _XML_FN = re.compile(r"<function=([^>\s]+)>\s*(.*?)\s*</function>", re.S)
 _XML_PARAM = re.compile(r"<parameter=([^>\s]+)>\s*(.*?)\s*</parameter>", re.S)
 _SPECIAL = ("<|im_end|>", "<|endoftext|>", "<|im_start|>", "</s>", "<eos>")
+REASONING_HISTORY_POLICY = "hide_capped_unclosed_prefill_v1"
 
 
 def _xml_value(v: str):
@@ -36,11 +37,15 @@ def split_reasoning(text: str) -> tuple[str, str]:
     return "", text
 
 
-def parse_output(raw: str) -> tuple[str, str, list[ToolCall], list[str]]:
+def parse_output(raw: str, *, capped_think_prefill: bool = False) -> tuple[str, str, list[ToolCall], list[str]]:
     """Return (reasoning, content, tool_calls, parse_errors)."""
     text = raw
     for tok in _SPECIAL:
         text = text.replace(tok, "")
+    # Some chat templates put the opening tag in the prompt. At a length stop,
+    # an unclosed thought must stay out of the next prompt and tool dispatcher.
+    if capped_think_prefill and "</think>" not in text:
+        return text.removeprefix("<think>").strip(), "", [], []
     reasoning, rest = split_reasoning(text)
     calls: list[ToolCall] = []
     errors: list[str] = []
