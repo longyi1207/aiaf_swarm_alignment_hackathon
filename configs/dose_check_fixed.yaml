@@ -1,0 +1,21 @@
+# 修复缓存串用之后的剂量重测（2026-11-07 23:45，方案 A）：每个条件的前缀缓存独立（cache_salt）。主实验用到的 ToM 候选 + 共情 + 各自随机对照 + none；
+# tom2 / tom2ctl / 共情 / 一般能力，思考预算 4096。同时给出修正后的 ToM 效应和双重分离（共情损伤对 tom2 的影响）。
+run_id: dose_check_fixed
+out_dir: runs
+backend:
+  type: vllm
+  model: Qwen/Qwen3.5-9B
+  dtype: bfloat16
+  device: auto
+  temperature: 0.0
+  enforce_eager: true
+  gpu_memory_utilization: 0.90
+lesions_config: configs/lesions.yaml
+conditions: [none, tom2_L6, rand2_L6, tom2_all_a30, rand2_all_a30, tom2_mid, rand2_mid, emp, random]
+thinking: [true]
+max_tokens_thinking: {tom2: 4096, tom2ctl: 4096, empathy: 4096, capability: 4096}
+tasks: [tom2, tom2ctl, empathy, capability]
+limit: {tom2: 90, tom2ctl: 72}   # 修订：前 6 个场景的全部 5 种信念题型；前 9 个场景的现实 / 记忆题
+chunk: 4096
+judge:
+  type: hf_self
