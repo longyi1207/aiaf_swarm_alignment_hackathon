@@ -45,6 +45,7 @@ def backend(monkeypatch):
     monkeypatch.setitem(sys.modules, 'vllm', vllm)
     monkeypatch.setitem(sys.modules, 'vllm.inputs', inputs)
     b = VLLMBackend.__new__(VLLMBackend)
+    b.enable_prefix_caching = True
     b.seed, b._calls, b.temperature, b.top_p = 7, 0, 0.6, .95
     b.max_new_tokens, b.max_prompt_tokens = 10, 100
     b.stop_ids, b.uses_lesions = [], True

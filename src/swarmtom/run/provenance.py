@@ -43,6 +43,9 @@ def identity(cfg, kind: str) -> dict:
 
 def git_snapshot(root: Path) -> dict:
     def git(*args):
+        import shutil
+        if shutil.which("git") is None:
+            return None
         result = subprocess.run(['git', '-C', str(root), *args], capture_output=True, text=True)
         return result.stdout.strip() if result.returncode == 0 else None
     return {'commit': git('rev-parse', 'HEAD'), 'dirty': bool(git('status', '--porcelain', '--untracked-files=no'))}

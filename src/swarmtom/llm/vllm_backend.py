@@ -205,7 +205,10 @@ class VLLMBackend(Backend):
                     continue
                 # cache_salt keys the prefix cache by lesion condition: without it, a group reused prompt KV that
                 # another condition (or no lesion) had computed for the same tokens (fixed 2026-11-07 23:35).
-                prompts.append(TokensPrompt(prompt_token_ids=ids, cache_salt=f"lesion:{cond}"))
+                prompt = TokensPrompt(prompt_token_ids=ids)
+                if self.enable_prefix_caching:
+                    prompt["cache_salt"] = f"lesion:{cond}"
+                prompts.append(prompt)
                 keep.append(i)
             if not keep:
                 continue
@@ -224,7 +227,7 @@ class VLLMBackend(Backend):
                 reasoning, content, calls, errors = parse_output(raw)
                 out[i] = GenResult(key=requests[i].key, content=content, reasoning=reasoning, tool_calls=calls,
                                    raw=raw, prompt_tokens=len(p["prompt_token_ids"]), completion_tokens=len(new),
-                                   parse_errors=errors)
+                                   parse_errors=errors, cached_prompt_tokens=getattr(o, "num_cached_tokens", None))
         return out  # type: ignore[return-value]
 
     def close(self) -> None:

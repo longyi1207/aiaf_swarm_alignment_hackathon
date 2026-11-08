@@ -114,7 +114,7 @@ def test_cache_audit_gate_compares_worker_outputs(tmp_path, monkeypatch, contami
                    '1/game/none': {'raw_sha256': 'baseline', 'tokens': 3}}
         if contaminated and mode == 'reverse':
             outputs['1/game/none']['raw_sha256'] = 'contaminated'
-        (out / f'{mode}.json').write_text(json.dumps({'outputs': outputs, 'packages': {}}))
+        (out / f'{mode}.json').write_text(json.dumps({'outputs': outputs, 'packages': {}, 'cached_tokens': {'1/game/none': 64 if mode != 'off' else 0}}))
     monkeypatch.setattr(check.subprocess, 'run', fake_worker)
     monkeypatch.setattr(check, 'git_snapshot', lambda root: {})
     code = check.main(['--config', str(config), '--out', str(out)])
