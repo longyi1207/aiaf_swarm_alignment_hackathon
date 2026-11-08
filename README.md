@@ -1,8 +1,11 @@
 # aiaf_swarm_alignment_hackathon
 
-**Clean replication (2026-11-08):** see [the runnable post-cache-fix runbook](docs/CLEAN_REPLICATION.md).
-The progress table below is historical. Pre-fix results need a cache-contamination audit;
-new runs use immutable manifests and cannot adopt legacy checkpoints.
+**November 8 H100 replication.** The layer-six intervention reduced correct belief answers
+from 142/180 to 73/180, with 137/180 under a matched random intervention. On the
+historical 90-item subset, an extra 4,096 tokens recovered five correct L6 answers
+and 12 in each control. The seven-arm specificity check failed. The progress table
+below describes the historical project. [Replication results and data](results/belief_replication/README.md) ·
+[Runnable post-cache-fix protocol](docs/CLEAN_REPLICATION.md)
 
 **削弱 AI agent 的读心能力（ToM）和共情，看一群 agent 在"举报还是沉默"的困境里会怎么做。**
 
