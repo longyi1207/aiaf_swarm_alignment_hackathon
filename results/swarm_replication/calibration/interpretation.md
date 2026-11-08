@@ -15,6 +15,15 @@ outcomes. At high harm the two discussion groups produced five and one external 
 The two isolated groups produced two and three. Both medium-harm discussion groups
 filed unanimously internally.
 
+In the high-harm discussion at seed 331, the 20 peer-filing forecasts averaged 0.186
+before discussion and 0.960 afterward. All five auditors then filed externally. Their
+mean filing Brier score improved from 0.686 to 0.004 (lower is better). At seed 332,
+the corresponding high-harm forecasts moved from 0.214 to 0.184 and one auditor filed
+externally. The same discussion opportunity produced different forecast updates and
+collective outcomes in two worlds. Because peers can jointly change their intentions
+during discussion, this comparison alone cannot establish a causal role for belief
+updating. [Per-agent pre/post scores](agents.csv) · [Event transcripts](games/)
+
 Under each auditor's own final peer marginals, external filing reduced expected pay
 for **35/40** auditors under every compatible joint distribution of peer actions.
 Seven of those 35 filed externally anyway. All 28 internal filers were in that group.
