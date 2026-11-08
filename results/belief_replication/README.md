@@ -14,6 +14,29 @@ The matched random comparison gives a similar pattern. L6 and random scored 41 a
 
 ![Answer status and paired wording contrasts](beliefs/results.png)
 
+## Does more reasoning time recover an answer?
+
+We continued all 64 unfinished original responses with the same active intervention and
+up to 4,096 additional tokens. The extra budget widened the baseline–L6 accuracy gap from
+21 to 28 answers. Every retokenized prefix decoded to the original text and matched the
+original token count. The archive stores text, so exact identity of the historical token
+IDs cannot be checked.
+
+| Condition | Newly finished / extended | Newly correct | Adaptive score / 90 | Both second-order questions correct / 18 stories |
+|---|---:|---:|---:|---:|
+| None | 13 / 17 | 12 | 80 | 17 |
+| ToM L6 | 6 / 31 | 5 | 52 | 4 |
+| Random L6 | 13 / 16 | 12 | 83 | 16 |
+
+All 25 L6 continuations that remained unfinished contained a sequence of 64 words
+repeated verbatim at least three times in disjoint positions. The corresponding counts
+were three of four for baseline and two of three for random L6. Repetition also appeared
+under the original 4,096-token limit on 11/31 unfinished L6 replies, 1/17 baseline and
+0/16 random. This exploratory measure lowercases words and ignores punctuation. Its
+16- and 32-word sensitivity checks are in the [paired analysis](extensions/analysis.json).
+The [continuations](extensions/extensions.jsonl.gz) and [adaptive scores](extensions/report.json)
+preserve the longer-budget experiment separately from the original scores.
+
 ## Wording experiment
 
 Thirty-six of 180 full-benchmark questions explicitly say “Without X seeing” before saying X saw the move. Eighteen appear in the historical 90-item subset. We kept the original data intact and tested a location-only rewrite. A second set of 18 consistent items underwent a comparable wording edit. Each comparison preserves the question, choices, answer and six scenario blocks.

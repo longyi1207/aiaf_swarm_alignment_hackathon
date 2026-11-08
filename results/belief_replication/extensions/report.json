@@ -1,0 +1,29 @@
+{
+  "none": {
+    "original_n": 90,
+    "extended": 17,
+    "same_prefix_token_count": 17,
+    "newly_finished": 13,
+    "newly_correct": 12,
+    "adaptive_correct": 80,
+    "adaptive_finished": 86
+  },
+  "tom2_L6": {
+    "original_n": 90,
+    "extended": 31,
+    "same_prefix_token_count": 31,
+    "newly_finished": 6,
+    "newly_correct": 5,
+    "adaptive_correct": 52,
+    "adaptive_finished": 65
+  },
+  "rand2_L6": {
+    "original_n": 90,
+    "extended": 16,
+    "same_prefix_token_count": 16,
+    "newly_finished": 13,
+    "newly_correct": 12,
+    "adaptive_correct": 83,
+    "adaptive_finished": 87
+  }
+}

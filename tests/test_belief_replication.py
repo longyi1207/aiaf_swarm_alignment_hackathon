@@ -43,3 +43,10 @@ def test_crossed_perspective_labels_match_both_questions_and_balance_position():
     report = probe['summarize'](oracle)
     assert all(c['conflict']['both_valid_same_letter'] == 0 and c['conflict']['both_correct'] == 24
                and c['aligned']['both_valid_same_letter'] == 24 for c in report.values())
+
+
+def test_repetitions_require_three_disjoint_spans():
+    analyze = runpy.run_path(str(Path(__file__).resolve().parents[1] / 'scripts/analyze_belief_extensions.py'))
+    repeated = analyze['repeated_three_times']
+    assert repeated('A b c.  A, b c!  a b c', 3)
+    assert not repeated('a a a a a a a a', 3)
