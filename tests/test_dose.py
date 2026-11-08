@@ -30,6 +30,19 @@ def test_scoring():
     assert parse_judge('<think>ok</think>{"score": 12}') is None and parse_judge("nope") is None
 
 
+def test_capability_accepts_equivalent_counts_and_rejects_partial_tokens():
+    def correct(expected, text):
+        return score_objective("capability", {"answer": expected}, text)["correct"]
+
+    assert correct("six", "A hexagon has **6** sides.")
+    assert correct("eight", "A spider has 8 legs.")
+    assert correct("2", "It is two.") and correct("100", "100.0 °C")
+    assert not correct("O", "The chemical symbol is Co.")
+    assert not correct("Au", "The Latin name is aurum.")
+    assert not correct("eight", "18 legs.")
+    assert not correct("0", "10.5°C") and not correct("9", "-9.") and not correct("2", "2.5.")
+
+
 class FakeBackend(Backend):
     """'tom*' lesions answer ToM items wrong, 'emp*' lesions give flat replies; capability always right."""
 
