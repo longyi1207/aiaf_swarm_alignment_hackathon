@@ -1,0 +1,21 @@
+# 双重分离检查（2026-11-07）：主实验的共情损伤（emp = emp_coarse_all_a70）和它的随机对照，在新的 ToM 测试（tom2 / tom2ctl，思考预算 4096）上测。
+# 预期：共情损伤不降低 tom2（与 ToM 损伤降低 tom2、不降低共情构成双重分离）。主实验结束后、关机前运行。
+run_id: dose_check_dissoc
+out_dir: runs
+backend:
+  type: vllm
+  model: Qwen/Qwen3.5-9B
+  dtype: bfloat16
+  device: auto
+  temperature: 0.0
+  enforce_eager: true
+  gpu_memory_utilization: 0.90
+lesions_config: configs/lesions.yaml
+conditions: [none, emp, random]
+thinking: [true]
+max_tokens_thinking: {tom2: 4096, tom2ctl: 4096, empathy: 4096, capability: 4096}
+tasks: [tom2, tom2ctl]
+limit: {tom2: 90, tom2ctl: 72}   # 修订：前 6 个场景的全部 5 种信念题型；前 9 个场景的现实 / 记忆题
+chunk: 4096
+judge:
+  type: hf_self
