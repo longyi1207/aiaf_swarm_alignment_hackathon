@@ -1,0 +1,116 @@
+{
+  "none": {
+    "original_correct": 68,
+    "legacy_correct": 78,
+    "original_n": 90,
+    "original_finished": 73,
+    "original_truncated": 17,
+    "mean_tokens": 1720.1666666666667,
+    "visibility": {
+      "n": 18,
+      "original": {
+        "correct": 13,
+        "finished": 15
+      },
+      "rewrite": {
+        "correct": 14,
+        "finished": 14
+      }
+    },
+    "location": {
+      "n": 18,
+      "original": {
+        "correct": 16,
+        "finished": 16
+      },
+      "rewrite": {
+        "correct": 17,
+        "finished": 17
+      }
+    },
+    "repair_minus_control": {
+      "delta_accuracy": 0.0,
+      "scenario_bootstrap_95": [
+        -0.3333333333333333,
+        0.3333333333333333
+      ],
+      "scenarios": 6
+    }
+  },
+  "tom2_L6": {
+    "original_correct": 47,
+    "legacy_correct": 62,
+    "original_n": 90,
+    "original_finished": 59,
+    "original_truncated": 31,
+    "mean_tokens": 2229.9666666666667,
+    "visibility": {
+      "n": 18,
+      "original": {
+        "correct": 4,
+        "finished": 9
+      },
+      "rewrite": {
+        "correct": 6,
+        "finished": 7
+      }
+    },
+    "location": {
+      "n": 18,
+      "original": {
+        "correct": 8,
+        "finished": 10
+      },
+      "rewrite": {
+        "correct": 6,
+        "finished": 7
+      }
+    },
+    "repair_minus_control": {
+      "delta_accuracy": 0.2222222222222222,
+      "scenario_bootstrap_95": [
+        -0.2222222222222222,
+        0.6666666666666666
+      ],
+      "scenarios": 6
+    }
+  },
+  "rand2_L6": {
+    "original_correct": 71,
+    "legacy_correct": 81,
+    "original_n": 90,
+    "original_finished": 74,
+    "original_truncated": 16,
+    "mean_tokens": 1768.1555555555556,
+    "visibility": {
+      "n": 18,
+      "original": {
+        "correct": 13,
+        "finished": 14
+      },
+      "rewrite": {
+        "correct": 15,
+        "finished": 15
+      }
+    },
+    "location": {
+      "n": 18,
+      "original": {
+        "correct": 16,
+        "finished": 16
+      },
+      "rewrite": {
+        "correct": 18,
+        "finished": 18
+      }
+    },
+    "repair_minus_control": {
+      "delta_accuracy": 0.0,
+      "scenario_bootstrap_95": [
+        -0.16666666666666666,
+        0.16666666666666666
+      ],
+      "scenarios": 6
+    }
+  }
+}
