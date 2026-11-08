@@ -38,6 +38,11 @@ def make_backend(cfg: RunConfig) -> Backend:
         from swarmtom.llm.hf import HFBackend
 
         return HFBackend(b.pop("model"), lesions_config=cfg.lesions_config, repo_root=cfg.repo_root, **b)
+    if kind == "vllm_stdio":
+        from swarmtom.llm.stdio import StdioBackend
+
+        return StdioBackend(b.pop("command"), model_config=b,
+                            lesions_file=str(cfg.lesions_config.relative_to(cfg.repo_root)))
     if kind == "vllm":
         from swarmtom.llm.vllm_backend import VLLMBackend
 
