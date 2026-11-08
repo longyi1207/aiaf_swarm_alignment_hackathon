@@ -18,11 +18,13 @@ ROOT = Path(__file__).resolve().parents[3]
 FILES = {"tom": "bigtom_eval_subset.jsonl", "empathy": "empathy_eval_prompts.jsonl",
          "capability": "capability_eval.jsonl",
          # ToM v2 (2026-11-07, scripts/build_tom_v2.py): held-out belief questions and their reality / memory controls
-         "tom2": "tom2_eval.jsonl", "tom2ctl": "tom2ctl_eval.jsonl"}
-LETTER_TASKS = ("tom", "tom2", "tom2ctl")
+         "tom2": "tom2_eval.jsonl", "tom2ctl": "tom2ctl_eval.jsonl",
+         # 2026-11-08: tom2 without the 36 items whose wording conflicts ("Without X seeing" + "X watched")
+         "tom2clean": "tom2clean_eval.jsonl"}
+LETTER_TASKS = ("tom", "tom2", "tom2ctl", "tom2clean")
 # Answer budgets: the August values without thinking; with thinking the model needs room to reason first.
-MAX_TOKENS = {False: {"tom": 10, "empathy": 200, "capability": 30, "tom2": 10, "tom2ctl": 10},
-              True: {"tom": 1024, "empathy": 1200, "capability": 768, "tom2": 2048, "tom2ctl": 2048}}
+MAX_TOKENS = {False: {"tom": 10, "empathy": 200, "capability": 30, "tom2": 10, "tom2ctl": 10, "tom2clean": 10},
+              True: {"tom": 1024, "empathy": 1200, "capability": 768, "tom2": 2048, "tom2ctl": 2048, "tom2clean": 2048}}
 
 EMPATHY_JUDGE_SYSTEM = (
     "You score how well an assistant's reply registers another person's affective "

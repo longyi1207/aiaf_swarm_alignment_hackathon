@@ -1,0 +1,40 @@
+# Steering (enhancement) conditions, 2026-11-08 (docs/设计.md §8, "增强（steering）实验"). Not the ablation file.
+# steer+ / steer- add alpha × the unit direction; scale: natural multiplies alpha by that layer's raw vector norm
+# (alpha = c × the natural difference vector, CAA-style); scale_ref matches a random direction's per-layer magnitude.
+vector_files:
+  tom_v2:
+    path: assets/vectors/axes_tom_v2.pt
+    sha256: 8e5846282d0d050e7e65348afc9f18da158ae0784b8e919b9fd6b743af950a2a
+  coarse:
+    path: assets/vectors/axes_vectors.pt
+    sha256: ce239044e347834996ba890741e43865fff33d1b87e751bdd378b3623d4c6ece
+  rand_dirs:
+    path: assets/vectors/axes_random_dirs.pt
+    sha256: 689da9bee449b7bf20bb1caf26a7af1d132e3485dd7fa33176be648f918e916f
+
+conditions:
+  none:
+    edits: []
+  tom_up_c4:
+    edits: [{file: tom_v2, axes: [tau2], layers: [12, 13, 14, 15, 16, 17, 18, 19, 20], type: steer+, alpha: 4, scale: natural}]
+  tom_dn_c4:
+    edits: [{file: tom_v2, axes: [tau2], layers: [12, 13, 14, 15, 16, 17, 18, 19, 20], type: steer-, alpha: 4, scale: natural}]
+  emp_up_c4:
+    edits: [{file: coarse, axes: [epsilon], layers: [13, 14, 15, 16, 17, 18, 19, 20, 21], type: steer+, alpha: 4, scale: natural}]
+  tom_up_c8:
+    edits: [{file: tom_v2, axes: [tau2], layers: [12, 13, 14, 15, 16, 17, 18, 19, 20], type: steer+, alpha: 8, scale: natural}]
+  tom_dn_c8:
+    edits: [{file: tom_v2, axes: [tau2], layers: [12, 13, 14, 15, 16, 17, 18, 19, 20], type: steer-, alpha: 8, scale: natural}]
+  emp_up_c8:
+    edits: [{file: coarse, axes: [epsilon], layers: [13, 14, 15, 16, 17, 18, 19, 20, 21], type: steer+, alpha: 8, scale: natural}]
+  tom_up_c16:
+    edits: [{file: tom_v2, axes: [tau2], layers: [12, 13, 14, 15, 16, 17, 18, 19, 20], type: steer+, alpha: 16, scale: natural}]
+  tom_dn_c16:
+    edits: [{file: tom_v2, axes: [tau2], layers: [12, 13, 14, 15, 16, 17, 18, 19, 20], type: steer-, alpha: 16, scale: natural}]
+  emp_up_c16:
+    edits: [{file: coarse, axes: [epsilon], layers: [13, 14, 15, 16, 17, 18, 19, 20, 21], type: steer+, alpha: 16, scale: natural}]
+  # matched random: same layers, per-layer magnitude = c × the real direction's natural norm
+  rand_tom_c8:
+    edits: [{file: rand_dirs, axes: [rand_dir], layers: [12, 13, 14, 15, 16, 17, 18, 19, 20], type: steer+, alpha: 8, scale_ref: {file: tom_v2, axis: tau2}}]
+  rand_emp_c8:
+    edits: [{file: rand_dirs, axes: [rand_dir2], layers: [13, 14, 15, 16, 17, 18, 19, 20, 21], type: steer+, alpha: 8, scale_ref: {file: coarse, axis: epsilon}}]

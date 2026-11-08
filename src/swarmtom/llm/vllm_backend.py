@@ -43,18 +43,32 @@ class _LesionState:
             for e in self.conditions.get(self.active, []):
                 if e.layer != layer:
                     continue
-                if e.type != "ablate":
-                    raise ValueError("vLLM backend implements ablate edits only")
+                if e.type not in ("ablate", "steer+", "steer-"):
+                    raise ValueError(f"vLLM backend: unknown edit type {e.type}")
                 d = e.vector.to(device, dtype=dtype)
-                out.append((d / (d.norm() + 1e-8), float(e.alpha)))  # same expression as hooks.ablate_direction
+                if e.type == "ablate":
+                    out.append(("ablate", d / (d.norm() + 1e-8), float(e.alpha)))  # = hooks.ablate_direction
+                else:  # steering adds alpha × the (unit) direction, as hooks.steer_direction
+                    out.append(("steer", d, float(e.alpha) if e.type == "steer+" else -float(e.alpha)))
             self._dirs[key] = out
         return self._dirs[key]
 
 
 def _project(x, dirs):
-    for d, alpha in dirs:
+    """Ablation edits (linear, so applied to both parts of vLLM's split residual stream)."""
+    for kind, d, alpha in dirs:
+        if kind != "ablate":
+            continue
         c = (x * d).sum(dim=-1, keepdim=True)
         x = x - c * d if alpha == 1.0 else x - alpha * c * d
+    return x
+
+
+def _steer(x, dirs):
+    """Steering edits add a constant vector to the stream, so they go into ONE part of the split stream."""
+    for kind, d, alpha in dirs:
+        if kind == "steer":
+            x = x + alpha * d
     return x
 
 
@@ -88,10 +102,12 @@ def _install_hooks(model, state: _LesionState, layers: set[int]) -> int:
                     return out
                 rest = list(out[1:])
                 if rest and rest[0] is not None:
-                    rest[0] = _project(rest[0], dirs)  # residual part of the stream
-                return (_project(hs, dirs), *rest)
+                    # residual part: ablate, then add any steering here (hidden + residual = the stream)
+                    rest[0] = _steer(_project(rest[0], dirs), dirs)
+                    return (_project(hs, dirs), *rest)
+                return (_steer(_project(hs, dirs), dirs), *rest)
             dirs = state.dirs(idx, out.device, out.dtype)
-            return _project(out, dirs) if dirs else out
+            return _steer(_project(out, dirs), dirs) if dirs else out
         blocks[idx].register_forward_hook(hook)
         n += 1
     return n
