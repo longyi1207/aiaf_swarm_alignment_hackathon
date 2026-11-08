@@ -186,3 +186,54 @@ Archive the entire tag directory, prepared configs/plan, environment freeze, mod
 source revision/tree, vector files, manifests, sessions, raw generations/judgments and game
 transcripts. Frozen replay, mixed populations, a combined-arm experiment, hard non-social
 reasoning controls and formal mediation remain separate research extensions.
+
+## Replay the November 8 descriptive experiment
+
+The [H100 report](../results/belief_replication/README.md) uses a separate, cache-disabled
+protocol. This recipe recreates the settings on one CUDA host with a working tool sandbox.
+Use the environment from section 1 and the fixed model revision below. The original run
+placed the tool sandbox on a macOS controller and used SSH standard I/O for H100 inference.
+The single-host recipe uses the same vLLM generation code. Kernel, batch size and GPU
+differences can change individual greedy continuations.
+
+```bash
+set -eu
+py=${SWARMTOM_PYTHON:-.venv-replication/bin/python}
+revision=c202236235762e1c871ad0ccb60c8ee5ba337b9a
+tag=h100_descriptive_repeat_01
+c=configs/replication/$tag
+r=runs/$tag
+"$py" scripts/prepare_replication.py --tag "$tag" --model-revision "$revision" \
+    --descriptive --python-network block
+
+"$py" scripts/replicate_beliefs.py --revision "$revision" --cache off \
+    --gpu-memory-utilization .38 --out "$r/beliefs"
+"$py" scripts/describe_belief_pairs.py "$r/beliefs/items.csv"
+"$py" scripts/extend_belief_budget.py "$r/beliefs/raw.jsonl" --revision "$revision" \
+    --out "$r/extensions"
+"$py" -m swarmtom.cli dose-gen "$c/dose.yaml"
+"$py" -m swarmtom.cli dose-judge "$c/dose.yaml"
+"$py" -m swarmtom.cli dose-report "$r/dose"
+
+# Preserve failed scientific checks. Exceptions and missing gate reports stop the replay.
+record_gate() {
+    "$py" scripts/replication_gate.py "$1" "$2" || {
+        "$py" -c 'import json,sys; d=json.load(open(sys.argv[1])); assert d["pass"] is False and d["failures"]; print(*d["failures"], sep="\n")' "$2/gate.json"
+    }
+}
+record_gate dose "$r/dose"
+for stage in calibration workflow main decision_phase; do
+    "$py" -m swarmtom.cli run "$c/$stage.yaml" --serial-arms
+    "$py" scripts/decision_incentives.py "$r/$stage"
+    case "$stage" in
+        main|decision_phase)
+            record_gate complete "$r/$stage"
+            "$py" scripts/analyze_main.py "$r/$stage" ;;
+        *) record_gate "$stage" "$r/$stage" ;;
+    esac
+done
+```
+
+Each study writes to the fresh tag. A failed specificity or workflow gate is itself a
+descriptive result and prevents a selective causal interpretation. The original gated
+launcher above enforces its own stopping rules.

@@ -35,6 +35,17 @@ def test_preparation_freezes_fresh_stages_without_starting_a_run(tmp_path):
     assert main['protocol']['own_file_free_turns'] == 16
     with pytest.raises(ValueError, match='already exists'):
         prepare.prepare('fresh', 'a' * 40, root=tmp_path)
+    desc = prepare.prepare('fielded', 'a' * 40, root=tmp_path, descriptive=True)
+    assert desc['games'] == {**result['games'], 'decision_phase': 24}
+    folder = tmp_path / 'configs/replication/fielded'
+    dose = yaml.safe_load((folder / 'dose.yaml').read_text())
+    phase = yaml.safe_load((folder / 'decision_phase.yaml').read_text())
+    assert dose['backend']['max_prompt_tokens'] == 2048
+    assert not dose['backend']['enable_prefix_caching']
+    assert not phase['backend']['enable_prefix_caching']
+    assert phase['backend']['gpu_memory_utilization'] == .38
+    assert phase['design']['lesion_conditions'] == ['none', 'tom', 'random_tom']
+    assert phase['protocol']['lesion_phases'] == ['pred_a', 'discussion', 'pred_b', 'filing']
 
 
 @pytest.mark.parametrize('tag,revision', [('../old', 'a' * 40), ('fresh', 'main'), ('', 'a' * 40)])
