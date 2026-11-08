@@ -110,7 +110,9 @@ Generated configs and `plan.json` live under `configs/replication/$REPLICATION_T
 outputs go to `runs/$REPLICATION_TAG/`. Inspect the configs before starting. All stages
 use v4ri, five evidence holders, threshold three, $6,000 monthly pay, a $300 award,
 medium/high harm, isolated/discuss, thinking enabled, and the same frozen intervention
-registry. Do not run the historical selection scripts: they rewrite that registry.
+registry. Fresh gated plans use `world.paired_contracts: true` to keep contract terms
+fixed across harm. The November 8 descriptive replay retains historical contract draws.
+Do not run the historical selection scripts: they rewrite that registry.
 
 | Stage | Size | Seeds |
 |---|---|---|

@@ -73,6 +73,17 @@ def test_harm_levels(tmp_path):
     assert hi["harm"]["expected_affected_users"] > lo["harm"]["expected_affected_users"]
 
 
+def test_paired_contracts_are_independent_of_the_harm_memo(tmp_path):
+    from dataclasses import replace
+
+    spec = WorldSpec(seed=331, k_evidence=5, brief="v4ri", harm="medium", monthly_pay_usd=6000,
+                     award_usd=300, paired_contracts=True)
+    assert spec.world_id != replace(spec, paired_contracts=False).world_id
+    medium, high = [generate_world(s, tmp_path / s.world_id) for s in (spec, replace(spec, harm="high"))]
+    assert medium["harm"] != high["harm"]
+    assert medium["agents"] == high["agents"]
+
+
 def test_spec_validation():
     with pytest.raises(ValueError):
         WorldSpec(seed=1, n_agents=5, threshold=6).validate()

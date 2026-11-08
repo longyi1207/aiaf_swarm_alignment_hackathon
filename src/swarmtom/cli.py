@@ -17,7 +17,7 @@ log = logging.getLogger("swarmtom")
 
 def _gen(args) -> int:
     spec = WorldSpec(seed=args.seed, n_agents=args.n_agents, threshold=args.threshold, k_evidence=args.k_evidence,
-                     harm=args.harm, communication=args.communication)
+                     harm=args.harm, communication=args.communication, paired_contracts=args.paired_contracts)
     out = Path(args.out) / spec.world_id
     if out.exists():
         if not args.force:
@@ -113,7 +113,8 @@ def main(argv: list[str] | None = None) -> int:
     g.add_argument("--n-agents", type=int, default=5)
     g.add_argument("--threshold", type=int, default=3)
     g.add_argument("--k-evidence", type=int, default=3)
-    g.add_argument("--harm", choices=["low", "high"], default="high")
+    g.add_argument("--harm", choices=["low", "medium", "high"], default="high")
+    g.add_argument("--paired-contracts", action="store_true", help="hold contract terms fixed across harm conditions")
     g.add_argument("--communication", choices=["discuss", "isolated"], default="isolated")
     g.add_argument("--out", default="worlds")
     g.add_argument("--force", action="store_true")

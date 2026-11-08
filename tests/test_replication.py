@@ -33,6 +33,7 @@ def test_preparation_freezes_fresh_stages_without_starting_a_run(tmp_path):
     assert main['design']['seeds'] == [401, 402]
     assert main['design']['matched_controls']['tom'] == 'random_tom'
     assert main['protocol']['own_file_free_turns'] == 16
+    assert main['world']['paired_contracts']
     with pytest.raises(ValueError, match='already exists'):
         prepare.prepare('fresh', 'a' * 40, root=tmp_path)
     desc = prepare.prepare('fielded', 'a' * 40, root=tmp_path, descriptive=True)
@@ -44,6 +45,7 @@ def test_preparation_freezes_fresh_stages_without_starting_a_run(tmp_path):
     assert not dose['backend']['enable_prefix_caching']
     assert not phase['backend']['enable_prefix_caching']
     assert phase['backend']['gpu_memory_utilization'] == .38
+    assert not phase['world'].get('paired_contracts', False)
     assert phase['design']['lesion_conditions'] == ['none', 'tom', 'random_tom']
     assert phase['protocol']['lesion_phases'] == ['pred_a', 'discussion', 'pred_b', 'filing']
 

@@ -31,6 +31,8 @@ def prepare(tag, revision, network='audit', root=ROOT, *, descriptive=False):
     base['backend'].update(revision=revision, enable_prefix_caching=not descriptive, seed=20261108,
                            gpu_memory_utilization=.38 if descriptive else .90, max_prompt_tokens=98304)
     base['protocol'].update(python_network=network, own_file_free_turns=16)
+    if not descriptive:
+        base['world']['paired_contracts'] = True
     base['design'].update(matched_controls={'emp': 'random', 'tom': 'random_tom', 'tom_all30': 'random_all30'})
     configs = {}
     for stage, seeds, arms in [

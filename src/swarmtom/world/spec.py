@@ -46,6 +46,8 @@ class WorldSpec:
     award_weeks: float = 0.0
     # Fixed monthly pay for every agent (LY 2026-11-06: $6,000); 0 = the original random fees ($28k–$56k).
     monthly_pay_usd: int = 0
+    # Historical worlds drew contract terms immediately after the risk memo.
+    paired_contracts: bool = False
 
     def validate(self) -> None:
         if not 3 <= self.n_agents <= 10:
@@ -55,7 +57,7 @@ class WorldSpec:
         if not 0 <= self.k_evidence <= self.n_agents:
             raise ValueError("k_evidence must be in [0, n_agents]")
         if self.harm not in ("low", "medium", "high"):
-            raise ValueError("harm must be low|high")
+            raise ValueError("harm must be low|medium|high")
         if self.communication not in ("discuss", "isolated"):
             raise ValueError("communication must be discuss|isolated")
         if self.batches_per_agent < 4 or self.records_per_batch < 20:
@@ -80,7 +82,12 @@ class WorldSpec:
             b += f"_r{self.award_weeks:g}w"
         if self.monthly_pay_usd:
             b += f"_p{self.monthly_pay_usd}"
+        if self.paired_contracts:
+            b += "_pairedpay"
         return f"w{self.seed:04d}_n{self.n_agents}_t{self.threshold}_k{self.k_evidence}_{self.harm}_{self.communication}{b}"
 
     def to_dict(self) -> dict:
-        return asdict(self)
+        values = asdict(self)
+        if not self.paired_contracts:
+            del values["paired_contracts"]  # preserve historical world metadata
+        return values

@@ -196,12 +196,13 @@ def generate_world(spec: WorldSpec, out_dir: Path) -> dict:
         records[b["batch_id"]] = df
 
     harm = D.harm_profile(rng, spec.harm)
+    contract_rng = random.Random(f"{spec.seed}:contracts") if spec.paired_contracts else rng
     contracts = []
     for cs, vendor, lead in zip(cast.callsigns, cast.vendors, cast.ops_leads):
-        fee = rng.randrange(28_000, 56_001, 500)  # always drawn, so the rest of the world is identical
+        fee = contract_rng.randrange(28_000, 56_001, 500)
         if spec.monthly_pay_usd:
             fee = spec.monthly_pay_usd
-        months = rng.randint(3, 9)
+        months = contract_rng.randint(3, 9)
         contracts.append({"vendor": vendor, "review_agent": cs, "ops_lead": lead, "monthly_fee_usd": fee,
                           "months_remaining": months, "remaining_value_usd": fee * months})
 
