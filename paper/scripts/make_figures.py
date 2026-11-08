@@ -98,8 +98,6 @@ ROWS = [  # (key, label, group)
     ("random", "Random direction, matched", 1),
     ("tom", "Theory of mind removed, layer 6", 2),
     ("random_tom", "Random direction, matched", 2),
-    ("tom_all30", "Theory of mind weakened, all layers", 3),
-    ("random_all30", "Random direction, matched", 3),
 ]
 
 
@@ -114,7 +112,7 @@ def fig_interventions():
         if prev is not None and g != prev:
             y += 0.55
         ys.append(y); y += 1.0; prev = g
-    fig, axes = plt.subplots(1, 2, figsize=(6.5, 2.6), sharey=True)
+    fig, axes = plt.subplots(1, 2, figsize=(6.5, 2.2), sharey=True)
     for ax, (run, title) in zip(axes, runs):
         arms = d[run]
         for (key, _, _), yy in zip(ROWS, ys):
@@ -151,3 +149,38 @@ if __name__ == "__main__":
     print("wrote", sorted(p.name for p in OUT.glob("*.png")))
 
 
+
+
+def fig_steering():
+    """Figure 4: belief and control accuracy as the theory-of-mind direction is added (positive) or subtracted (negative)."""
+    d = json.loads((DATA / "steering_dose.json").read_text())
+    xs = [r["strength"] for r in d["tom"]]
+    fig, ax = plt.subplots(figsize=(5.0, 2.55))
+    ax.axvspan(0.7, 1.3, color="#eef4fc", zorder=0)
+    ax.plot(xs, [r["control"] for r in d["tom"]], color=GRAY_DOT, lw=2, marker="o", ms=5.5, zorder=3,
+            markeredgecolor="white", markeredgewidth=0.8)
+    ax.plot(xs, [r["belief"] for r in d["tom"]], color=BLUE, lw=2, marker="o", ms=6, zorder=4,
+            markeredgecolor="white", markeredgewidth=0.8)
+    rnd = d["random"]
+    ax.scatter([rnd["strength"]], [rnd["belief"]], s=42, facecolor="white", edgecolor=BLUE, linewidth=1.6, zorder=5)
+    ax.text(rnd["strength"] + 0.15, rnd["belief"] - 0.05, "random direction,\nsame strength", fontsize=7.2, color=INK2,
+            va="top", ha="left", linespacing=1.2)
+    ax.text(4.12, d["tom"][-1]["control"], "reality and memory\nquestions", fontsize=7.4, color=INK2, va="center", ha="left", linespacing=1.2)
+    ax.text(4.12, d["tom"][-1]["belief"], "belief\nquestions", fontsize=7.4, color=BLUE, va="center", ha="left", linespacing=1.2)
+    b0 = d["tom"][2]["belief"]; b1 = d["tom"][3]["belief"]
+    ax.annotate(f"{b0 * 100:.0f}%", (0, b0), textcoords="offset points", xytext=(8, -12), ha="left", fontsize=7.4, color=INK2)
+    ax.annotate(f"{b1 * 100:.0f}%", (1, b1), textcoords="offset points", xytext=(9, -12), ha="left", fontsize=7.4, color=INK)
+    ax.text(1, 0.04, "used in\nthe games", fontsize=7.0, color=MUTED, ha="center", va="bottom", linespacing=1.15)
+    ax.set_xticks(xs); ax.set_xticklabels([(f"+{x}" if x > 0 else f"\u2212{-x}") if x else "0" for x in xs])
+    ax.set_xlim(-2.4, 5.3)
+    ax.set_ylim(0, 1.05); ax.set_yticks([0, 0.25, 0.5, 0.75, 1]); ax.set_yticklabels(["0", "25%", "50%", "75%", "100%"])
+    ax.yaxis.grid(True, color=GRID, lw=0.6, zorder=0)
+    ax.set_xlabel("Theory-of-mind direction: subtracted (−) or added (+), in multiples of its natural size")
+    ax.set_ylabel("Correct answers")
+    fig.tight_layout()
+    fig.savefig(OUT / "fig4_steering.png")
+    plt.close(fig)
+
+
+if __name__ == "__main__":
+    fig_steering()
