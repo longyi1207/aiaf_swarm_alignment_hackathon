@@ -116,6 +116,33 @@ criterion. [Frozen gate](dose/gate.json) · [Changed scores and answers](dose/ca
 The [generation archive](dose/generations.jsonl.gz), [judge outputs](dose/judgments.jsonl.gz),
 [per-task report](dose/report.json) and [input manifest](dose/manifest.json) permit independent rescoring.
 
+## Can the model keep two perspectives separate?
+
+In 48 new stories, a shutter determines whether an observer sees an object move.
+An independent indicator determines whether the mover believes the observer saw it.
+For each story we asked where the observer would search and where the mover expected
+the observer to search. The correct answers coincide in 24 stories and differ in 24.
+All 288 prompts received model outputs. [Prospective design](design.md#crossed-perspective-follow-up)
+
+| Condition | Aligned, both correct / 24 | Conflicting, both correct / 24 | Conflicting, both finished | Same answer to both when both finished |
+|---|---:|---:|---:|---:|
+| None | 22 | 7 | 9 | 2 / 9 |
+| ToM L6 | 6 | 0 | 5 | 5 / 5 |
+| Random L6 | 23 | 7 | 8 | 1 / 8 |
+
+The primary prediction was that L6 would lose more against random when perspectives
+conflicted. The observed interaction went the other way. The loss was seven pairs in
+conflict and 17 in aligned stories, a difference of **+41.7 percentage points** for
+(L6 minus random in conflict) minus (L6 minus random in alignment). Even the controls
+solved only 7/24 conflicting pairs. L6 lost substantial accuracy on the easier aligned
+stories, where both perspectives prescribe the same answer.
+
+Of the five conflicting cases on which L6 finished both questions, it gave the observer's
+answer to both. This pattern concerns five selected pairs. The primary comparison gives
+no support to a selective deficit that grows when perspectives conflict. A follow-up
+should first calibrate both conditions away from floor and ceiling on new settings.
+[Prompts](perspective/prompts.jsonl) · [Responses](perspective/raw.jsonl.gz) · [Counts](perspective/report.json)
+
 ## Cache audit
 
 The uncached worker exactly repeated all 70 prompt/arm outputs on its second pass. With salted caching, forward order differed from the uncached reference on 70/140 comparisons. Within that cached worker, 39/70 repeats differed from its own first pass. Across two passes, actual cache reuse totalled 14,784 tokens: seven long probes reused 2,112 tokens each. All first-pass requests and all nine short prompts per arm recorded zero reused tokens. Divergent raw greedy continuations in the presence of zero recorded hits cannot establish cross-arm cache leakage. Batch composition and execution path are candidate explanations. The reverse-order attempt encountered CUDA OOM during concurrent GPU allocation. The cache-disabled measurements therefore provide the replication reference. The two completed workers' per-request hashes and hit counts are in `cache/`.

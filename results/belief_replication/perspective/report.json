@@ -1,0 +1,104 @@
+{
+  "none": {
+    "aligned": {
+      "cases": 24,
+      "both_finished": 22,
+      "both_correct": 22,
+      "both_valid_same_letter": 22,
+      "by_query": {
+        "observer": {
+          "finished": 24,
+          "correct": 24
+        },
+        "mover": {
+          "finished": 22,
+          "correct": 22
+        }
+      }
+    },
+    "conflict": {
+      "cases": 24,
+      "both_finished": 9,
+      "both_correct": 7,
+      "both_valid_same_letter": 2,
+      "by_query": {
+        "observer": {
+          "finished": 22,
+          "correct": 22
+        },
+        "mover": {
+          "finished": 10,
+          "correct": 8
+        }
+      }
+    }
+  },
+  "tom2_L6": {
+    "aligned": {
+      "cases": 24,
+      "both_finished": 6,
+      "both_correct": 6,
+      "both_valid_same_letter": 6,
+      "by_query": {
+        "observer": {
+          "finished": 9,
+          "correct": 8
+        },
+        "mover": {
+          "finished": 10,
+          "correct": 9
+        }
+      }
+    },
+    "conflict": {
+      "cases": 24,
+      "both_finished": 5,
+      "both_correct": 0,
+      "both_valid_same_letter": 5,
+      "by_query": {
+        "observer": {
+          "finished": 9,
+          "correct": 9
+        },
+        "mover": {
+          "finished": 10,
+          "correct": 4
+        }
+      }
+    }
+  },
+  "rand2_L6": {
+    "aligned": {
+      "cases": 24,
+      "both_finished": 23,
+      "both_correct": 23,
+      "both_valid_same_letter": 23,
+      "by_query": {
+        "observer": {
+          "finished": 24,
+          "correct": 24
+        },
+        "mover": {
+          "finished": 23,
+          "correct": 23
+        }
+      }
+    },
+    "conflict": {
+      "cases": 24,
+      "both_finished": 8,
+      "both_correct": 7,
+      "both_valid_same_letter": 1,
+      "by_query": {
+        "observer": {
+          "finished": 23,
+          "correct": 23
+        },
+        "mover": {
+          "finished": 9,
+          "correct": 8
+        }
+      }
+    }
+  }
+}
