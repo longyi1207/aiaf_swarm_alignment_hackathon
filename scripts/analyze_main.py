@@ -181,16 +181,19 @@ def main() -> int:
         return {f"effect_{levels[0]}": point[levels[0]], f"effect_{levels[1]}": point[levels[1]],
                 "did": point[levels[1]] - point[levels[0]], "ci": [est[int(0.025 * N_BOOT)], est[int(0.975 * N_BOOT) - 1]]}
 
-    harms = sorted({r["harm"] for r in agents})
-    if harms == ["high", "low"]:
+    order = ["low", "medium", "high"]
+    harms = [h for h in order if h in {r["harm"] for r in agents}]
+    if len(harms) >= 2:  # harm slope between the mildest and the most severe level present (low/high or medium/high)
+        lo_lv, hi_lv = harms[0], harms[-1]
         slopes = {}
         for arm in arms:
-            hi = [int(r["filed_e"]) for r in A[arm] if r["harm"] == "high"]
-            lo = [int(r["filed_e"]) for r in A[arm] if r["harm"] == "low"]
-            slopes[arm] = {"filed_E_high": st.fmean(hi) if hi else None, "filed_E_low": st.fmean(lo) if lo else None,
+            hi = [int(r["filed_e"]) for r in A[arm] if r["harm"] == hi_lv]
+            lo = [int(r["filed_e"]) for r in A[arm] if r["harm"] == lo_lv]
+            slopes[arm] = {f"filed_E_{hi_lv}": st.fmean(hi) if hi else None, f"filed_E_{lo_lv}": st.fmean(lo) if lo else None,
                            "slope": (st.fmean(hi) - st.fmean(lo)) if hi and lo else None}
         rep["harm_slope"] = slopes
-        rep["H1_slope_vs_none"] = {arm: did_by(arm, lambda r: r["harm"], ["low", "high"]) for arm in arms if arm != "none"}
+        rep["harm_levels"] = harms
+        rep["H1_slope_vs_none"] = {arm: did_by(arm, lambda r: r["harm"], [lo_lv, hi_lv]) for arm in arms if arm != "none"}
 
     # 4. belief -> action coupling: mean predicted P(others file E) at pred_b among own filers vs non-filers
     coupling = {}
@@ -243,7 +246,10 @@ def render(rep: dict, arms: list[str]) -> str:
     if "harm_slope" in rep:
         L += ["", "## 3b. H1（共情那一半）：伤害斜率 = 重伤害举报率 − 轻伤害举报率", ""]
         for a, sl in rep["harm_slope"].items():
-            L.append(f"- {a}：重 {_f(sl['filed_E_high'], True)}，轻 {_f(sl['filed_E_low'], True)}，斜率 {_f(sl['slope'])}")
+            lo_lv, hi_lv = rep.get("harm_levels", ["low", "high"])[0], rep.get("harm_levels", ["low", "high"])[-1]
+            zh = {"low": "轻", "medium": "中", "high": "重"}
+            L.append(f"- {a}：{zh[hi_lv]} {_f(sl[f'filed_E_{hi_lv}'], True)}，{zh[lo_lv]} {_f(sl[f'filed_E_{lo_lv}'], True)}，"
+                     f"斜率 {_f(sl['slope'])}")
         for a, h in rep["H1_slope_vs_none"].items():
             if h:
                 L.append(f"- {a} 与不损伤组的斜率差 {h['did']:+.3f} [{h['ci'][0]:+.3f}, {h['ci'][1]:+.3f}]")

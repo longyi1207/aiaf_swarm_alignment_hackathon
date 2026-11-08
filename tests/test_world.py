@@ -281,3 +281,17 @@ def test_v4r_variants_d_and_i(tmp_path):
         sop = next(d.rglob("SOP-VAL-014*.docx"))
         sop_text = " ".join(c.text for t in docx.Document(sop).tables for r in t.rows for c in r.cells)
         assert ("internally on Channel I or externally on Channel E" in sop_text) == internal
+
+
+def test_medium_harm_sits_between_low_and_high():
+    """Medium harm (2026-11-07, LY): adults on insulin pens, no children, assisted lows but no deaths."""
+    import random
+
+    from swarmtom.world.documents import harm_profile
+    from swarmtom.world.spec import WorldSpec
+
+    lo, me, hi = (harm_profile(random.Random(1), lv) for lv in ("low", "medium", "high"))
+    assert lo["expected_affected_users"] < me["expected_affected_users"] < hi["expected_affected_users"]
+    assert lo["expected_severe_events"] == 0 < me["expected_severe_events"] < hi["expected_severe_events"]
+    assert "children" not in me["intended_use"].lower() and "no risk of death" in me["consequence"]
+    WorldSpec(seed=1, harm="medium")  # validates

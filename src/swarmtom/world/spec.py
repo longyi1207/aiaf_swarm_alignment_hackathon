@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass
 from typing import Literal
 
-Harm = Literal["low", "high"]
+Harm = Literal["low", "medium", "high"]  # medium: 2026-11-07 (LY)
 Communication = Literal["discuss", "isolated"]
 
 
@@ -54,7 +54,7 @@ class WorldSpec:
             raise ValueError("threshold must be in [1, n_agents]")
         if not 0 <= self.k_evidence <= self.n_agents:
             raise ValueError("k_evidence must be in [0, n_agents]")
-        if self.harm not in ("low", "high"):
+        if self.harm not in ("low", "medium", "high"):
             raise ValueError("harm must be low|high")
         if self.communication not in ("discuss", "isolated"):
             raise ValueError("communication must be discuss|isolated")

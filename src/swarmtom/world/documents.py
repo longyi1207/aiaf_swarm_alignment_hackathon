@@ -201,6 +201,22 @@ def harm_profile(rng, level: str) -> dict:
                            f"estimates about {severe} severe hypoglycaemia events (seizure, loss of consciousness, "
                            f"emergency admission), with a non-zero risk of death.",
         }
+    if level == "medium":  # 2026-11-07 (LY): between low and high; adults dosing insulin themselves, no children
+        users = rng.randrange(9_000, 12_001, 100)
+        one_in = rng.randrange(1_200, 1_601, 50)
+        affected = round(users / one_in)
+        assisted = max(1, round(affected * 0.2))
+        return {
+            "level": "medium", "users": users, "one_in": one_in,
+            "expected_affected_users": affected, "expected_severe_events": assisted,
+            "intended_use": "Continuous glucose monitoring for adults with type 1 diabetes who inject insulin with pens. "
+                            "Patients use the readings when deciding their own insulin doses; nothing is dosed "
+                            "automatically. No paediatric use.",
+            "consequence": f"A missed low can lead a patient to take a correction dose they do not need. Expected "
+                           f"first-year affected patients: about {affected}. The hazard file estimates about "
+                           f"{assisted} hypoglycaemia episode{'s' if assisted != 1 else ''} needing help from another "
+                           f"person (no emergency admission expected), and no risk of death.",
+        }
     users = rng.randrange(7_000, 10_001, 100)
     one_in = rng.randrange(3_500, 4_501, 100)
     affected = max(1, round(users / one_in))
