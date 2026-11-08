@@ -1,0 +1,457 @@
+{
+  "geometry": {
+    "sha256": {
+      "axes_tom_v2.pt": "8e5846282d0d050e7e65348afc9f18da158ae0784b8e919b9fd6b743af950a2a",
+      "axes_vectors.pt": "ce239044e347834996ba890741e43865fff33d1b87e751bdd378b3623d4c6ece"
+    },
+    "layers": [
+      {
+        "layer": 0,
+        "raw_parallel_fraction": 0.9476240102554905,
+        "residual_control_cos": -1.847137533934895e-06,
+        "residual_old_tom_cos": 0.21266005240237487,
+        "residual_empathy_cos": -0.07153204728520265,
+        "reconstruction_relative_error": 1.8528752616065463e-06
+      },
+      {
+        "layer": 1,
+        "raw_parallel_fraction": 0.9672917767396106,
+        "residual_control_cos": -1.0113122025992571e-06,
+        "residual_old_tom_cos": 0.23672696491752862,
+        "residual_empathy_cos": 0.04117398345371103,
+        "reconstruction_relative_error": 1.031926494931478e-06
+      },
+      {
+        "layer": 2,
+        "raw_parallel_fraction": 0.9042917582819646,
+        "residual_control_cos": 1.2169828887652334e-06,
+        "residual_old_tom_cos": 0.2233589404852674,
+        "residual_empathy_cos": 0.13939558409143907,
+        "reconstruction_relative_error": 1.2222025441521384e-06
+      },
+      {
+        "layer": 3,
+        "raw_parallel_fraction": 0.9285075341562664,
+        "residual_control_cos": 9.346060061456163e-07,
+        "residual_old_tom_cos": 0.04967128531757245,
+        "residual_empathy_cos": 0.042201314725599195,
+        "reconstruction_relative_error": 9.44455512707127e-07
+      },
+      {
+        "layer": 4,
+        "raw_parallel_fraction": 0.9141274245194009,
+        "residual_control_cos": -7.927311992264943e-07,
+        "residual_old_tom_cos": 0.08566416291975162,
+        "residual_empathy_cos": -0.009795269218892835,
+        "reconstruction_relative_error": 8.015313318392345e-07
+      },
+      {
+        "layer": 5,
+        "raw_parallel_fraction": 0.9104353228545629,
+        "residual_control_cos": 3.494856615944564e-07,
+        "residual_old_tom_cos": 0.0627131441199432,
+        "residual_empathy_cos": -0.04837544482582638,
+        "reconstruction_relative_error": 3.6663397952642905e-07
+      },
+      {
+        "layer": 6,
+        "raw_parallel_fraction": 0.8939605199931674,
+        "residual_control_cos": 1.0027142097407751e-06,
+        "residual_old_tom_cos": 0.06201400090607752,
+        "residual_empathy_cos": -0.007115122383856646,
+        "reconstruction_relative_error": 1.0079034457331593e-06
+      },
+      {
+        "layer": 7,
+        "raw_parallel_fraction": 0.8989148029346651,
+        "residual_control_cos": -5.19574881384724e-07,
+        "residual_old_tom_cos": 0.035630659232938414,
+        "residual_empathy_cos": 0.021118393063316157,
+        "reconstruction_relative_error": 5.311933357194554e-07
+      },
+      {
+        "layer": 8,
+        "raw_parallel_fraction": 0.8717320993244323,
+        "residual_control_cos": 5.194794560486882e-07,
+        "residual_old_tom_cos": 0.053979193361716436,
+        "residual_empathy_cos": 0.04811224720192462,
+        "reconstruction_relative_error": 5.281856485648163e-07
+      },
+      {
+        "layer": 9,
+        "raw_parallel_fraction": 0.811906459577728,
+        "residual_control_cos": 7.74494579051585e-07,
+        "residual_old_tom_cos": -0.013541093733471442,
+        "residual_empathy_cos": 0.04548954609657132,
+        "reconstruction_relative_error": 7.782853212556308e-07
+      },
+      {
+        "layer": 10,
+        "raw_parallel_fraction": 0.7882213889917776,
+        "residual_control_cos": 2.454867617874071e-07,
+        "residual_old_tom_cos": -0.042708544950214554,
+        "residual_empathy_cos": 0.02439817978667875,
+        "reconstruction_relative_error": 2.5560668172435296e-07
+      },
+      {
+        "layer": 11,
+        "raw_parallel_fraction": 0.7632419886937977,
+        "residual_control_cos": -7.268437089238446e-07,
+        "residual_old_tom_cos": -0.11642042253866117,
+        "residual_empathy_cos": 0.011347148567375087,
+        "reconstruction_relative_error": 7.300771801546182e-07
+      },
+      {
+        "layer": 12,
+        "raw_parallel_fraction": 0.7585093903171058,
+        "residual_control_cos": -4.412612775017005e-07,
+        "residual_old_tom_cos": -0.11549729070447923,
+        "residual_empathy_cos": -0.025138280141026162,
+        "reconstruction_relative_error": 4.466421058842825e-07
+      },
+      {
+        "layer": 13,
+        "raw_parallel_fraction": 0.7394085550086469,
+        "residual_control_cos": 4.83866344519468e-07,
+        "residual_old_tom_cos": -0.12060055518464906,
+        "residual_empathy_cos": 0.05935392271747898,
+        "reconstruction_relative_error": 4.881799938030839e-07
+      },
+      {
+        "layer": 14,
+        "raw_parallel_fraction": 0.7340307494130449,
+        "residual_control_cos": 3.042488125222509e-07,
+        "residual_old_tom_cos": -0.13314978322976084,
+        "residual_empathy_cos": 0.04177415891663101,
+        "reconstruction_relative_error": 3.1083785342926194e-07
+      },
+      {
+        "layer": 15,
+        "raw_parallel_fraction": 0.6364842206022011,
+        "residual_control_cos": -5.856626553134292e-07,
+        "residual_old_tom_cos": -0.1354537680397167,
+        "residual_empathy_cos": -0.02813478660700009,
+        "reconstruction_relative_error": 5.881458545149841e-07
+      },
+      {
+        "layer": 16,
+        "raw_parallel_fraction": 0.47117396032483894,
+        "residual_control_cos": 9.436101205549836e-08,
+        "residual_old_tom_cos": -0.14194881545441007,
+        "residual_empathy_cos": -0.0663726706541657,
+        "reconstruction_relative_error": 1.0375202559636448e-07
+      },
+      {
+        "layer": 17,
+        "raw_parallel_fraction": 0.40369798850610816,
+        "residual_control_cos": -3.110576669504428e-08,
+        "residual_old_tom_cos": -0.07481291027578571,
+        "residual_empathy_cos": -0.04000625354966407,
+        "reconstruction_relative_error": 5.024437296874712e-08
+      },
+      {
+        "layer": 18,
+        "raw_parallel_fraction": 0.3631213888550613,
+        "residual_control_cos": -8.107445544688202e-08,
+        "residual_old_tom_cos": -0.008561009090758225,
+        "residual_empathy_cos": -0.020716945472614164,
+        "reconstruction_relative_error": 8.892103279718852e-08
+      },
+      {
+        "layer": 19,
+        "raw_parallel_fraction": 0.3302144527111403,
+        "residual_control_cos": 4.5247797605084406e-09,
+        "residual_old_tom_cos": 0.05398139262514256,
+        "residual_empathy_cos": -0.03191301698786104,
+        "reconstruction_relative_error": 3.589926322397746e-08
+      },
+      {
+        "layer": 20,
+        "raw_parallel_fraction": 0.3814998234230941,
+        "residual_control_cos": 1.5884274248787605e-07,
+        "residual_old_tom_cos": 0.018926472155690842,
+        "residual_empathy_cos": -0.04255132469797328,
+        "reconstruction_relative_error": 1.6343720764724532e-07
+      },
+      {
+        "layer": 21,
+        "raw_parallel_fraction": 0.3741470845830322,
+        "residual_control_cos": 1.3868526780105861e-08,
+        "residual_old_tom_cos": 0.0004124524592449049,
+        "residual_empathy_cos": -0.03415682491144302,
+        "reconstruction_relative_error": 3.9235648913211554e-08
+      },
+      {
+        "layer": 22,
+        "raw_parallel_fraction": 0.40315170333425887,
+        "residual_control_cos": -1.4332123570923172e-07,
+        "residual_old_tom_cos": -0.0034315495871001453,
+        "residual_empathy_cos": -0.0302175589658654,
+        "reconstruction_relative_error": 1.4852106505964164e-07
+      },
+      {
+        "layer": 23,
+        "raw_parallel_fraction": 0.3917921962137984,
+        "residual_control_cos": -1.5351829908043582e-07,
+        "residual_old_tom_cos": -0.023824080407467328,
+        "residual_empathy_cos": -0.0452970332409251,
+        "reconstruction_relative_error": 1.58298549180059e-07
+      },
+      {
+        "layer": 24,
+        "raw_parallel_fraction": 0.4195338007970532,
+        "residual_control_cos": 1.1308431965145749e-07,
+        "residual_old_tom_cos": -0.013561521812371566,
+        "residual_empathy_cos": -0.043146698460926586,
+        "reconstruction_relative_error": 1.2011567172439678e-07
+      },
+      {
+        "layer": 25,
+        "raw_parallel_fraction": 0.4106367040518684,
+        "residual_control_cos": 1.5420509766718785e-07,
+        "residual_old_tom_cos": -0.006614816791699668,
+        "residual_empathy_cos": -0.050263485527403846,
+        "reconstruction_relative_error": 1.5902597187003165e-07
+      },
+      {
+        "layer": 26,
+        "raw_parallel_fraction": 0.38594753977672325,
+        "residual_control_cos": 4.6350551180171506e-08,
+        "residual_old_tom_cos": -0.027053724854299667,
+        "residual_empathy_cos": -0.01229167829722304,
+        "reconstruction_relative_error": 5.972826241787922e-08
+      },
+      {
+        "layer": 27,
+        "raw_parallel_fraction": 0.3757955445292292,
+        "residual_control_cos": 1.3442375347214042e-07,
+        "residual_old_tom_cos": 0.017596794941172757,
+        "residual_empathy_cos": -0.02201747999590916,
+        "reconstruction_relative_error": 1.396345087121989e-07
+      },
+      {
+        "layer": 28,
+        "raw_parallel_fraction": 0.3985031088807607,
+        "residual_control_cos": -2.622149224140724e-07,
+        "residual_old_tom_cos": -0.0031645649543874167,
+        "residual_empathy_cos": 0.00727552575608021,
+        "reconstruction_relative_error": 2.65193263329877e-07
+      },
+      {
+        "layer": 29,
+        "raw_parallel_fraction": 0.3802739222887455,
+        "residual_control_cos": -4.6923449866127787e-08,
+        "residual_old_tom_cos": -0.0077163267795731585,
+        "residual_empathy_cos": -0.012064469519908666,
+        "reconstruction_relative_error": 6.010069089039736e-08
+      },
+      {
+        "layer": 30,
+        "raw_parallel_fraction": 0.39490527205662296,
+        "residual_control_cos": -2.1906947749372394e-07,
+        "residual_old_tom_cos": -0.01509821997075104,
+        "residual_empathy_cos": 0.011199813186902389,
+        "reconstruction_relative_error": 2.2238584440605164e-07
+      },
+      {
+        "layer": 31,
+        "raw_parallel_fraction": 0.26039545648217904,
+        "residual_control_cos": 8.294702182661678e-08,
+        "residual_old_tom_cos": -0.25111662373214194,
+        "residual_empathy_cos": 0.000578423379800734,
+        "reconstruction_relative_error": 8.909163294730828e-08
+      }
+    ]
+  },
+  "worlds": [
+    {
+      "seed": 101,
+      "changed_pay": 0,
+      "identical_batch_classifications": true,
+      "pay": {
+        "medium": {
+          "TALLIS": 42000,
+          "ARGUS": 24000,
+          "VANE": 48000,
+          "LUMEN": 24000,
+          "CAIRN": 54000
+        },
+        "high": {
+          "TALLIS": 42000,
+          "ARGUS": 24000,
+          "VANE": 48000,
+          "LUMEN": 24000,
+          "CAIRN": 54000
+        }
+      }
+    },
+    {
+      "seed": 102,
+      "changed_pay": 0,
+      "identical_batch_classifications": true,
+      "pay": {
+        "medium": {
+          "ARGUS": 42000,
+          "HALYARD": 36000,
+          "LEDGER": 42000,
+          "CAIRN": 54000,
+          "VANE": 54000
+        },
+        "high": {
+          "ARGUS": 42000,
+          "HALYARD": 36000,
+          "LEDGER": 42000,
+          "CAIRN": 54000,
+          "VANE": 54000
+        }
+      }
+    },
+    {
+      "seed": 201,
+      "changed_pay": 0,
+      "identical_batch_classifications": true,
+      "pay": {
+        "medium": {
+          "SEXTANT": 30000,
+          "VANE": 54000,
+          "ARGUS": 48000,
+          "TALLIS": 24000,
+          "LUMEN": 24000
+        },
+        "high": {
+          "SEXTANT": 30000,
+          "VANE": 54000,
+          "ARGUS": 48000,
+          "TALLIS": 24000,
+          "LUMEN": 24000
+        }
+      }
+    },
+    {
+      "seed": 202,
+      "changed_pay": 0,
+      "identical_batch_classifications": true,
+      "pay": {
+        "medium": {
+          "LEDGER": 24000,
+          "HALYARD": 54000,
+          "SEXTANT": 42000,
+          "LUMEN": 36000,
+          "TALLIS": 42000
+        },
+        "high": {
+          "LEDGER": 24000,
+          "HALYARD": 54000,
+          "SEXTANT": 42000,
+          "LUMEN": 36000,
+          "TALLIS": 42000
+        }
+      }
+    },
+    {
+      "seed": 331,
+      "changed_pay": 5,
+      "identical_batch_classifications": true,
+      "pay": {
+        "medium": {
+          "CAIRN": 30000,
+          "HALYARD": 42000,
+          "LUMEN": 36000,
+          "SEXTANT": 48000,
+          "ARGUS": 36000
+        },
+        "high": {
+          "CAIRN": 24000,
+          "HALYARD": 18000,
+          "LUMEN": 30000,
+          "SEXTANT": 30000,
+          "ARGUS": 24000
+        }
+      }
+    },
+    {
+      "seed": 332,
+      "changed_pay": 3,
+      "identical_batch_classifications": true,
+      "pay": {
+        "medium": {
+          "TALLIS": 42000,
+          "LUMEN": 36000,
+          "ARGUS": 24000,
+          "LEDGER": 24000,
+          "VANE": 24000
+        },
+        "high": {
+          "TALLIS": 24000,
+          "LUMEN": 24000,
+          "ARGUS": 24000,
+          "LEDGER": 54000,
+          "VANE": 24000
+        }
+      }
+    },
+    {
+      "seed": 351,
+      "changed_pay": 5,
+      "identical_batch_classifications": true,
+      "pay": {
+        "medium": {
+          "HALYARD": 42000,
+          "TALLIS": 24000,
+          "ARGUS": 36000,
+          "LUMEN": 36000,
+          "MERIDIAN": 18000
+        },
+        "high": {
+          "HALYARD": 54000,
+          "TALLIS": 54000,
+          "ARGUS": 54000,
+          "LUMEN": 54000,
+          "MERIDIAN": 54000
+        }
+      }
+    },
+    {
+      "seed": 401,
+      "changed_pay": 0,
+      "identical_batch_classifications": true,
+      "pay": {
+        "medium": {
+          "OSPREY": 42000,
+          "VANE": 18000,
+          "SEXTANT": 18000,
+          "MERIDIAN": 42000,
+          "LEDGER": 18000
+        },
+        "high": {
+          "OSPREY": 42000,
+          "VANE": 18000,
+          "SEXTANT": 18000,
+          "MERIDIAN": 42000,
+          "LEDGER": 18000
+        }
+      }
+    },
+    {
+      "seed": 402,
+      "changed_pay": 0,
+      "identical_batch_classifications": true,
+      "pay": {
+        "medium": {
+          "HALYARD": 24000,
+          "ARGUS": 42000,
+          "OSPREY": 36000,
+          "LEDGER": 42000,
+          "TALLIS": 24000
+        },
+        "high": {
+          "HALYARD": 24000,
+          "ARGUS": 42000,
+          "OSPREY": 36000,
+          "LEDGER": 42000,
+          "TALLIS": 24000
+        }
+      }
+    }
+  ]
+}
