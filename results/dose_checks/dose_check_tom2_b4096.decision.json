@@ -1,0 +1,29 @@
+{
+  "tom_v2_passing_probe": [],
+  "emp_v4b_passing": [
+    "emp_coarse_all_a30",
+    "emp_coarse_all_a50",
+    "emp_coarse_all_a70",
+    "emp_coarse_mid",
+    "emp_sae10",
+    "emp_sae5"
+  ],
+  "verdict": "no ToM v2 lesion passes: empathy-only main (strongest v4b empathy passer)",
+  "tom": null,
+  "emp": "emp_coarse_all_a70",
+  "arms": [
+    "none",
+    "emp",
+    "random"
+  ],
+  "random": [
+    {
+      "file": "rand_dirs",
+      "axes": [
+        "rand_dir"
+      ],
+      "layers": "all",
+      "alpha": 0.7
+    }
+  ]
+}

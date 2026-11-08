@@ -1,0 +1,296 @@
+{
+  "layers": {
+    "0": {
+      "heldout_pair_sign_acc": 0.833,
+      "heldout_control_sign_acc": 0.722,
+      "heldout_cohen_d_target_vs_control": 0.288,
+      "norm_raw": 0.011,
+      "norm_ctl": 0.011,
+      "cos_raw_ctl": 0.973,
+      "cos_tau2_august_tau": 0.213
+    },
+    "1": {
+      "heldout_pair_sign_acc": 0.611,
+      "heldout_control_sign_acc": 0.611,
+      "heldout_cohen_d_target_vs_control": 0.123,
+      "norm_raw": 0.021,
+      "norm_ctl": 0.021,
+      "cos_raw_ctl": 0.984,
+      "cos_tau2_august_tau": 0.237
+    },
+    "2": {
+      "heldout_pair_sign_acc": 0.722,
+      "heldout_control_sign_acc": 0.722,
+      "heldout_cohen_d_target_vs_control": 0.262,
+      "norm_raw": 0.027,
+      "norm_ctl": 0.026,
+      "cos_raw_ctl": 0.951,
+      "cos_tau2_august_tau": 0.223
+    },
+    "3": {
+      "heldout_pair_sign_acc": 0.722,
+      "heldout_control_sign_acc": 0.5,
+      "heldout_cohen_d_target_vs_control": 0.278,
+      "norm_raw": 0.053,
+      "norm_ctl": 0.052,
+      "cos_raw_ctl": 0.964,
+      "cos_tau2_august_tau": 0.05
+    },
+    "4": {
+      "heldout_pair_sign_acc": 0.889,
+      "heldout_control_sign_acc": 0.556,
+      "heldout_cohen_d_target_vs_control": 0.847,
+      "norm_raw": 0.095,
+      "norm_ctl": 0.092,
+      "cos_raw_ctl": 0.956,
+      "cos_tau2_august_tau": 0.086
+    },
+    "5": {
+      "heldout_pair_sign_acc": 0.833,
+      "heldout_control_sign_acc": 0.722,
+      "heldout_cohen_d_target_vs_control": 0.519,
+      "norm_raw": 0.105,
+      "norm_ctl": 0.104,
+      "cos_raw_ctl": 0.954,
+      "cos_tau2_august_tau": 0.063
+    },
+    "6": {
+      "heldout_pair_sign_acc": 0.778,
+      "heldout_control_sign_acc": 0.667,
+      "heldout_cohen_d_target_vs_control": 0.665,
+      "norm_raw": 0.126,
+      "norm_ctl": 0.122,
+      "cos_raw_ctl": 0.945,
+      "cos_tau2_august_tau": 0.062
+    },
+    "7": {
+      "heldout_pair_sign_acc": 0.722,
+      "heldout_control_sign_acc": 0.833,
+      "heldout_cohen_d_target_vs_control": 0.529,
+      "norm_raw": 0.176,
+      "norm_ctl": 0.174,
+      "cos_raw_ctl": 0.948,
+      "cos_tau2_august_tau": 0.036
+    },
+    "8": {
+      "heldout_pair_sign_acc": 0.833,
+      "heldout_control_sign_acc": 0.778,
+      "heldout_cohen_d_target_vs_control": 0.711,
+      "norm_raw": 0.208,
+      "norm_ctl": 0.202,
+      "cos_raw_ctl": 0.934,
+      "cos_tau2_august_tau": 0.054
+    },
+    "9": {
+      "heldout_pair_sign_acc": 1.0,
+      "heldout_control_sign_acc": 0.833,
+      "heldout_cohen_d_target_vs_control": 1.602,
+      "norm_raw": 0.242,
+      "norm_ctl": 0.226,
+      "cos_raw_ctl": 0.901,
+      "cos_tau2_august_tau": -0.014
+    },
+    "10": {
+      "heldout_pair_sign_acc": 0.944,
+      "heldout_control_sign_acc": 0.833,
+      "heldout_cohen_d_target_vs_control": 1.799,
+      "norm_raw": 0.304,
+      "norm_ctl": 0.279,
+      "cos_raw_ctl": 0.888,
+      "cos_tau2_august_tau": -0.043
+    },
+    "11": {
+      "heldout_pair_sign_acc": 0.944,
+      "heldout_control_sign_acc": 0.778,
+      "heldout_cohen_d_target_vs_control": 1.318,
+      "norm_raw": 0.365,
+      "norm_ctl": 0.317,
+      "cos_raw_ctl": 0.874,
+      "cos_tau2_august_tau": -0.116
+    },
+    "12": {
+      "heldout_pair_sign_acc": 0.944,
+      "heldout_control_sign_acc": 0.778,
+      "heldout_cohen_d_target_vs_control": 1.779,
+      "norm_raw": 0.402,
+      "norm_ctl": 0.36,
+      "cos_raw_ctl": 0.871,
+      "cos_tau2_august_tau": -0.115
+    },
+    "13": {
+      "heldout_pair_sign_acc": 1.0,
+      "heldout_control_sign_acc": 0.667,
+      "heldout_cohen_d_target_vs_control": 1.706,
+      "norm_raw": 0.56,
+      "norm_ctl": 0.477,
+      "cos_raw_ctl": 0.86,
+      "cos_tau2_august_tau": -0.121
+    },
+    "14": {
+      "heldout_pair_sign_acc": 1.0,
+      "heldout_control_sign_acc": 0.667,
+      "heldout_cohen_d_target_vs_control": 1.952,
+      "norm_raw": 0.684,
+      "norm_ctl": 0.566,
+      "cos_raw_ctl": 0.857,
+      "cos_tau2_august_tau": -0.133
+    },
+    "15": {
+      "heldout_pair_sign_acc": 1.0,
+      "heldout_control_sign_acc": 0.611,
+      "heldout_cohen_d_target_vs_control": 3.862,
+      "norm_raw": 0.91,
+      "norm_ctl": 0.698,
+      "cos_raw_ctl": 0.798,
+      "cos_tau2_august_tau": -0.135
+    },
+    "16": {
+      "heldout_pair_sign_acc": 1.0,
+      "heldout_control_sign_acc": 0.5,
+      "heldout_cohen_d_target_vs_control": 3.719,
+      "norm_raw": 1.161,
+      "norm_ctl": 0.829,
+      "cos_raw_ctl": 0.686,
+      "cos_tau2_august_tau": -0.142
+    },
+    "17": {
+      "heldout_pair_sign_acc": 1.0,
+      "heldout_control_sign_acc": 0.5,
+      "heldout_cohen_d_target_vs_control": 3.276,
+      "norm_raw": 1.463,
+      "norm_ctl": 1.082,
+      "cos_raw_ctl": 0.635,
+      "cos_tau2_august_tau": -0.075
+    },
+    "18": {
+      "heldout_pair_sign_acc": 1.0,
+      "heldout_control_sign_acc": 0.5,
+      "heldout_cohen_d_target_vs_control": 2.304,
+      "norm_raw": 1.867,
+      "norm_ctl": 1.336,
+      "cos_raw_ctl": 0.603,
+      "cos_tau2_august_tau": -0.009
+    },
+    "19": {
+      "heldout_pair_sign_acc": 0.944,
+      "heldout_control_sign_acc": 0.556,
+      "heldout_cohen_d_target_vs_control": 1.769,
+      "norm_raw": 2.598,
+      "norm_ctl": 1.548,
+      "cos_raw_ctl": 0.575,
+      "cos_tau2_august_tau": 0.054
+    },
+    "20": {
+      "heldout_pair_sign_acc": 0.889,
+      "heldout_control_sign_acc": 0.556,
+      "heldout_cohen_d_target_vs_control": 1.696,
+      "norm_raw": 3.116,
+      "norm_ctl": 1.902,
+      "cos_raw_ctl": 0.618,
+      "cos_tau2_august_tau": 0.019
+    },
+    "21": {
+      "heldout_pair_sign_acc": 0.889,
+      "heldout_control_sign_acc": 0.556,
+      "heldout_cohen_d_target_vs_control": 1.701,
+      "norm_raw": 3.689,
+      "norm_ctl": 2.206,
+      "cos_raw_ctl": 0.612,
+      "cos_tau2_august_tau": 0.0
+    },
+    "22": {
+      "heldout_pair_sign_acc": 0.889,
+      "heldout_control_sign_acc": 0.556,
+      "heldout_cohen_d_target_vs_control": 1.669,
+      "norm_raw": 4.54,
+      "norm_ctl": 2.704,
+      "cos_raw_ctl": 0.635,
+      "cos_tau2_august_tau": -0.003
+    },
+    "23": {
+      "heldout_pair_sign_acc": 0.889,
+      "heldout_control_sign_acc": 0.5,
+      "heldout_cohen_d_target_vs_control": 1.7,
+      "norm_raw": 5.057,
+      "norm_ctl": 2.991,
+      "cos_raw_ctl": 0.626,
+      "cos_tau2_august_tau": -0.024
+    },
+    "24": {
+      "heldout_pair_sign_acc": 0.889,
+      "heldout_control_sign_acc": 0.556,
+      "heldout_cohen_d_target_vs_control": 1.695,
+      "norm_raw": 5.564,
+      "norm_ctl": 3.29,
+      "cos_raw_ctl": 0.648,
+      "cos_tau2_august_tau": -0.014
+    },
+    "25": {
+      "heldout_pair_sign_acc": 0.889,
+      "heldout_control_sign_acc": 0.5,
+      "heldout_cohen_d_target_vs_control": 1.721,
+      "norm_raw": 5.9,
+      "norm_ctl": 3.484,
+      "cos_raw_ctl": 0.641,
+      "cos_tau2_august_tau": -0.007
+    },
+    "26": {
+      "heldout_pair_sign_acc": 0.889,
+      "heldout_control_sign_acc": 0.5,
+      "heldout_cohen_d_target_vs_control": 1.665,
+      "norm_raw": 6.347,
+      "norm_ctl": 3.649,
+      "cos_raw_ctl": 0.621,
+      "cos_tau2_august_tau": -0.027
+    },
+    "27": {
+      "heldout_pair_sign_acc": 0.889,
+      "heldout_control_sign_acc": 0.556,
+      "heldout_cohen_d_target_vs_control": 1.662,
+      "norm_raw": 6.877,
+      "norm_ctl": 3.851,
+      "cos_raw_ctl": 0.613,
+      "cos_tau2_august_tau": 0.018
+    },
+    "28": {
+      "heldout_pair_sign_acc": 0.889,
+      "heldout_control_sign_acc": 0.556,
+      "heldout_cohen_d_target_vs_control": 1.798,
+      "norm_raw": 8.772,
+      "norm_ctl": 5.089,
+      "cos_raw_ctl": 0.631,
+      "cos_tau2_august_tau": -0.003
+    },
+    "29": {
+      "heldout_pair_sign_acc": 0.944,
+      "heldout_control_sign_acc": 0.5,
+      "heldout_cohen_d_target_vs_control": 1.772,
+      "norm_raw": 10.141,
+      "norm_ctl": 5.682,
+      "cos_raw_ctl": 0.617,
+      "cos_tau2_august_tau": -0.008
+    },
+    "30": {
+      "heldout_pair_sign_acc": 0.944,
+      "heldout_control_sign_acc": 0.444,
+      "heldout_cohen_d_target_vs_control": 1.87,
+      "norm_raw": 12.096,
+      "norm_ctl": 6.873,
+      "cos_raw_ctl": 0.628,
+      "cos_tau2_august_tau": -0.015
+    },
+    "31": {
+      "heldout_pair_sign_acc": 0.889,
+      "heldout_control_sign_acc": 0.5,
+      "heldout_cohen_d_target_vs_control": 1.958,
+      "norm_raw": 15.31,
+      "norm_ctl": 7.745,
+      "cos_raw_ctl": 0.51,
+      "cos_tau2_august_tau": -0.251
+    }
+  },
+  "best_layer_by_heldout_d": 15,
+  "n_target_pairs": 72,
+  "n_control_pairs": 72,
+  "sha256": "8e5846282d0d050e7e65348afc9f18da158ae0784b8e919b9fd6b743af950a2a"
+}

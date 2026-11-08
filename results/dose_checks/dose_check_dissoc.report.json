@@ -1,0 +1,80 @@
+{
+  "conditions": [
+    "none",
+    "emp",
+    "random"
+  ],
+  "table": [
+    {
+      "condition": "none",
+      "thinking": true,
+      "cut_off_rate": 0.1111111111111111,
+      "tom2": {
+        "n": 90,
+        "value": 0.8333333333333334
+      },
+      "tom2ctl": {
+        "n": 72,
+        "value": 1.0
+      }
+    },
+    {
+      "condition": "emp",
+      "thinking": true,
+      "cut_off_rate": 0.1728395061728395,
+      "tom2": {
+        "n": 90,
+        "base": 0.8333333333333334,
+        "value": 0.8555555555555555,
+        "drop": -0.022222222222222223,
+        "ci": [
+          -0.08888888888888889,
+          0.044444444444444446
+        ],
+        "std_drop": -0.0596284793999944
+      },
+      "tom2ctl": {
+        "n": 72,
+        "base": 1.0,
+        "value": 1.0,
+        "drop": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "std_drop": 0.0
+      }
+    },
+    {
+      "condition": "random",
+      "thinking": true,
+      "cut_off_rate": 0.09259259259259259,
+      "tom2": {
+        "n": 90,
+        "base": 0.8333333333333334,
+        "value": 0.9111111111111111,
+        "drop": -0.07777777777777778,
+        "ci": [
+          -0.14444444444444443,
+          -0.011111111111111112
+        ],
+        "std_drop": -0.20869967789998037
+      },
+      "tom2ctl": {
+        "n": 72,
+        "base": 1.0,
+        "value": 1.0,
+        "drop": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "std_drop": 0.0
+      }
+    }
+  ],
+  "proposed_pairs": {
+    "True": null
+  },
+  "thinking_verdict": "only thinking=[True] was run"
+}

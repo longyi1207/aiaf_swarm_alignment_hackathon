@@ -1,0 +1,112 @@
+{
+  "emp_coarse_all": {
+    "turns": 40,
+    "calls": 49,
+    "tool_error_rate": 0.2857142857142857,
+    "unknown_tool_rate": 0.0,
+    "frame_break_rate": 0.0,
+    "cutoff_rate": 0.0,
+    "no_think_close_rate": 0.875,
+    "backend_errors": 0,
+    "pass": false
+  },
+  "emp_sae1": {
+    "turns": 40,
+    "calls": 50,
+    "tool_error_rate": 0.12,
+    "unknown_tool_rate": 0.0,
+    "frame_break_rate": 0.0,
+    "cutoff_rate": 0.0,
+    "no_think_close_rate": 0.85,
+    "backend_errors": 0,
+    "pass": true
+  },
+  "emp_sae5": {
+    "turns": 40,
+    "calls": 65,
+    "tool_error_rate": 0.12307692307692308,
+    "unknown_tool_rate": 0.0,
+    "frame_break_rate": 0.0,
+    "cutoff_rate": 0.0,
+    "no_think_close_rate": 0.85,
+    "backend_errors": 0,
+    "pass": true
+  },
+  "none": {
+    "turns": 40,
+    "calls": 53,
+    "tool_error_rate": 0.09433962264150944,
+    "unknown_tool_rate": 0.0,
+    "frame_break_rate": 0.0,
+    "cutoff_rate": 0.0,
+    "no_think_close_rate": 0.85,
+    "backend_errors": 0,
+    "pass": true
+  },
+  "random_dir_all": {
+    "turns": 40,
+    "calls": 53,
+    "tool_error_rate": 0.05660377358490566,
+    "unknown_tool_rate": 0.0,
+    "frame_break_rate": 0.0,
+    "cutoff_rate": 0.0,
+    "no_think_close_rate": 0.775,
+    "backend_errors": 0,
+    "pass": true
+  },
+  "tom_sae10_a30": {
+    "turns": 40,
+    "calls": 56,
+    "tool_error_rate": 0.07142857142857142,
+    "unknown_tool_rate": 0.0,
+    "frame_break_rate": 0.0,
+    "cutoff_rate": 0.0,
+    "no_think_close_rate": 0.875,
+    "backend_errors": 0,
+    "pass": true
+  },
+  "tom_sae10_a50": {
+    "turns": 39,
+    "calls": 58,
+    "tool_error_rate": 0.05172413793103448,
+    "unknown_tool_rate": 0.0,
+    "frame_break_rate": 0.0,
+    "cutoff_rate": 0.0,
+    "no_think_close_rate": 0.6923076923076923,
+    "backend_errors": 0,
+    "pass": true
+  },
+  "tom_sae3_a30": {
+    "turns": 38,
+    "calls": 50,
+    "tool_error_rate": 0.02,
+    "unknown_tool_rate": 0.0,
+    "frame_break_rate": 0.0,
+    "cutoff_rate": 0.0,
+    "no_think_close_rate": 0.8157894736842105,
+    "backend_errors": 0,
+    "pass": true
+  },
+  "tom_sae3_a50": {
+    "turns": 40,
+    "calls": 52,
+    "tool_error_rate": 0.019230769230769232,
+    "unknown_tool_rate": 0.0,
+    "frame_break_rate": 0.0,
+    "cutoff_rate": 0.0,
+    "no_think_close_rate": 0.65,
+    "backend_errors": 0,
+    "pass": true
+  },
+  "tom_sae3_a70": {
+    "turns": 40,
+    "calls": 64,
+    "tool_error_rate": 0.0,
+    "unknown_tool_rate": 0.0,
+    "frame_break_rate": 0.0,
+    "cutoff_rate": 0.0,
+    "no_think_close_rate": 0.65,
+    "backend_errors": 0,
+    "pass": true
+  }
+}

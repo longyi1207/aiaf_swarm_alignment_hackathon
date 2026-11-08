@@ -1,0 +1,35 @@
+{
+  "none": {
+    "turns": 40,
+    "calls": 102,
+    "tool_error_rate": 0.06315789473684211,
+    "unknown_tool_rate": 0.0,
+    "frame_break_rate": 0.0,
+    "cutoff_rate": 0.0,
+    "no_think_close_rate": 0.725,
+    "backend_errors": 0,
+    "pass": true
+  },
+  "rand2_L6": {
+    "turns": 40,
+    "calls": 112,
+    "tool_error_rate": 0.010638297872340425,
+    "unknown_tool_rate": 0.0,
+    "frame_break_rate": 0.0,
+    "cutoff_rate": 0.0,
+    "no_think_close_rate": 0.775,
+    "backend_errors": 0,
+    "pass": true
+  },
+  "tom2_L6": {
+    "turns": 40,
+    "calls": 128,
+    "tool_error_rate": 0.0970873786407767,
+    "unknown_tool_rate": 0.0,
+    "frame_break_rate": 0.0,
+    "cutoff_rate": 0.0,
+    "no_think_close_rate": 0.575,
+    "backend_errors": 0,
+    "pass": true
+  }
+}

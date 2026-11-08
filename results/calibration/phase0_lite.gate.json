@@ -1,0 +1,21 @@
+{
+  "agents": 80,
+  "games": 16,
+  "analysis_accuracy_mean": 0.975,
+  "found_own_F_rate": 0.958,
+  "false_F_per_agent": 0.0,
+  "filed_E_rate": 0.6,
+  "filed_E_by_harm_comm": {
+    "high/discuss": 0.6,
+    "high/isolated": 0.6,
+    "low/discuss": 0.6,
+    "low/isolated": 0.6
+  },
+  "audit_opened_rate": 1.0,
+  "forced_any": 2,
+  "parse_errors_total": 35,
+  "review_log_missing": 2,
+  "gate_accuracy_ok": true,
+  "gate_filing_ok": true,
+  "gate_pass_quantitative": true
+}
