@@ -92,63 +92,67 @@ def fig_discussion():
     plt.close(fig)
 
 
-ROWS = [  # (key, label, group)
-    ("none", "No intervention", 0),
-    ("emp", "Empathy removed", 1),
-    ("random", "Random direction, matched", 1),
-    ("tom", "Theory of mind removed, layer 6", 2),
-    ("random_tom", "Random direction, matched", 2),
-]
+def _pool(d, arm):
+    out = {"E": 0, "I": 0, "missing": 0, "agents": 0}
+    for run in ("historical_seeds_201_202", "cache_off_seed_351"):
+        for k in out:
+            out[k] += d[run][arm][k]
+    return out
 
 
-def fig_interventions():
+def fig_games():
+    """Figure 4: filing outcomes with each direction decreased or increased, pooled over the lesion runs; the steering
+    run (same worlds as the first lesion run, repaired harness) has its own no-intervention row. A diamond marks the
+    external-reporting share under a random direction of the same strength."""
     d = json.loads((DATA / "arm_outcomes.json").read_text())
-    runs = [("historical_seeds_201_202", "First run  ·  8 worlds, 40 auditors per row"),
-            ("cache_off_seed_351", "Replication  ·  4 new worlds, 20 per row")]
-    # y positions with a gap between intervention families
-    ys, y = [], 0.0
-    prev = None
-    for _, _, g in ROWS:
+    steer = json.loads((DATA / "steering_games.json").read_text()) if (DATA / "steering_games.json").exists() else {}
+    rows = [  # (label, outcome dict or None, random-control dict or None, group)
+        ("No intervention", _pool(d, "none"), None, 0),
+        ("Theory of mind decreased", _pool(d, "tom"), _pool(d, "random_tom"), 0),
+        ("Empathy decreased", _pool(d, "emp"), _pool(d, "random"), 0),
+        ("No intervention", steer.get("none"), None, 1),
+        ("Theory of mind increased", steer.get("tom_up_c1"), steer.get("rand_tom_c1"), 1),
+    ]
+    ys, y, prev = [], 0.0, None
+    for *_, g in rows:
         if prev is not None and g != prev:
-            y += 0.55
+            y += 0.9
         ys.append(y); y += 1.0; prev = g
-    fig, axes = plt.subplots(1, 2, figsize=(6.5, 2.2), sharey=True)
-    for ax, (run, title) in zip(axes, runs):
-        arms = d[run]
-        for (key, _, _), yy in zip(ROWS, ys):
-            a = arms[key]; n = a["agents"]
-            e, i, m = a["E"] / n, a["I"] / n, a["missing"] / n
-            ax.barh(yy, e, height=0.74, color=BLUE, edgecolor="white", linewidth=1.0, zorder=3)
-            ax.barh(yy, i, left=e, height=0.74, color=PALE, edgecolor="white", linewidth=1.0, zorder=3)
-            if m:
-                ax.barh(yy, m, left=e + i, height=0.74, color=GRAY, hatch="////", edgecolor="white", linewidth=1.0, zorder=3)
-            label = f"{a['E']}"
-            if e >= 0.09:
-                ax.text(e - 0.015, yy, label, ha="right", va="center", fontsize=7.6, color="white", fontweight="bold", zorder=4)
-            else:
-                ax.text(e + 0.015, yy, label, ha="left", va="center", fontsize=7.6, color=INK, fontweight="bold", zorder=4)
-        ax.set_xlim(0, 1)
-        ax.set_xticks([0, 0.25, 0.5, 0.75, 1]); ax.set_xticklabels(["0", "25%", "50%", "75%", "100%"])
-        ax.set_title(title, loc="left", color=INK, pad=6, fontsize=8.6)
-        ax.tick_params(axis="y", length=0)
-        ax.spines["left"].set_visible(False)
-        ax.set_xlabel("Share of auditors")
-    axes[0].set_yticks(ys); axes[0].set_yticklabels([r[1] for r in ROWS])
-    axes[0].invert_yaxis()
-    fig.legend(handles=[Patch(color=BLUE, label="Reported externally (number shown)"), Patch(color=PALE, label="Reported internally"),
-                        Patch(facecolor=GRAY, hatch="////", edgecolor="white", label="Never submitted a valid report")],
-               loc="lower center", ncol=3, frameon=False, bbox_to_anchor=(0.62, -0.08), fontsize=7.6, handlelength=1.3)
-    fig.tight_layout(w_pad=2.0)
+    fig, ax = plt.subplots(figsize=(6.3, 2.45))
+    for (label, o, r, g), yy in zip(rows, ys):
+        if not o:
+            ax.barh(yy, 1, height=0.7, color="white", edgecolor=GRID, linewidth=1.0, zorder=2)
+            ax.text(0.5, yy, "results pending", ha="center", va="center", fontsize=7.6, color=MUTED, zorder=3)
+            continue
+        n = o["agents"]; e, i, m = o["E"] / n, o["I"] / n, o["missing"] / n
+        ax.barh(yy, e, height=0.7, color=BLUE, edgecolor="white", linewidth=1.0, zorder=3)
+        ax.barh(yy, i, left=e, height=0.7, color=PALE, edgecolor="white", linewidth=1.0, zorder=3)
+        if m:
+            ax.barh(yy, m, left=e + i, height=0.7, color=GRAY, hatch="////", edgecolor="white", linewidth=1.0, zorder=3)
+        lab = f"{o['E']}/{n}"
+        if e >= 0.14:
+            ax.text(e - 0.012, yy, lab, ha="right", va="center", fontsize=7.4, color="white", fontweight="bold", zorder=4)
+        else:
+            ax.text(e + 0.012, yy, lab, ha="left", va="center", fontsize=7.4, color=INK, fontweight="bold", zorder=4)
+        if r:
+            ax.scatter([r["E"] / r["agents"]], [yy - 0.47], marker="v", s=30, color=INK, zorder=6, clip_on=False)
+    ax.set_yticks(ys); ax.set_yticklabels([r[0] for r in rows])
+    ax.invert_yaxis()
+    ax.text(-0.005, ys[0] - 0.75, "Lesion runs: 12 worlds, 60 auditors per row", transform=ax.get_yaxis_transform(), ha="right",
+            va="center", fontsize=7.6, fontweight="bold", color=INK, clip_on=False)
+    ax.text(-0.005, ys[3] - 0.75, "Steering run: 8 worlds, 40 per row", transform=ax.get_yaxis_transform(), ha="right",
+            va="center", fontsize=7.6, fontweight="bold", color=INK, clip_on=False)
+    ax.set_xlim(0, 1); ax.set_xticks([0, 0.25, 0.5, 0.75, 1]); ax.set_xticklabels(["0", "25%", "50%", "75%", "100%"])
+    ax.set_xlabel("Share of auditors")
+    ax.tick_params(axis="y", length=0); ax.spines["left"].set_visible(False)
+    fig.legend(handles=[Patch(color=BLUE, label="Reported externally"), Patch(color=PALE, label="Reported internally"),
+                        Patch(facecolor=GRAY, hatch="////", edgecolor="white", label="No valid report"),
+                        plt.Line2D([], [], marker="v", ls="", color=INK, markersize=5, label="Random direction, same strength")],
+               loc="lower center", ncol=4, frameon=False, bbox_to_anchor=(0.55, -0.03), fontsize=7.3, handlelength=1.2, columnspacing=1.5)
+    fig.tight_layout()
+    fig.subplots_adjust(bottom=0.24)
     fig.savefig(OUT / "fig4_games.png")
     plt.close(fig)
-
-
-if __name__ == "__main__":
-    fig_discussion()
-    fig_interventions()
-    print("wrote", sorted(p.name for p in OUT.glob("*.png")))
-
-
 
 
 def fig_steering():
@@ -183,4 +187,7 @@ def fig_steering():
 
 
 if __name__ == "__main__":
+    fig_discussion()
+    fig_games()
     fig_steering()
+    print("wrote", sorted(p.name for p in OUT.glob("*.png")))
