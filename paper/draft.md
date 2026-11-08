@@ -121,7 +121,7 @@ Five language-model auditors facing a threshold reporting dilemma reported more 
 
 ## Author Contributions
 
-AUTHOR_CONTRIBUTIONS_TO_CONFIRM. Suggested: L.Y. conceived the project, designed the game, the experiments and the selection rules, and made all design decisions. [Collaborator] ran the cache-off replication, the filing and transcript audits and the cache audit, and repaired the transcript parser.
+L.Y. designed the study and ran most of the experiments. Y.Z. ran the cache-off replication, audited the filing failures, transcripts and prefix caching, and repaired the transcript parser. Y.L. provided the psychological framing of theory of mind and empathy and helped design the scenario.
 
 ## References
 
@@ -160,7 +160,7 @@ Zhu, W., Zhang, Z., and Wang, Y. (2024). Language models represent beliefs of se
 
 **B.2 Theory-of-mind direction.** Held-out separation of false- and true-belief stories (and of bystander control pairs) was 78% (67%) at layer 6, 94% (78%) at layer 12, 100% (61%) at layer 15 and 100% (50%) at layers 16 to 18. Its cosine similarity with the belief direction from our August study, which contrasted questions about belief with questions about reality, was between −0.14 and 0.05 at layers 10 to 24, so the two directions are unrelated.
 
-**B.3 Implementation notes.** vLLM's automatic prefix caching identifies reusable computation by token content. When conditions with different interventions share a prompt prefix in one process, a later condition reuses keys and values computed under an earlier one, so the intervention acts only on the new tokens. We fixed this by passing a per-condition cache salt. In an audit run by a collaborator, reversing the order of conditions changed none of 140 salted outputs, and observed cache hits stayed within conditions. Salted and uncached greedy outputs still differed in 70 of 140 cases, which we attribute to numerical differences between execution paths, so all benchmark numbers in Table 1 use uncached inference. The second failure was in parsing: a reasoning block cut off by the token limit was returned to the agent as visible text and stayed in its context. Reconstructing one failed request from its saved messages reproduced the reported length of 100,793 tokens; removing only the nine unfinished reasoning blocks gave 63,930.
+**B.3 Implementation notes.** vLLM's automatic prefix caching identifies reusable computation by token content. When conditions with different interventions share a prompt prefix in one process, a later condition reuses keys and values computed under an earlier one, so the intervention acts only on the new tokens. We fixed this by passing a per-condition cache salt. In an audit run by Y.Z., reversing the order of conditions changed none of 140 salted outputs, and observed cache hits stayed within conditions. Salted and uncached greedy outputs still differed in 70 of 140 cases, which we attribute to numerical differences between execution paths, so all benchmark numbers in Table 1 use uncached inference. The second failure was in parsing: a reasoning block cut off by the token limit was returned to the agent as visible text and stayed in its context. Reconstructing one failed request from its saved messages reproduced the reported length of 100,793 tokens; removing only the nine unfinished reasoning blocks gave 63,930.
 
 ## Appendix C. Interventions in the Games
 
