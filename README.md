@@ -1,5 +1,9 @@
 # aiaf_swarm_alignment_hackathon
 
+**Clean replication (2026-11-08):** see [the runnable post-cache-fix runbook](docs/CLEAN_REPLICATION.md).
+The progress table below is historical. Pre-fix results need a cache-contamination audit;
+new runs use immutable manifests and cannot adopt legacy checkpoints.
+
 **削弱 AI agent 的读心能力（ToM）和共情，看一群 agent 在"举报还是沉默"的困境里会怎么做。**
 
 AIAF × Apart **Swarm Alignment Hackathon**（2026-11-06 → 08），Track 2 "Science of agent networks"。

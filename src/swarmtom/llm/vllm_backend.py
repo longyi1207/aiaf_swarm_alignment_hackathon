@@ -105,7 +105,7 @@ class VLLMBackend(Backend):
                  enable_thinking: bool = True, max_new_tokens: int = 2048, temperature: float = 0.6,
                  top_p: float = 0.95, seed: int = 0, max_prompt_tokens: int = 32768,
                  gpu_memory_utilization: float = 0.88, enforce_eager: bool | None = None, max_num_seqs: int = 256,
-                 **_ignored):
+                 enable_prefix_caching: bool = True, revision: str | None = None, **_ignored):
         import os
 
         os.environ.setdefault("VLLM_ENABLE_V1_MULTIPROCESSING", "0")  # model in-process, so hooks can be added
@@ -116,11 +116,13 @@ class VLLMBackend(Backend):
         from vllm import LLM
 
         from swarmtom.lesion.conditions import load_conditions
-        from swarmtom.llm.hf import stop_token_ids
+        from swarmtom.llm.formatting import stop_token_ids
 
         self.model_name, self.enable_thinking = model_name, enable_thinking
         self.max_new_tokens, self.temperature, self.top_p, self.seed = max_new_tokens, temperature, top_p, seed
         self.max_prompt_tokens = max_prompt_tokens
+        self.enable_prefix_caching = enable_prefix_caching
+        self.revision = revision
         self._calls = 0
         self.provenance: dict = {}
         conditions: dict = {}
@@ -133,9 +135,10 @@ class VLLMBackend(Backend):
         self.enforce_eager = enforce_eager
         self.uses_lesions = bool(conditions) and enforce_eager
         t0 = time.monotonic()
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name, revision=revision)
         self.llm = LLM(model=model_name, dtype=dtype, seed=seed, gpu_memory_utilization=gpu_memory_utilization,
-                       max_model_len=max_prompt_tokens + max_new_tokens, enable_prefix_caching=True,
+                       max_model_len=max_prompt_tokens + max_new_tokens, enable_prefix_caching=enable_prefix_caching,
+                       revision=revision,
                        enforce_eager=enforce_eager, max_num_seqs=max_num_seqs, gdn_prefill_backend="triton")
         log.info("vLLM loaded %s in %.0fs (eager=%s)", model_name, time.monotonic() - t0, enforce_eager)
         self.lesions = _LesionState(conditions)
@@ -152,10 +155,13 @@ class VLLMBackend(Backend):
         return {"name": self.name, "vllm": vllm.__version__, "model": self.model_name,
                 "enable_thinking": self.enable_thinking, "max_new_tokens": self.max_new_tokens,
                 "temperature": self.temperature, "top_p": self.top_p, "enforce_eager": self.enforce_eager,
-                "prefix_caching": True, "lesion_vectors": self.provenance}
+                "prefix_caching": self.enable_prefix_caching, "prefix_cache_key": "lesion_condition_v1",
+                "seed": self.seed, "seed_policy": "request_prompt_v1",
+                "max_prompt_tokens": self.max_prompt_tokens, "revision": self.revision,
+                "lesion_vectors": self.provenance}
 
     def render(self, req: GenRequest) -> str:
-        from swarmtom.llm.hf import _for_template
+        from swarmtom.llm.formatting import _for_template
 
         kw = dict(tools=req.tools or None, tokenize=False, add_generation_prompt=True)
         thinking = req.meta.get("enable_thinking", self.enable_thinking)
@@ -164,15 +170,16 @@ class VLLMBackend(Backend):
         except TypeError:
             return self.tokenizer.apply_chat_template(_for_template(req.messages), **kw)
 
-    def _seed_for(self, key: str) -> int:
-        h = hashlib.sha256(f"{self.seed}|{self._calls}|{key}".encode()).digest()
+    def _seed_for(self, key: str, prompt_ids: list[int]) -> int:
+        # A resumed run or a different arm/chunk order must not change a request's RNG seed.
+        h = hashlib.sha256(f"{self.seed}|{key}|{prompt_ids}".encode()).digest()
         return int.from_bytes(h[:4], "little")
 
     def generate(self, requests: list[GenRequest], max_new_tokens: int | None = None) -> list[GenResult]:
         from vllm import SamplingParams
         from vllm.inputs import TokensPrompt
 
-        from swarmtom.llm.hf import cut_at_stop
+        from swarmtom.llm.formatting import cut_at_stop
 
         budget = max_new_tokens or self.max_new_tokens
         self._calls += 1
@@ -204,8 +211,8 @@ class VLLMBackend(Backend):
                 continue
             params = [SamplingParams(temperature=self.temperature, top_p=self.top_p if self.temperature > 0 else 1.0,
                                      max_tokens=budget, stop_token_ids=self.stop_ids,
-                                     seed=self._seed_for(requests[i].key), skip_special_tokens=False)
-                      for i in keep]
+                                     seed=self._seed_for(requests[i].key, p["prompt_token_ids"]), skip_special_tokens=False)
+                      for i, p in zip(keep, prompts)]
             self.lesions.active = cond
             try:
                 res = self.llm.generate(prompts, params, use_tqdm=False)

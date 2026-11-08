@@ -26,6 +26,9 @@ class ProtocolConfig:
     python_timeout_s: float = 30.0
     python_network: str = "block"  # block | container (run is inside --network none) | allow
     max_message_chars: int = 1200
+    # Separate allowance for personal-file reads, followed by normal charged steps.
+    # This bounds loops without taking away the first pass through one's own files.
+    own_file_free_turns: int = 16
     # Phases in which an agent's lesion is applied (2026-11-06: the ToM lesion broke tool use in the analysis
     # phase; "decision" phases = pred_a, discussion, pred_b, filing). Empty = every phase (the original behaviour).
     lesion_phases: list = field(default_factory=list)
@@ -48,6 +51,7 @@ class DesignConfig:
     briefs: list[str] = field(default_factory=list)
     # Optional: success-award levels (USD) as a design factor (overrides world.award_usd).
     awards: list[int] = field(default_factory=list)
+    matched_controls: dict[str, str] = field(default_factory=dict)
 
 
 @dataclass

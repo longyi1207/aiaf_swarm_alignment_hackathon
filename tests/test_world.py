@@ -253,7 +253,8 @@ def test_v4r_prompt_and_free_own_file_reads(tmp_path):
     assert not _reads_own_file("read_table", {"path": "batches/VB-001.xlsx"})
     assert not _reads_own_file("list_files", {"path": ""}) and not _reads_own_file("run_python", {"path": "personal/x"})
     text = P.analysis_open("Friday 28 August 2026", 12, 40, own_files=True, unread=["a"], own_files_free=True)
-    assert "does not count" in text and P.analysis_open("d", 12, 40).endswith("tool-using steps.")
+    assert "first 16 turns" in text and "later reads count normally" in text
+    assert P.analysis_open("d", 12, 40).endswith("tool-using steps.")
 
 
 def test_v4r_variants_d_and_i(tmp_path):

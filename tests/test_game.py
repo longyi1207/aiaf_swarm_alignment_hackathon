@@ -237,9 +237,51 @@ def test_v4r_game_runs_and_own_file_reads_are_free(tmp_path):
     g = Game.create(tmp_path / "g", wdir, gt, ["none"] * 5, "none", ProtocolConfig())
     cs = gt["agents"][0]["callsign"]
     a = g.agents[cs]
-    assert "Take on this identity fully" in a.messages[0]["content"] and "does not count" in a.messages[1]["content"]
+    assert "Take on this identity fully" in a.messages[0]["content"] and "do not count" in a.messages[1]["content"]
     g.apply(cs, GenResult(key=f"x/{cs}", tool_calls=[ToolCall("read_document", {"path": "personal/notes.md"}),
                                                        ToolCall("list_files", {"path": "hr"})]))
     assert a.steps_in_phase == 0
     g.apply(cs, GenResult(key=f"x/{cs}", tool_calls=[ToolCall("list_files", {"path": "batches"})]))
     assert a.steps_in_phase == 1
+
+
+def test_repeated_personal_reads_eventually_use_budget_and_survive_resume(tmp_path):
+    from swarmtom.llm.base import GenResult, ToolCall
+    from swarmtom.run.game import Game
+    cfg = _config(tmp_path, world={'brief': 'v4ri'},
+                  design={'k_evidence': [5], 'communication': ['isolated'], 'mixed': []},
+                  protocol={'own_file_free_turns': 2, 'analysis_max_steps': 1, 'grace_steps': 1})
+    runner = Runner(cfg)
+    runner.prepare()
+    game = runner.games[0]
+    cs = next(iter(game.agents))
+    turn = GenResult(key=cs, tool_calls=[ToolCall('read_document', {'path': 'personal/notes.md'})])
+    game.apply(cs, turn)
+    game.apply(cs, turn)
+    assert game.agents[cs].steps_in_phase == 0
+    game.save()
+    loaded = Game.load(game.dir, cfg.protocol)
+    try:
+        assert loaded.agents[cs].own_file_free_turns_used == 2
+        loaded.apply(cs, turn)
+        assert loaded.agents[cs].warned
+        loaded.apply(cs, turn)
+        assert loaded.agents[cs].forced == ['analysis:step_limit']
+    finally:
+        loaded.close()
+        runner.close()
+
+
+def test_one_arm_at_a_time_retains_the_full_design_manifest(tmp_path):
+    cfg = _config(tmp_path, design={'k_evidence': [5], 'communication': ['isolated'],
+                                   'lesion_conditions': ['none', 'tom'], 'mixed': []})
+    for arm in ('none', 'tom'):
+        runner = Runner(cfg, arms=[arm])
+        runner.prepare()
+        runner.run()
+        assert {g.s['lesion_tag'] for g in runner.games} == {arm}
+        runner.close()
+    assert score_run(cfg.run_dir)['games_scored'] == 2
+    assert len(list((cfg.run_dir / 'sessions').glob('*.json'))) == 2
+    manifest = json.loads((cfg.run_dir / 'manifest.json').read_text())
+    assert manifest['identity']['config']['design']['lesion_conditions'] == ['none', 'tom']

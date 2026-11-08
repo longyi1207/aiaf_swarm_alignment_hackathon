@@ -61,7 +61,8 @@ def _run(args) -> int:
     if args.token_budget:
         cfg.backend["token_budget"] = args.token_budget
     i, n = (int(x) for x in args.shard.split("/"))
-    runner = Runner(cfg, tool_workers=args.tool_workers, shard=(i, n))
+    runner = Runner(cfg, tool_workers=args.tool_workers, shard=(i, n),
+                    arms=args.arms.split(",") if args.arms else None)
     try:
         runner.prepare(Path(args.config))
         runner.run(max_ticks=args.max_ticks)
@@ -117,6 +118,7 @@ def main(argv: list[str] | None = None) -> int:
     c.set_defaults(fn=_check)
     r = sub.add_parser("run", help="run (or resume) every game of a run config")
     r.add_argument("config")
+    r.add_argument("--arms", help="run only comma-separated arms, retaining the full immutable design")
     r.add_argument("--max-ticks", type=int, default=None, help="stop after N ticks (resume later)")
     r.add_argument("--tool-workers", type=int, default=16)
     r.add_argument("--python-network", choices=["block", "audit", "container", "allow"], default=None,

@@ -130,3 +130,16 @@ def test_tom2_tasks_load_and_score():
     r = tom[0]
     assert score_objective("tom2", r, r["correct_letter"])["correct"]
     assert not score_objective("tom2ctl", ctl[0], "AB".replace(ctl[0]["correct_letter"], ""))["correct"]
+
+
+def test_unfinished_reasoning_is_not_scored_as_an_answer_letter(tmp_path):
+    cfg = _cfg(tmp_path)
+    cfg.thinking, cfg.tasks, cfg.conditions = [True], ['tom'], ['none']
+    cfg.limit = {'tom': 1}
+    be = FakeBackend()
+    correct = load_items('tom')[0]['correct_letter']
+    be.generate = lambda requests, max_new_tokens=None: [GenResult(key=r.key, content=correct + ' while thinking',
+        raw=correct + ' while thinking') for r in requests]
+    generate(cfg, be)
+    row = json.loads((cfg.run_dir / 'generations.jsonl').read_text())
+    assert row['cut_off_thinking'] and row['answer'] == '' and not row['correct']

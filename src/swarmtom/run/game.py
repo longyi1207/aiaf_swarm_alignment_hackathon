@@ -57,6 +57,7 @@ class AgentState:
     steps_in_phase: int = 0
     warned: bool = False
     grace_left: int = 0
+    own_file_free_turns_used: int = 0
     consecutive_errors: int = 0
     review_log: list[dict] | None = None
     pred1: dict = field(default_factory=dict)  # phase -> estimates
@@ -116,7 +117,7 @@ class Game:
                     deadline.strftime("%A %d %B %Y"), n_batches, protocol.analysis_max_steps, own_files=v3,
                     unread=P.inbox_preview(ws.root / "inbox") if brief_v in ("v4u", "v4su") or brief_v.startswith("v4r")
                     else None,
-                    own_files_free=brief_v.startswith("v4r"))},
+                    own_files_free=brief_v.startswith("v4r"), own_file_free_turns=protocol.own_file_free_turns)},
             ]
             agents[cs] = asdict(AgentState(callsign=cs, vendor=a["vendor"], lesion=lesion,
                                            workspace=str(ws.root), messages=messages))
@@ -219,6 +220,7 @@ class Game:
     def _reset_for_phase(self, a: AgentState, note: str) -> None:
         a.messages.append({"role": "user", "content": note})
         a.status, a.steps_in_phase, a.warned, a.grace_left = "needs_model", 0, False, 0
+        a.own_file_free_turns_used = 0
 
     def _start_round(self, r: int) -> None:
         self.s["round"] = r
@@ -291,8 +293,12 @@ class Game:
                     parse_errors=res.parse_errors, prompt_tokens=res.prompt_tokens,
                     completion_tokens=res.completion_tokens)
         a.steps_in_phase += 1
-        if self.s.get("own_files_free") and calls and all(_reads_own_file(c.name, c.arguments) for c in calls):
-            a.steps_in_phase -= 1  # v4r: reading one's own files (inbox/, hr/, personal/) does not use up steps
+        if (phase == "analysis" and self.s.get("own_files_free") and calls
+                and a.own_file_free_turns_used < self.p.own_file_free_turns
+                and len(calls) <= self.p.max_tool_calls_per_message
+                and all(_reads_own_file(c.name, c.arguments) for c in calls)):
+            a.steps_in_phase -= 1
+            a.own_file_free_turns_used += 1
         ended = False
         for i, c in enumerate(calls):
             if ended:

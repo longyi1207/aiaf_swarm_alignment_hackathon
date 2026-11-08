@@ -95,3 +95,29 @@ def test_truncate_keeps_head_and_tail():
     s = "a" * 100 + "b" * 100
     t = truncate(s, 60)
     assert t.startswith("a") and t.endswith("b") and "omitted" in t
+
+
+def test_python_cannot_read_or_write_sibling_files_even_through_native_calls(tmp_path):
+    from swarmtom.agent.sandbox import filesystem_selftest
+    workspace = tmp_path / 'agent'
+    workspace.mkdir()
+    assert filesystem_selftest(workspace, NET) == 'filesystem isolated'
+    outside = tmp_path / 'other_agent.txt'
+    outside.write_text('private')
+    code = f"""
+from pathlib import Path
+for path in ({str(outside)!r}, '../other_agent.txt'):
+    for mode in ('r', 'w'):
+        try:
+            open(path, mode)
+            raise RuntimeError('escaped workspace')
+        except PermissionError:
+            pass
+Path('inside.txt').write_text('allowed')
+print('confined')
+"""
+    result = run_python(code, workspace, network=NET)
+    assert result.returncode == 0, result.stderr
+    assert result.stdout.strip() == 'confined'
+    assert outside.read_text() == 'private'
+    assert (workspace / 'inside.txt').read_text() == 'allowed'
