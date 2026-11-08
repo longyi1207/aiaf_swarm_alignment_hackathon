@@ -6,6 +6,7 @@ historical 90-item subset, an extra 4,096 tokens recovered five correct L6 answe
 and 12 in each control. The seven-arm specificity check failed. The progress table
 below describes the historical project. [Benchmark results and data](results/belief_replication/README.md) ·
 [Swarm games and transcripts](results/swarm_replication/README.md) ·
+[Missing-filing replay](results/filing_audit/README.md) ·
 [Runnable post-cache-fix protocol](docs/CLEAN_REPLICATION.md)
 
 **削弱 AI agent 的读心能力（ToM）和共情，看一群 agent 在"举报还是沉默"的困境里会怎么做。**
