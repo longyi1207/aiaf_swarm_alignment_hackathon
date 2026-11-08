@@ -1,0 +1,314 @@
+{
+  "baseline": {
+    "capability": 1.0,
+    "tom2clean": 0.7777777777777778,
+    "tom2ctl": 1.0,
+    "empathy": 9.7,
+    "non_tom_cut_off": 0.0
+  },
+  "conditions": {
+    "emp_up_c025": {
+      "family": "emp_up",
+      "capability": 0.8333333333333334,
+      "tom2ctl_drop": 0.125,
+      "tom2ctl_ci": [
+        0.05555555555555555,
+        0.20833333333333334
+      ],
+      "tom2clean": 0.4305555555555556,
+      "tom2clean_change": -0.3472222222222222,
+      "tom2clean_change_ci": [
+        -0.4305555555555556,
+        -0.2638888888888889
+      ],
+      "empathy": 9.95,
+      "empathy_change": 0.25,
+      "empathy_change_ci": [
+        0.1,
+        0.45
+      ],
+      "non_tom_cut_off": 0.1,
+      "checks": {
+        "capability_ok": false,
+        "tom2ctl_ok": false,
+        "cut_off_ok": false,
+        "target_ok": true
+      },
+      "qualifies": false,
+      "target_size": 0.25
+    },
+    "emp_up_c05": {
+      "family": "emp_up",
+      "capability": 0.0,
+      "tom2ctl_drop": 1.0,
+      "tom2ctl_ci": [
+        1.0,
+        1.0
+      ],
+      "tom2clean": 0.0,
+      "tom2clean_change": -0.7777777777777778,
+      "tom2clean_change_ci": [
+        -0.8402777777777778,
+        -0.7083333333333334
+      ],
+      "empathy": 0.7,
+      "empathy_change": -9.0,
+      "empathy_change_ci": [
+        -9.7,
+        -7.85
+      ],
+      "non_tom_cut_off": 0.94,
+      "checks": {
+        "capability_ok": false,
+        "tom2ctl_ok": false,
+        "cut_off_ok": false,
+        "target_ok": false
+      },
+      "qualifies": false,
+      "target_size": -9.0
+    },
+    "emp_up_c1": {
+      "family": "emp_up",
+      "capability": 0.0,
+      "tom2ctl_drop": 1.0,
+      "tom2ctl_ci": [
+        1.0,
+        1.0
+      ],
+      "tom2clean": 0.0,
+      "tom2clean_change": -0.7777777777777778,
+      "tom2clean_change_ci": [
+        -0.8402777777777778,
+        -0.7083333333333334
+      ],
+      "empathy": 0.5,
+      "empathy_change": -9.2,
+      "empathy_change_ci": [
+        -9.8,
+        -8.1
+      ],
+      "non_tom_cut_off": 1.0,
+      "checks": {
+        "capability_ok": false,
+        "tom2ctl_ok": false,
+        "cut_off_ok": false,
+        "target_ok": false
+      },
+      "qualifies": false,
+      "target_size": -9.2
+    },
+    "rand_emp_c05": {
+      "family": "rand_emp",
+      "capability": 0.9666666666666667,
+      "tom2ctl_drop": 0.0,
+      "tom2ctl_ci": [
+        0.0,
+        0.0
+      ],
+      "tom2clean": 0.7986111111111112,
+      "tom2clean_change": 0.020833333333333332,
+      "tom2clean_change_ci": [
+        -0.04861111111111111,
+        0.09027777777777778
+      ],
+      "empathy": 9.85,
+      "empathy_change": 0.15,
+      "empathy_change_ci": [
+        -0.0,
+        0.3
+      ],
+      "non_tom_cut_off": 0.02,
+      "checks": {
+        "capability_ok": true,
+        "tom2ctl_ok": true,
+        "cut_off_ok": true
+      },
+      "qualifies": false,
+      "target_size": null
+    },
+    "rand_tom_c2": {
+      "family": "rand_tom",
+      "capability": 1.0,
+      "tom2ctl_drop": 0.0,
+      "tom2ctl_ci": [
+        0.0,
+        0.0
+      ],
+      "tom2clean": 0.7638888888888888,
+      "tom2clean_change": -0.013888888888888888,
+      "tom2clean_change_ci": [
+        -0.09027777777777778,
+        0.0625
+      ],
+      "empathy": 9.85,
+      "empathy_change": 0.15,
+      "empathy_change_ci": [
+        -0.0,
+        0.3
+      ],
+      "non_tom_cut_off": 0.0,
+      "checks": {
+        "capability_ok": true,
+        "tom2ctl_ok": true,
+        "cut_off_ok": true
+      },
+      "qualifies": false,
+      "target_size": null
+    },
+    "tom_dn_c1": {
+      "family": "tom_dn",
+      "capability": 0.9333333333333333,
+      "tom2ctl_drop": 0.05555555555555555,
+      "tom2ctl_ci": [
+        0.013888888888888888,
+        0.1111111111111111
+      ],
+      "tom2clean": 0.3333333333333333,
+      "tom2clean_change": -0.4444444444444444,
+      "tom2clean_change_ci": [
+        -0.5347222222222222,
+        -0.3541666666666667
+      ],
+      "empathy": 9.75,
+      "empathy_change": 0.05,
+      "empathy_change_ci": [
+        -0.0,
+        0.15
+      ],
+      "non_tom_cut_off": 0.04,
+      "checks": {
+        "capability_ok": true,
+        "tom2ctl_ok": false,
+        "cut_off_ok": true,
+        "target_ok": true
+      },
+      "qualifies": false,
+      "target_size": 0.4444444444444444
+    },
+    "tom_dn_c2": {
+      "family": "tom_dn",
+      "capability": 0.6333333333333333,
+      "tom2ctl_drop": 0.6666666666666666,
+      "tom2ctl_ci": [
+        0.5555555555555556,
+        0.7777777777777778
+      ],
+      "tom2clean": 0.0763888888888889,
+      "tom2clean_change": -0.7013888888888888,
+      "tom2clean_change_ci": [
+        -0.7777777777777778,
+        -0.6319444444444444
+      ],
+      "empathy": 9.2,
+      "empathy_change": -0.5,
+      "empathy_change_ci": [
+        -1.5,
+        -0.0
+      ],
+      "non_tom_cut_off": 0.24,
+      "checks": {
+        "capability_ok": false,
+        "tom2ctl_ok": false,
+        "cut_off_ok": false,
+        "target_ok": true
+      },
+      "qualifies": false,
+      "target_size": 0.7013888888888888
+    },
+    "tom_up_c1": {
+      "family": "tom_up",
+      "capability": 1.0,
+      "tom2ctl_drop": 0.0,
+      "tom2ctl_ci": [
+        0.0,
+        0.0
+      ],
+      "tom2clean": 0.9027777777777778,
+      "tom2clean_change": 0.125,
+      "tom2clean_change_ci": [
+        0.05555555555555555,
+        0.19444444444444445
+      ],
+      "empathy": 9.75,
+      "empathy_change": 0.05,
+      "empathy_change_ci": [
+        -0.0,
+        0.15
+      ],
+      "non_tom_cut_off": 0.0,
+      "checks": {
+        "capability_ok": true,
+        "tom2ctl_ok": true,
+        "cut_off_ok": true,
+        "target_ok": true
+      },
+      "qualifies": true,
+      "target_size": 0.125
+    },
+    "tom_up_c2": {
+      "family": "tom_up",
+      "capability": 1.0,
+      "tom2ctl_drop": 0.0,
+      "tom2ctl_ci": [
+        0.0,
+        0.0
+      ],
+      "tom2clean": 0.8541666666666666,
+      "tom2clean_change": 0.0763888888888889,
+      "tom2clean_change_ci": [
+        0.006944444444444444,
+        0.1527777777777778
+      ],
+      "empathy": 9.7,
+      "empathy_change": -0.0,
+      "empathy_change_ci": [
+        -0.15,
+        0.15
+      ],
+      "non_tom_cut_off": 0.0,
+      "checks": {
+        "capability_ok": true,
+        "tom2ctl_ok": true,
+        "cut_off_ok": true,
+        "target_ok": true
+      },
+      "qualifies": true,
+      "target_size": 0.0763888888888889
+    },
+    "tom_up_c4": {
+      "family": "tom_up",
+      "capability": 0.9666666666666667,
+      "tom2ctl_drop": 0.027777777777777776,
+      "tom2ctl_ci": [
+        0.0,
+        0.06944444444444445
+      ],
+      "tom2clean": 0.5625,
+      "tom2clean_change": -0.2152777777777778,
+      "tom2clean_change_ci": [
+        -0.3055555555555556,
+        -0.125
+      ],
+      "empathy": 7.8,
+      "empathy_change": -1.9,
+      "empathy_change_ci": [
+        -3.45,
+        -0.55
+      ],
+      "non_tom_cut_off": 0.08,
+      "checks": {
+        "capability_ok": true,
+        "tom2ctl_ok": true,
+        "cut_off_ok": false,
+        "target_ok": true
+      },
+      "qualifies": false,
+      "target_size": 0.2152777777777778
+    }
+  },
+  "selected": {
+    "tom_up": "tom_up_c1",
+    "tom_dn": null,
+    "emp_up": null
+  }
+}

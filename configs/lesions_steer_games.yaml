@@ -1,0 +1,21 @@
+# Steering game arms (2026-11-08 14:25, docs/设计.md §8 amendments 13:12 and 14:06), chosen by the pre-registered rule
+# (runs/dose_check_steer2/selection.md): tom_up = tom_up_c1; tom_dn and emp_up did not qualify. rand_tom_c1 = random
+# direction at the same layers with tom_up_c1's per-layer magnitude. Definitions identical to configs/lesions_steer.yaml.
+vector_files:
+  tom_v2:
+    path: assets/vectors/axes_tom_v2.pt
+    sha256: 8e5846282d0d050e7e65348afc9f18da158ae0784b8e919b9fd6b743af950a2a
+  coarse:
+    path: assets/vectors/axes_vectors.pt
+    sha256: ce239044e347834996ba890741e43865fff33d1b87e751bdd378b3623d4c6ece
+  rand_dirs:
+    path: assets/vectors/axes_random_dirs.pt
+    sha256: 689da9bee449b7bf20bb1caf26a7af1d132e3485dd7fa33176be648f918e916f
+
+conditions:
+  none:
+    edits: []
+  tom_up_c1:
+    edits: [{file: tom_v2, axes: [tau2], layers: [12, 13, 14, 15, 16, 17, 18, 19, 20], type: steer+, alpha: 1, scale: natural}]
+  rand_tom_c1:
+    edits: [{file: rand_dirs, axes: [rand_dir], layers: [12, 13, 14, 15, 16, 17, 18, 19, 20], type: steer+, alpha: 1, scale_ref: {file: tom_v2, axis: tau2}}]

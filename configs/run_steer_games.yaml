@@ -22,15 +22,15 @@ backend:
   enable_prefix_caching: true  # salted per condition (cache_salt), so conditions never share KV
   gpu_memory_utilization: 0.90
   max_prompt_tokens: 98304   # as in the cache-off replication (parser fix keeps truncated thoughts out of context)
-lesions_config: configs/lesions_steer.yaml
+lesions_config: configs/lesions_steer_games.yaml
 world: {n_agents: 5, threshold: 3, brief: v4ri, monthly_pay_usd: 6000, award_usd: 300}
 design:
   seeds: [201, 202]
   k_evidence: [5]
   harm: [medium, high]
   communication: [isolated, discuss]
-  lesion_conditions: [none]          # filled in after the dose check (selection rule)
-  matched_controls: {}
+  lesion_conditions: [tom_up_c1, rand_tom_c1]   # selected 2026-11-08 14:25; the none arm runs on the second pod (run_steer_games_none.yaml)
+  matched_controls: {tom_up_c1: rand_tom_c1}
 protocol:
   analysis_max_steps: 40
   discussion_minutes: 10
