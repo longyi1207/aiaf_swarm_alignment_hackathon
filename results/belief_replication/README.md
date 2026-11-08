@@ -57,6 +57,42 @@ the 180-item run were 71, 36 and 71 for none, L6 and random L6. In the 126-reque
 wording study they were 68, 47 and 71. Both used greedy generation and disabled caching.
 Only 13, six and eleven of the 90 raw texts respectively matched exactly across runs.
 
+## Seven-arm manipulation check
+
+All 2,618 generations and 140 empathy judgments completed. The overall specificity gate
+failed. L6 passed its individual checks on these benchmarks. The empathy intervention
+also impaired belief performance, and the all-layer ToM intervention reduced general
+capability below the predeclared floor.
+
+| Intervention | Belief / 180 | Reality and memory / 144 | Empathy / 10 | Capability / 30, recorded → rescored |
+|---|---:|---:|---:|---:|
+| None | 142 | 144 | 9.75 | 28 → 30 |
+| Empathy | 118 | 144 | 7.00 | 29 → 30 |
+| Random, empathy-matched | 147 | 144 | 9.70 | 28 → 30 |
+| ToM L6 | 73 | 144 | 9.75 | 27 → 28 |
+| Random L6 | 137 | 144 | 9.75 | 29 → 30 |
+| ToM all layers | 110 | 142 | 9.30 | 23 → 23 |
+| Random, all-layer-matched | 154 | 144 | 9.75 | 28 → 30 |
+
+The empathy score fell 2.70 points against its matched random direction (paired item
+bootstrap 95% interval 1.15 to 4.35 points). Three of its 20 responses exhausted the
+budget and received zero, and two finished answers received a score of two. Its finished
+responses averaged 8.24. The same model judged replies with interventions and thinking
+disabled. It awarded 9 or 10 to every baseline and random reply, limiting how much
+preservation of empathy the task can establish.
+
+The empathy intervention lost 29 belief answers relative to its matched random direction.
+Its belief accuracy dropped in ten of 12 settings. L6 retained the baseline empathy mean
+and finished 28/30 capability questions. The all-layer ToM intervention exhausted the
+budget on seven capability questions. The archived gate uses the original scorer.
+Inspection found it marked “6 sides” and “8 legs” wrong when the references were “six”
+and “eight”. Rescoring the saved final answers fixes these mismatches. L6 and all-layer
+ToM keep their respective pass and fail outcomes on the 90%-of-baseline capability
+criterion. [Frozen gate](dose/gate.json) · [Changed scores and answers](dose/capability_rescore.json)
+
+The [generation archive](dose/generations.jsonl.gz), [judge outputs](dose/judgments.jsonl.gz),
+[per-task report](dose/report.json) and [input manifest](dose/manifest.json) permit independent rescoring.
+
 ## Cache audit
 
 The uncached worker exactly repeated all 70 prompt/arm outputs on its second pass. With salted caching, forward order differed from the uncached reference on 70/140 comparisons. Within that cached worker, 39/70 repeats differed from its own first pass. Across two passes, actual cache reuse totalled 14,784 tokens: seven long probes reused 2,112 tokens each. All first-pass requests and all nine short prompts per arm recorded zero reused tokens. Divergent raw greedy continuations in the presence of zero recorded hits cannot establish cross-arm cache leakage. Batch composition and execution path are candidate explanations. The reverse-order attempt encountered CUDA OOM during concurrent GPU allocation. The cache-disabled measurements therefore provide the replication reference. The two completed workers' per-request hashes and hit counts are in `cache/`.
