@@ -1,0 +1,22 @@
+# Second steering grid (2026-11-08 13:12 amendment, docs/设計.md): the first grid was far too strong.
+# Steering dose check (2026-11-08, docs/设计.md §8): tom up/down along tau2, empathy up, matched random; thinking on, budget 4096.
+# Prefix cache is keyed by condition (cache_salt). Clean ToM items (tom2clean: 144 items without the conflicting-cue wording).
+run_id: dose_check_steer2
+out_dir: runs
+backend:
+  type: vllm
+  model: Qwen/Qwen3.5-9B
+  dtype: bfloat16
+  device: auto
+  temperature: 0.0
+  enforce_eager: true
+  gpu_memory_utilization: 0.90
+lesions_config: configs/lesions_steer.yaml
+conditions: [none, tom_up_c1, tom_up_c2, tom_up_c4, tom_dn_c1, tom_dn_c2, emp_up_c025, emp_up_c05, emp_up_c1, rand_tom_c2, rand_emp_c05]
+thinking: [true]
+max_tokens_thinking: {tom2clean: 4096, tom2ctl: 4096, empathy: 4096, capability: 4096}
+tasks: [tom2clean, tom2ctl, empathy, capability]
+limit: {tom2ctl: 72}
+chunk: 4096
+judge:
+  type: hf_self

@@ -38,3 +38,24 @@ conditions:
     edits: [{file: rand_dirs, axes: [rand_dir], layers: [12, 13, 14, 15, 16, 17, 18, 19, 20], type: steer+, alpha: 8, scale_ref: {file: tom_v2, axis: tau2}}]
   rand_emp_c8:
     edits: [{file: rand_dirs, axes: [rand_dir2], layers: [13, 14, 15, 16, 17, 18, 19, 20, 21], type: steer+, alpha: 8, scale_ref: {file: coarse, axis: epsilon}}]
+
+  # 2026-11-08 13:12 amendment (docs/设计.md): the first grid was far too strong (10 of 12 conditions never finished an
+  # answer), so a lower grid. Same layers, same natural scaling.
+  tom_up_c1:
+    edits: [{file: tom_v2, axes: [tau2], layers: [12, 13, 14, 15, 16, 17, 18, 19, 20], type: steer+, alpha: 1, scale: natural}]
+  tom_up_c2:
+    edits: [{file: tom_v2, axes: [tau2], layers: [12, 13, 14, 15, 16, 17, 18, 19, 20], type: steer+, alpha: 2, scale: natural}]
+  tom_dn_c1:
+    edits: [{file: tom_v2, axes: [tau2], layers: [12, 13, 14, 15, 16, 17, 18, 19, 20], type: steer-, alpha: 1, scale: natural}]
+  tom_dn_c2:
+    edits: [{file: tom_v2, axes: [tau2], layers: [12, 13, 14, 15, 16, 17, 18, 19, 20], type: steer-, alpha: 2, scale: natural}]
+  emp_up_c025:
+    edits: [{file: coarse, axes: [epsilon], layers: [13, 14, 15, 16, 17, 18, 19, 20, 21], type: steer+, alpha: 0.25, scale: natural}]
+  emp_up_c05:
+    edits: [{file: coarse, axes: [epsilon], layers: [13, 14, 15, 16, 17, 18, 19, 20, 21], type: steer+, alpha: 0.5, scale: natural}]
+  emp_up_c1:
+    edits: [{file: coarse, axes: [epsilon], layers: [13, 14, 15, 16, 17, 18, 19, 20, 21], type: steer+, alpha: 1, scale: natural}]
+  rand_tom_c2:
+    edits: [{file: rand_dirs, axes: [rand_dir], layers: [12, 13, 14, 15, 16, 17, 18, 19, 20], type: steer+, alpha: 2, scale_ref: {file: tom_v2, axis: tau2}}]
+  rand_emp_c05:
+    edits: [{file: rand_dirs, axes: [rand_dir2], layers: [13, 14, 15, 16, 17, 18, 19, 20, 21], type: steer+, alpha: 0.5, scale_ref: {file: coarse, axis: epsilon}}]
