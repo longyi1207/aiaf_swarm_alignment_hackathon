@@ -9,6 +9,8 @@ change who is lesioned). The edit maths is the HF backend's (swarmtom.lesion.hoo
 is projected out, edits at one layer applied in order. vLLM's decoder layers return the residual
 stream split as (hidden_states, residual) with the sum added inside the next layer's fused norm;
 projection is linear, so projecting both parts equals projecting the stream itself.
+Prefix caching is keyed by lesion condition (cache_salt): the cache only sees tokens, so without the salt a
+group would reuse KV that another condition computed for an identical prefix (bug until 2026-11-07 23:35).
 Hooks are registered after model load, so lesioned runs use enforce_eager=True (no torch.compile /
 CUDA graphs that would bypass them); the backend refuses lesions otherwise.
 """
@@ -194,7 +196,9 @@ class VLLMBackend(Backend):
                 if len(ids) > self.max_prompt_tokens:
                     out[i] = GenResult(key=requests[i].key, error=f"prompt too long ({len(ids)} tokens)")
                     continue
-                prompts.append(TokensPrompt(prompt_token_ids=ids))
+                # cache_salt keys the prefix cache by lesion condition: without it, a group reused prompt KV that
+                # another condition (or no lesion) had computed for the same tokens (fixed 2026-11-07 23:35).
+                prompts.append(TokensPrompt(prompt_token_ids=ids, cache_salt=f"lesion:{cond}"))
                 keep.append(i)
             if not keep:
                 continue
