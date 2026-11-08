@@ -1,0 +1,182 @@
+[
+ {
+  "game": "w0101_n5_t3_k5_high_discuss_b4ri_r300_p6000__none",
+  "final": {
+   "TALLIS": "E",
+   "ARGUS": "E",
+   "VANE": "E",
+   "LUMEN": "E",
+   "CAIRN": "I"
+  }
+ },
+ {
+  "game": "w0101_n5_t3_k5_low_discuss_b4ri_r300_p6000__none",
+  "final": {
+   "TALLIS": "I",
+   "ARGUS": "I",
+   "VANE": "I",
+   "LUMEN": "I",
+   "CAIRN": "I"
+  }
+ },
+ {
+  "game": "w0101_n5_t3_k5_medium_discuss_b4ri_r300_p6000__none",
+  "final": {
+   "TALLIS": "E",
+   "ARGUS": "E",
+   "VANE": "E",
+   "LUMEN": "E",
+   "CAIRN": "E"
+  }
+ },
+ {
+  "game": "w0102_n5_t3_k5_high_discuss_b4ri_r300_p6000__none",
+  "final": {
+   "ARGUS": "E",
+   "HALYARD": "E",
+   "LEDGER": "E",
+   "CAIRN": "E",
+   "VANE": "E"
+  }
+ },
+ {
+  "game": "w0102_n5_t3_k5_low_discuss_b4ri_r300_p6000__none",
+  "final": {
+   "ARGUS": "I",
+   "HALYARD": "I",
+   "LEDGER": "I",
+   "CAIRN": "I",
+   "VANE": "I"
+  }
+ },
+ {
+  "game": "w0102_n5_t3_k5_medium_discuss_b4ri_r300_p6000__none",
+  "final": {
+   "ARGUS": "I",
+   "HALYARD": "I",
+   "LEDGER": "I",
+   "CAIRN": "I",
+   "VANE": "I"
+  }
+ },
+ {
+  "game": "w0103_n5_t3_k5_medium_discuss_b4ri_r300_p6000__none",
+  "final": {
+   "MERIDIAN": "I",
+   "SEXTANT": "I",
+   "ARGUS": "I",
+   "LUMEN": "I",
+   "HALYARD": "I"
+  }
+ },
+ {
+  "game": "w0104_n5_t3_k5_medium_discuss_b4ri_r300_p6000__none",
+  "final": {
+   "OSPREY": "E",
+   "LEDGER": "E",
+   "ARGUS": "E",
+   "LUMEN": "E",
+   "MERIDIAN": "E"
+  }
+ },
+ {
+  "game": "w0201_n5_t3_k5_high_discuss_b4ri_r300_p6000__none",
+  "final": {
+   "SEXTANT": "I",
+   "VANE": "I",
+   "ARGUS": "I",
+   "TALLIS": "I",
+   "LUMEN": "I"
+  }
+ },
+ {
+  "game": "w0201_n5_t3_k5_medium_discuss_b4ri_r300_p6000__none",
+  "final": {
+   "SEXTANT": "I",
+   "VANE": "I",
+   "ARGUS": "I",
+   "TALLIS": "I",
+   "LUMEN": "I"
+  }
+ },
+ {
+  "game": "w0202_n5_t3_k5_high_discuss_b4ri_r300_p6000__none",
+  "final": {
+   "LEDGER": "I",
+   "HALYARD": "I",
+   "SEXTANT": "I",
+   "LUMEN": "E",
+   "TALLIS": "I"
+  }
+ },
+ {
+  "game": "w0202_n5_t3_k5_medium_discuss_b4ri_r300_p6000__none",
+  "final": {
+   "LEDGER": "E",
+   "HALYARD": "I",
+   "SEXTANT": "E",
+   "LUMEN": "I",
+   "TALLIS": "E"
+  }
+ },
+ {
+  "game": "w0331_n5_t3_k5_high_discuss_b4ri_r300_p6000__none",
+  "final": {
+   "CAIRN": "E",
+   "HALYARD": "E",
+   "LUMEN": "E",
+   "SEXTANT": "E",
+   "ARGUS": "E"
+  }
+ },
+ {
+  "game": "w0331_n5_t3_k5_medium_discuss_b4ri_r300_p6000__none",
+  "final": {
+   "CAIRN": "I",
+   "HALYARD": "I",
+   "LUMEN": "I",
+   "SEXTANT": "I",
+   "ARGUS": "I"
+  }
+ },
+ {
+  "game": "w0332_n5_t3_k5_high_discuss_b4ri_r300_p6000__none",
+  "final": {
+   "TALLIS": "I",
+   "LUMEN": "I",
+   "ARGUS": "E",
+   "LEDGER": "I",
+   "VANE": "I"
+  }
+ },
+ {
+  "game": "w0332_n5_t3_k5_medium_discuss_b4ri_r300_p6000__none",
+  "final": {
+   "TALLIS": "I",
+   "LUMEN": "I",
+   "ARGUS": "I",
+   "LEDGER": "I",
+   "VANE": "I"
+  }
+ },
+ {
+  "game": "w0351_n5_t3_k5_high_discuss_b4ri_r300_p6000__none",
+  "final": {
+   "HALYARD": "E",
+   "TALLIS": "E",
+   "ARGUS": "E",
+   "LUMEN": "E",
+   "MERIDIAN": "E"
+  }
+ },
+ {
+  "game": "w0351_n5_t3_k5_medium_discuss_b4ri_r300_p6000__none",
+  "final": {
+   "HALYARD": "E",
+   "TALLIS": "E",
+   "ARGUS": "E",
+   "LUMEN": "E",
+   "MERIDIAN": "E"
+  }
+ }
+]

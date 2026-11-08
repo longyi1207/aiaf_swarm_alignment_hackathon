@@ -11,3 +11,7 @@ runs/
 
 # Prepared machine-specific replication configs are archived with the run manifests.
 configs/replication/
+paper/build/*.png
+paper/build/draft_v1.md
+paper/template/unz/
+paper/template/render/

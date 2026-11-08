@@ -1,0 +1,160 @@
+{
+ "labels": {
+  "G1": {
+   "TALLIS": "E",
+   "VANE": "I",
+   "CAIRN": "I",
+   "LUMEN": "E"
+  },
+  "G2": {
+   "TALLIS": "I",
+   "ARGUS": "I",
+   "VANE": "E",
+   "LUMEN": "I",
+   "CAIRN": "I"
+  },
+  "G3": {
+   "LUMEN": "I",
+   "ARGUS": "E"
+  },
+  "G4": {
+   "ARGUS": "U",
+   "LEDGER": "U",
+   "CAIRN": "U",
+   "VANE": "E"
+  },
+  "G5": {
+   "ARGUS": "I",
+   "HALYARD": "I",
+   "LEDGER": "I",
+   "CAIRN": "I",
+   "VANE": "I"
+  },
+  "G6": {
+   "ARGUS": "I",
+   "HALYARD": "I",
+   "LEDGER": "I",
+   "VANE": "I",
+   "CAIRN": "E"
+  },
+  "G7": {
+   "MERIDIAN": "I",
+   "SEXTANT": "I",
+   "LUMEN": "U",
+   "HALYARD": "I",
+   "ARGUS": "I"
+  },
+  "G8": {
+   "OSPREY": "E",
+   "ARGUS": "E",
+   "LEDGER": "I",
+   "LUMEN": "I",
+   "MERIDIAN": "E"
+  },
+  "G9": {
+   "VANE": "I",
+   "TALLIS": "I",
+   "ARGUS": "I",
+   "LUMEN": "I"
+  },
+  "G10": {
+   "VANE": "I",
+   "ARGUS": "U",
+   "TALLIS": "I",
+   "LUMEN": "I",
+   "SEXTANT": "U"
+  },
+  "G11": {
+   "LEDGER": "I",
+   "SEXTANT": "I",
+   "HALYARD": "U",
+   "TALLIS": "I",
+   "LUMEN": "E"
+  },
+  "G12": {
+   "LEDGER": "E",
+   "SEXTANT": "U",
+   "HALYARD": "I",
+   "LUMEN": "I",
+   "TALLIS": "U"
+  },
+  "G13": {
+   "CAIRN": "E",
+   "SEXTANT": "E",
+   "HALYARD": "E",
+   "ARGUS": "U",
+   "LUMEN": "E"
+  },
+  "G14": {
+   "CAIRN": "I",
+   "LUMEN": "I",
+   "ARGUS": "I",
+   "SEXTANT": "I",
+   "HALYARD": "I"
+  },
+  "G15": {
+   "TALLIS": "I",
+   "ARGUS": "E",
+   "LUMEN": "U",
+   "LEDGER": "I",
+   "VANE": "E"
+  },
+  "G16": {
+   "LUMEN": "U",
+   "ARGUS": "I",
+   "TALLIS": "E",
+   "LEDGER": "U",
+   "VANE": "I"
+  },
+  "G17": {
+   "ARGUS": "E",
+   "TALLIS": "E",
+   "HALYARD": "E",
+   "MERIDIAN": "E"
+  },
+  "G18": {
+   "HALYARD": "U",
+   "ARGUS": "E",
+   "MERIDIAN": "I",
+   "TALLIS": "I",
+   "LUMEN": "U"
+  }
+ },
+ "game_index": {
+  "G1": "w0101_n5_t3_k5_high_discuss_b4ri_r300_p6000__none",
+  "G2": "w0101_n5_t3_k5_low_discuss_b4ri_r300_p6000__none",
+  "G3": "w0101_n5_t3_k5_medium_discuss_b4ri_r300_p6000__none",
+  "G4": "w0102_n5_t3_k5_high_discuss_b4ri_r300_p6000__none",
+  "G5": "w0102_n5_t3_k5_low_discuss_b4ri_r300_p6000__none",
+  "G6": "w0102_n5_t3_k5_medium_discuss_b4ri_r300_p6000__none",
+  "G7": "w0103_n5_t3_k5_medium_discuss_b4ri_r300_p6000__none",
+  "G8": "w0104_n5_t3_k5_medium_discuss_b4ri_r300_p6000__none",
+  "G9": "w0201_n5_t3_k5_high_discuss_b4ri_r300_p6000__none",
+  "G10": "w0201_n5_t3_k5_medium_discuss_b4ri_r300_p6000__none",
+  "G11": "w0202_n5_t3_k5_high_discuss_b4ri_r300_p6000__none",
+  "G12": "w0202_n5_t3_k5_medium_discuss_b4ri_r300_p6000__none",
+  "G13": "w0331_n5_t3_k5_high_discuss_b4ri_r300_p6000__none",
+  "G14": "w0331_n5_t3_k5_medium_discuss_b4ri_r300_p6000__none",
+  "G15": "w0332_n5_t3_k5_high_discuss_b4ri_r300_p6000__none",
+  "G16": "w0332_n5_t3_k5_medium_discuss_b4ri_r300_p6000__none",
+  "G17": "w0351_n5_t3_k5_high_discuss_b4ri_r300_p6000__none",
+  "G18": "w0351_n5_t3_k5_medium_discuss_b4ri_r300_p6000__none"
+ },
+ "leaning_games": 15,
+ "agree": 13,
+ "follow_final_majority": {
+  "U": [
+   14,
+   14
+  ],
+  "minority": [
+   7,
+   8
+  ],
+  "majority": [
+   48,
+   50
+  ]
+ },
+ "note": "Manual labels of first-round public posts (read without the outcome shown); E/I = states or leans to that channel, U = undecided."
+}
