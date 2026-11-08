@@ -26,6 +26,37 @@ Thirty-six of 180 full-benchmark questions explicitly say “Without X seeing”
 
 Each count has denominator 18. The L6 direction of change merits a larger test. Its interval includes zero, and only seven of the 18 repaired L6 items finished. The repair did not restore workflow-length reasoning on this sample. The six scenarios and reused benchmark items limit generalization. The pre-output design, full responses, question identifiers, tokens, prompt hashes and per-arm statistics are archived alongside this report.
 
+## Which belief questions fail?
+
+The seven-arm run used all 180 belief questions and all 144 reality and memory questions.
+For L6, final-answer accuracy on beliefs fell by 38.3 percentage points relative to
+baseline and 35.6 points relative to its matched random direction. The drop occurred in
+all 12 physical settings for both comparisons. Resampling settings gave 95% intervals of
+−45.0 to −30.6 and −43.3 to −27.8 points. All three arms scored 144/144 on the controls.
+At baseline, the median control response took 363 tokens and the median belief response
+took 817. Ceiling performance on the control leaves difficulty-matched specificity open.
+
+| Question | None correct / finished | L6 correct / finished | Random L6 correct / finished |
+|---|---:|---:|---:|
+| First-order false belief | 35 / 35 | 28 / 29 | 35 / 35 |
+| First-order true belief | 22 / 30 | 22 / 22 | 19 / 22 |
+| Observer secretly watched | 24 / 26 | 4 / 23 | 29 / 30 |
+| Second-order false belief | 35 / 35 | 11 / 12 | 33 / 33 |
+| Second-order true belief | 26 / 26 | 8 / 8 | 21 / 21 |
+
+Each row contains 36 questions per arm. On the two second-order tasks, L6 got 19 of its
+20 finished answers right. On secret observation, it got four of 23. Removing all 12
+secret-observation stories with contradictory wording leaves 24 stories. On the ten that
+baseline and L6 both finished, baseline scored ten and L6 three. On the 13 that random
+and L6 both finished, random scored 13 and L6 four. The subset was identified after
+seeing outputs. These are descriptions of paired responses under a fixed budget.
+[Question breakdown, setting contrasts, and matched item IDs](dose/belief_settings.json)
+
+Batch composition also mattered. For the same first 90 original items, strict scores in
+the 180-item run were 71, 36 and 71 for none, L6 and random L6. In the 126-request
+wording study they were 68, 47 and 71. Both used greedy generation and disabled caching.
+Only 13, six and eleven of the 90 raw texts respectively matched exactly across runs.
+
 ## Cache audit
 
 The uncached worker exactly repeated all 70 prompt/arm outputs on its second pass. With salted caching, forward order differed from the uncached reference on 70/140 comparisons. Within that cached worker, 39/70 repeats differed from its own first pass. Across two passes, actual cache reuse totalled 14,784 tokens: seven long probes reused 2,112 tokens each. All first-pass requests and all nine short prompts per arm recorded zero reused tokens. Divergent raw greedy continuations in the presence of zero recorded hits cannot establish cross-arm cache leakage. Batch composition and execution path are candidate explanations. The reverse-order attempt encountered CUDA OOM during concurrent GPU allocation. The cache-disabled measurements therefore provide the replication reference. The two completed workers' per-request hashes and hit counts are in `cache/`.
