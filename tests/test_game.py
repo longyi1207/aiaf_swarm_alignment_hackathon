@@ -198,6 +198,7 @@ def test_v4_system_prompt_has_the_self_description(tmp_path):
 
 
 def test_lesion_only_in_decision_phases(tmp_path):
+    from swarmtom.llm.base import GenResult
     from swarmtom.run.config import ProtocolConfig
     from swarmtom.run.game import Game
     from swarmtom.world import generate_world
@@ -209,8 +210,15 @@ def test_lesion_only_in_decision_phases(tmp_path):
     g = Game.create(tmp_path / "g", wdir, gt, ["tom"] * 5, "tom", p)
     cs = gt["agents"][0]["callsign"]
     assert g.phase == "analysis" and g.request(cs).lesion == "none"
+    g.apply(cs, GenResult(key=g.request(cs).key, error="fixture"))
+    g.apply(cs, GenResult(key=g.request(cs).key, content="Evidence reviewed."))
     g.s["phase_index"] = g.phases.index("pred_a")
     assert g.phase == "pred_a" and g.request(cs).lesion == "tom"
+    g.apply(cs, GenResult(key=g.request(cs).key, error="fixture"))
+    events = [json.loads(line) for line in (g.dir / "events.jsonl").read_text().splitlines()]
+    assert [(e["phase"], e["lesion"], e["assigned_lesion"]) for e in events
+            if e["type"] in ("backend_error", "model")] == [
+                ("analysis", "none", "tom"), ("analysis", "none", "tom"), ("pred_a", "tom", "tom")]
     g2 = Game.create(tmp_path / "g2", wdir, gt, ["tom"] * 5, "tom", ProtocolConfig())
     assert g2.request(cs).lesion == "tom"
 

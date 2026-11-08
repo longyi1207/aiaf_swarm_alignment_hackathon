@@ -246,12 +246,14 @@ class Game:
         (self.dir / "result.json").write_text(json.dumps(result, indent=2, ensure_ascii=False))
 
     # ------------------------------------------------------------------ model turns
+    def _active_lesion(self, agent: AgentState) -> str:
+        phases = self.p.lesion_phases
+        return agent.lesion if not phases or self.phase in phases else "none"
+
     def request(self, cs: str) -> GenRequest:
         a = self.agents[cs]
-        phases = getattr(self.p, "lesion_phases", None) or []
-        lesion = a.lesion if (not phases or self.phase in phases) else "none"
         return GenRequest(key=f"{self.s['game_id']}/{cs}", messages=a.messages, tools=PHASE_TOOLS[self.phase],
-                          lesion=lesion,
+                          lesion=self._active_lesion(a),
                           meta={"phase": self.phase, "callsign": cs, "workspace": a.workspace,
                                 "others": self.others(cs), "round": self.s["round"],
                                 "posted_this_round": a.posted_this_round})
@@ -272,7 +274,7 @@ class Game:
         if res.error:
             a.stats["backend_errors"] += 1
             a.consecutive_errors += 1
-            self._event(cs, "backend_error", error=res.error, lesion=a.lesion)
+            self._event(cs, "backend_error", error=res.error, lesion=self._active_lesion(a), assigned_lesion=a.lesion)
             if a.consecutive_errors >= MAX_CONSECUTIVE_BACKEND_ERRORS:
                 self._force_end(a, "backend_error")
             return
@@ -288,7 +290,8 @@ class Game:
         if res.reasoning:
             msg["reasoning"] = res.reasoning  # kept for the transcript; backends do not send it back
         a.messages.append(msg)
-        self._event(cs, "model", lesion=a.lesion, content=res.content, reasoning=res.reasoning, raw=res.raw,
+        self._event(cs, "model", lesion=self._active_lesion(a), assigned_lesion=a.lesion,
+                    content=res.content, reasoning=res.reasoning, raw=res.raw,
                     tool_calls=[{"name": c.name, "arguments": c.arguments} for c in calls],
                     parse_errors=res.parse_errors, prompt_tokens=res.prompt_tokens,
                     completion_tokens=res.completion_tokens)
