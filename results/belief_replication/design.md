@@ -15,3 +15,23 @@ The forecast analysis enumerates every joint action of the four peers. For each 
 Exploratory follow-up specified after inspecting the 4,096-token outputs. In the 18 matched story variants, require both true- and false-belief second-order questions to finish and be correct. Baseline and random L6 each finished both on 12 variants, and ToM L6 on two. All such completed pairs were correct. On first-order pairs the corresponding correct-pair counts were 9, 11 and 8. Excluding all six variants with the conflicting visibility cue leaves second-order correct-pair counts of 9, 8 and 2 out of 12. These are post-hoc descriptive comparisons.
 
 To distinguish a delay from a persistent failure, extend every unfinished original response in all three arms by up to 4,096 further tokens. Preserve the exact decoded text as a forced prefix, keep the same intervention active, apply no new instruction, and leave previously finished originals unchanged. The original archive contains text, so retokenize each prefix, verify its decoded text and report how often its token count matches. This estimates recoverability under text continuation. It is a separate experiment from a fresh uninterrupted 8,192-token rollout.
+
+## Crossed-perspective follow-up
+
+Specified after inspecting the 180-item belief responses and before generating any
+responses on these new prompts. On 13 consistent secret-witness questions both L6 and
+its matched random control finished, L6 answered four correctly and random answered 13.
+This motivates a direct intervention on the story. Independently vary whether the observer
+sees an object move through a one-way panel and whether the mover believes the observer
+saw it. Ask each story twice, once about the observer's own search and once about the
+mover's expectation of that search. Keep option order fixed across that pair. Balance
+answer position and alternate the order of the access and attribution clauses by setting.
+
+The three arms each see all 96 prompts, with the same greedy, cache-disabled, 4,096-token
+settings as the earlier probe. There are 24 stories with aligned perspectives and 24
+with conflicting perspectives across 12 reused physical settings. The primary descriptive
+comparison is the L6-minus-random change in both-queries-correct rate in conflict versus
+aligned stories. Separately count both queries finishing, repeated letters across the two
+queries, and accuracy for each question. A conflict-specific deficit would support
+difficulty keeping the two perspectives separate in this prompt family. A null or reversed
+interaction would weaken that explanation of the historical secret-witness result.
