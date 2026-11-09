@@ -1,0 +1,21 @@
+{
+ "auditors": 180,
+ "external": 80,
+ "internal": 100,
+ "mean_value_external": 33292.5,
+ "mean_value_internal": 41220.0,
+ "value_range": [
+  0.0,
+  90000.0
+ ],
+ "mixed_games": 20,
+ "external_filers_had_less_at_stake": 15,
+ "had_more": 5,
+ "tie": 0,
+ "sign_test_p_two_sided": 0.04138946533203125,
+ "value_quantiles_10_50_90": [
+  18300.0,
+  42000,
+  54000
+ ]
+}

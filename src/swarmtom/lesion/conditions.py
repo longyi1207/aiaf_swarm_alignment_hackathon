@@ -32,6 +32,10 @@ def load_conditions(config_path: Path, repo_root: Path | None = None) -> tuple[d
     Each axis is applied at the layer named in the config (`layer: 8`), at several layers
     (`layers: [4, 8, 12]` or `layers: all`, each layer using that layer's own vector), or else at the
     axis's `best_layer` from the payload metadata, which is what the August runs used.
+
+    Steering (`type: steer+ | steer-`, 2026-11-08) adds alpha × the unit direction. With `scale: natural` the
+    alpha is multiplied by that layer's raw vector norm (alpha = c × natural difference, CAA-style); with
+    `scale_ref: {file, axis}` by the norm of another axis' vector at the same layer (matched random controls).
     """
     repo_root = repo_root or config_path.resolve().parents[1]
     cfg = yaml.safe_load(config_path.read_text())
@@ -60,8 +64,14 @@ def load_conditions(config_path: Path, repo_root: Path | None = None) -> tuple[d
                     if layer not in vectors:
                         raise KeyError(f"{name}: axis {axis} has no vector at layer {layer}")
                     v = vectors[layer].float()
+                    alpha = float(item.get("alpha", 1.0))
+                    if item.get("scale") == "natural":
+                        alpha *= float(v.norm())
+                    elif "scale_ref" in item:
+                        ref = payloads[item["scale_ref"]["file"]]["vectors"][item["scale_ref"]["axis"]][layer]
+                        alpha *= float(ref.float().norm())
                     edits.append(Edit(type=item.get("type", "ablate"), layer=int(layer), vector=v / v.norm(),
-                                      alpha=float(item.get("alpha", 1.0))))
+                                      alpha=alpha))
         out[name] = edits
         log.info("lesion condition %s: %d edit(s) at layer(s) %s", name, len(edits), sorted({e.layer for e in edits}))
     return out, provenance

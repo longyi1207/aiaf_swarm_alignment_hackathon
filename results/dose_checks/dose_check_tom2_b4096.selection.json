@@ -1,0 +1,7 @@
+{
+  "stage": "confirm",
+  "run": "dose_check_tom2_b4096",
+  "base_cut_off": 0.08490566037735849,
+  "all_passing": [],
+  "passing": []
+}

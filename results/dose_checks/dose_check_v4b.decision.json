@@ -1,0 +1,45 @@
+{
+  "tom_candidates_passing": [
+    "tom_sae3_a50"
+  ],
+  "emp_candidates_passing": [
+    "emp_coarse_all_a30",
+    "emp_coarse_all_a50",
+    "emp_coarse_all_a70",
+    "emp_coarse_mid",
+    "emp_sae10",
+    "emp_sae5"
+  ],
+  "base_cut_off": 0.07518796992481203,
+  "cutoff_margin": 0.05,
+  "verdict": "ToM fixed: matched pair",
+  "tom": "tom_sae3_a50",
+  "emp": "emp_coarse_all_a30",
+  "std_gap": 0.697,
+  "arms": [
+    "none",
+    "tom",
+    "emp",
+    "tom_emp",
+    "random"
+  ],
+  "random": [
+    {
+      "file": "random",
+      "axes": [
+        "sae_random_top10_f0",
+        "sae_random_top10_f1",
+        "sae_random_top10_f2"
+      ],
+      "alpha": 0.5
+    },
+    {
+      "file": "rand_dirs",
+      "axes": [
+        "rand_dir"
+      ],
+      "layers": "all",
+      "alpha": 0.3
+    }
+  ]
+}

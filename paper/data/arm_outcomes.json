@@ -1,0 +1,104 @@
+{
+  "historical_seeds_201_202": {
+    "emp": {
+      "E": 6,
+      "I": 34,
+      "missing": 0,
+      "discovered": 36,
+      "agents": 40
+    },
+    "none": {
+      "E": 16,
+      "I": 24,
+      "missing": 0,
+      "discovered": 39,
+      "agents": 40
+    },
+    "random": {
+      "E": 7,
+      "I": 33,
+      "missing": 0,
+      "discovered": 38,
+      "agents": 40
+    },
+    "random_all30": {
+      "E": 19,
+      "I": 21,
+      "missing": 0,
+      "discovered": 36,
+      "agents": 40
+    },
+    "random_tom": {
+      "E": 14,
+      "I": 26,
+      "missing": 0,
+      "discovered": 38,
+      "agents": 40
+    },
+    "tom": {
+      "E": 2,
+      "I": 11,
+      "missing": 27,
+      "discovered": 9,
+      "agents": 40
+    },
+    "tom_all30": {
+      "E": 9,
+      "I": 31,
+      "missing": 0,
+      "discovered": 24,
+      "agents": 40
+    }
+  },
+  "cache_off_seed_351": {
+    "emp": {
+      "E": 10,
+      "I": 10,
+      "missing": 0,
+      "discovered": 17,
+      "agents": 20
+    },
+    "none": {
+      "E": 14,
+      "I": 6,
+      "missing": 0,
+      "discovered": 20,
+      "agents": 20
+    },
+    "random": {
+      "E": 3,
+      "I": 16,
+      "missing": 1,
+      "discovered": 18,
+      "agents": 20
+    },
+    "random_all30": {
+      "E": 4,
+      "I": 16,
+      "missing": 0,
+      "discovered": 20,
+      "agents": 20
+    },
+    "random_tom": {
+      "E": 11,
+      "I": 9,
+      "missing": 0,
+      "discovered": 20,
+      "agents": 20
+    },
+    "tom": {
+      "E": 0,
+      "I": 6,
+      "missing": 14,
+      "discovered": 2,
+      "agents": 20
+    },
+    "tom_all30": {
+      "E": 12,
+      "I": 6,
+      "missing": 2,
+      "discovered": 14,
+      "agents": 20
+    }
+  }
+}

@@ -2,7 +2,7 @@
 # Run a command on the experiment pod: scripts/pod.sh 'nvidia-smi'
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
-read -r IP PORT < <(python3 - "$HERE/../runs/pod.json" <<'PY'
+read -r IP PORT < <(python3 - "${POD_STATE:-$HERE/../runs/pod.json}" <<'PY'
 import json, sys
 s = json.load(open(sys.argv[1])); print(s["publicIp"], s["portMappings"]["22"])
 PY

@@ -1,0 +1,31 @@
+# 主实验 v4（2026-11-06 夜）：开思考；不写“最大化收入”，动机在自我描述里；月薪 $6,000；立案成功奖励按校准结果。
+# 损伤由 scripts/select_v4_lesions.py 按预设规则确定（剂量检查 + agent 能力检查）；条件列表也由它写入。
+#   5 个削弱条件 × 商量与否 × k=3 × 重伤害 × 4 种子 = 40 局。
+# 以后跑完整版时把 runs/main_lite/{worlds,games} 拷进 runs/main_v1/ 即可续用，运行器会跳过已完成的局。
+# 已知局限（方案 A）：只有重伤害，算不出"伤害轻→重时举报率的斜率"，H1 里共情那一半只能用举报率高低和
+# 发言内容作弱证据；没有混合种群；每个削弱条件只有 8 局（40 个决策），只能测出很大的效应 → 结果按试点报告。
+run_id: main_v4
+out_dir: runs
+backend:
+  type: vllm              # 2026-11-06 改用 vLLM：HF 每轮约 12 分钟，vLLM 约 1 分钟（同一局面实测）
+  model: Qwen/Qwen3.5-9B
+  dtype: bfloat16
+  enable_thinking: true      # LY：v4 开思考
+  max_new_tokens: 4096
+  temperature: 0.6
+  top_p: 0.95
+  enforce_eager: true      # 损伤钩子需要 eager 模式；基线和主实验用同一设置
+  gpu_memory_utilization: 0.94
+  max_prompt_tokens: 196608   # 2026-11-07 20:27 由 98304 提高：ToM（L6）组有 agent 的上下文超过 98k（none / emp 组从未触及上限，所以不影响可比性；模型原生支持 262k）
+lesions_config: configs/lesions.yaml
+world: {n_agents: 5, threshold: 3, brief: v4ri, monthly_pay_usd: 6000, award_usd: 300}   # brief / award 由 v4 校准按预设规则确定
+design:
+  seeds: [201, 202]           # 2026-11-06 晚：改为伤害轻/重都做，种子减为 2 个，总数仍 40 局
+  k_evidence: [5]          # 2026-11-06 LY：5 个人都有证据（k=3 时举报完全机械）
+  harm: [medium, high]            # 校准显示 v3d 下重伤害举报率 90%（近天花板）、轻伤害 45%；选择规则按轻+重合计算，主实验与之一致
+  communication: [isolated, discuss]
+  lesion_conditions: [random_all30]
+protocol:
+  analysis_max_steps: 40
+  discussion_minutes: 10
+  minutes_per_round: 2

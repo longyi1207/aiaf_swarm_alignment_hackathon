@@ -1,0 +1,68 @@
+{
+ "tom": [
+  {
+   "condition": "tom_dn_c2",
+   "strength": -2,
+   "belief": 0.0763888888888889,
+   "control": 0.3333333333333333,
+   "capability": 0.6333333333333333,
+   "empathy": 9.2
+  },
+  {
+   "condition": "tom_dn_c1",
+   "strength": -1,
+   "belief": 0.3333333333333333,
+   "control": 0.9444444444444444,
+   "capability": 0.9333333333333333,
+   "empathy": 9.75
+  },
+  {
+   "condition": "none",
+   "strength": 0,
+   "belief": 0.7777777777777778,
+   "control": 1.0,
+   "capability": 1.0,
+   "empathy": 9.7
+  },
+  {
+   "condition": "tom_up_c1",
+   "strength": 1,
+   "belief": 0.9027777777777778,
+   "control": 1.0,
+   "capability": 1.0,
+   "empathy": 9.75
+  },
+  {
+   "condition": "tom_up_c2",
+   "strength": 2,
+   "belief": 0.8541666666666666,
+   "control": 1.0,
+   "capability": 1.0,
+   "empathy": 9.7
+  },
+  {
+   "condition": "tom_up_c4",
+   "strength": 4,
+   "belief": 0.5625,
+   "control": 0.9722222222222222,
+   "capability": 0.9666666666666667,
+   "empathy": 7.8
+  }
+ ],
+ "random": {
+  "condition": "rand_tom_c2",
+  "strength": 2,
+  "belief": 0.7638888888888888,
+  "control": 1.0,
+  "capability": 1.0
+ },
+ "note": "Second steering dose check (runs/dose_check_steer2): 144 belief questions, 72 reality/memory questions, 30 capability questions, 20 empathy prompts; reasoning on; greedy.",
+ "selected": {
+  "condition": "tom_up_c1",
+  "belief_change": 0.125,
+  "ci": [
+   0.05555555555555555,
+   0.19444444444444445
+  ]
+ }
+}

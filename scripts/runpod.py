@@ -24,7 +24,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 ENV_FILE = Path(os.environ.get("RUNPOD_ENV_FILE", ROOT.parents[1] / ".env"))
-STATE = ROOT / "runs" / "pod.json"
+STATE = Path(os.environ.get("POD_STATE", ROOT / "runs" / "pod.json"))  # POD_STATE selects a second pod
 API = "https://rest.runpod.io/v1"
 SSH_KEY = Path.home() / ".ssh" / "runpod_swarmtom"
 GPU_TYPES = ["NVIDIA H100 80GB HBM3", "NVIDIA H100 NVL", "NVIDIA H100 PCIe"]

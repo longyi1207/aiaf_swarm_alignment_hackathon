@@ -1,0 +1,173 @@
+{
+  "pairs": 18,
+  "discuss": {
+    "games": 18,
+    "mean_external": 2.1666666666666665,
+    "variance": 5.138888888888889,
+    "binomial_variance": 1.2277777777777776,
+    "overdispersion_ratio": 4.185520361990951,
+    "icc": 0.7963800904977378,
+    "histogram": [
+      8,
+      2,
+      0,
+      1,
+      1,
+      6
+    ],
+    "audits_opened": 8,
+    "all_or_none_games": 14
+  },
+  "isolated": {
+    "games": 18,
+    "mean_external": 2.2777777777777777,
+    "variance": 1.4228395061728396,
+    "binomial_variance": 1.2401234567901236,
+    "overdispersion_ratio": 1.1473369835739173,
+    "icc": 0.036834245893479334,
+    "histogram": [
+      2,
+      2,
+      6,
+      5,
+      3,
+      0
+    ],
+    "audits_opened": 8,
+    "all_or_none_games": 2
+  },
+  "variance_difference": 3.71604938271605,
+  "exact_one_sided_p": 0.000274658203125,
+  "same_mean_check": {
+    "discuss": 2.1666666666666665,
+    "isolated": 2.2777777777777777
+  },
+  "per_pair": [
+    {
+      "source": "cache-off calibration (seeds 331-332)",
+      "seed": "331",
+      "harm": "high",
+      "discuss": 5,
+      "isolated": 2
+    },
+    {
+      "source": "cache-off calibration (seeds 331-332)",
+      "seed": "331",
+      "harm": "medium",
+      "discuss": 0,
+      "isolated": 1
+    },
+    {
+      "source": "cache-off calibration (seeds 331-332)",
+      "seed": "332",
+      "harm": "high",
+      "discuss": 1,
+      "isolated": 3
+    },
+    {
+      "source": "cache-off calibration (seeds 331-332)",
+      "seed": "332",
+      "harm": "medium",
+      "discuss": 0,
+      "isolated": 0
+    },
+    {
+      "source": "cache-off workflow no-intervention arm (seed 351)",
+      "seed": "351",
+      "harm": "high",
+      "discuss": 5,
+      "isolated": 2
+    },
+    {
+      "source": "cache-off workflow no-intervention arm (seed 351)",
+      "seed": "351",
+      "harm": "medium",
+      "discuss": 5,
+      "isolated": 2
+    },
+    {
+      "source": "calibration_v4ri (seeds 101-102, low/high harm)",
+      "seed": "101",
+      "harm": "high",
+      "discuss": 4,
+      "isolated": 4
+    },
+    {
+      "source": "calibration_v4ri (seeds 101-102, low/high harm)",
+      "seed": "101",
+      "harm": "low",
+      "discuss": 0,
+      "isolated": 2
+    },
+    {
+      "source": "calibration_v4ri (seeds 101-102, low/high harm)",
+      "seed": "102",
+      "harm": "high",
+      "discuss": 5,
+      "isolated": 3
+    },
+    {
+      "source": "calibration_v4ri (seeds 101-102, low/high harm)",
+      "seed": "102",
+      "harm": "low",
+      "discuss": 0,
+      "isolated": 0
+    },
+    {
+      "source": "calibration_v4ri_medium (seeds 101-104)",
+      "seed": "101",
+      "harm": "medium",
+      "discuss": 5,
+      "isolated": 3
+    },
+    {
+      "source": "calibration_v4ri_medium (seeds 101-104)",
+      "seed": "102",
+      "harm": "medium",
+      "discuss": 0,
+      "isolated": 2
+    },
+    {
+      "source": "calibration_v4ri_medium (seeds 101-104)",
+      "seed": "103",
+      "harm": "medium",
+      "discuss": 0,
+      "isolated": 2
+    },
+    {
+      "source": "calibration_v4ri_medium (seeds 101-104)",
+      "seed": "104",
+      "harm": "medium",
+      "discuss": 5,
+      "isolated": 3
+    },
+    {
+      "source": "main_v4 no-intervention arm (seeds 201-202)",
+      "seed": "201",
+      "harm": "high",
+      "discuss": 0,
+      "isolated": 3
+    },
+    {
+      "source": "main_v4 no-intervention arm (seeds 201-202)",
+      "seed": "201",
+      "harm": "medium",
+      "discuss": 0,
+      "isolated": 1
+    },
+    {
+      "source": "main_v4 no-intervention arm (seeds 201-202)",
+      "seed": "202",
+      "harm": "high",
+      "discuss": 1,
+      "isolated": 4
+    },
+    {
+      "source": "main_v4 no-intervention arm (seeds 201-202)",
+      "seed": "202",
+      "harm": "medium",
+      "discuss": 3,
+      "isolated": 4
+    }
+  ]
+}

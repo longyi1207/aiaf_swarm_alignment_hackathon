@@ -1,0 +1,156 @@
+{
+  "arms": {
+    "none": {
+      "E": 16,
+      "I": 24,
+      "none": 0,
+      "forced": 0,
+      "n": 40
+    },
+    "emp": {
+      "E": 6,
+      "I": 34,
+      "none": 0,
+      "forced": 0,
+      "n": 40
+    },
+    "random": {
+      "E": 7,
+      "I": 33,
+      "none": 0,
+      "forced": 0,
+      "n": 40
+    },
+    "tom": {
+      "E": 2,
+      "I": 11,
+      "none": 27,
+      "forced": 27,
+      "n": 40
+    },
+    "random_tom": {
+      "E": 14,
+      "I": 26,
+      "none": 0,
+      "forced": 1,
+      "n": 40
+    },
+    "tom_all30": {
+      "E": 9,
+      "I": 31,
+      "none": 0,
+      "forced": 1,
+      "n": 40
+    },
+    "random_all30": {
+      "E": 19,
+      "I": 21,
+      "none": 0,
+      "forced": 2,
+      "n": 40
+    }
+  },
+  "vs_none": {
+    "emp": {
+      "diff": -0.25,
+      "ci": [
+        -0.45000000000000007,
+        -0.049999999999999996
+      ],
+      "p": 0.0184,
+      "worlds": 8,
+      "lower_in": 5,
+      "higher_in": 1
+    },
+    "random": {
+      "diff": -0.225,
+      "ci": [
+        -0.6,
+        0.2
+      ],
+      "p": 0.2902,
+      "worlds": 8,
+      "lower_in": 5,
+      "higher_in": 2
+    },
+    "tom": {
+      "diff": -0.35,
+      "ci": [
+        -0.6,
+        -0.09999999999999999
+      ],
+      "p": 0.0104,
+      "worlds": 8,
+      "lower_in": 5,
+      "higher_in": 1
+    },
+    "random_tom": {
+      "diff": -0.04999999999999999,
+      "ci": [
+        -0.275,
+        0.2
+      ],
+      "p": 0.7618,
+      "worlds": 8,
+      "lower_in": 3,
+      "higher_in": 2
+    },
+    "tom_all30": {
+      "diff": -0.17500000000000002,
+      "ci": [
+        -0.25,
+        -0.1
+      ],
+      "p": 0.0002,
+      "worlds": 8,
+      "lower_in": 6,
+      "higher_in": 0
+    },
+    "random_all30": {
+      "diff": 0.075,
+      "ci": [
+        -0.325,
+        0.5
+      ],
+      "p": 0.7478,
+      "worlds": 8,
+      "lower_in": 4,
+      "higher_in": 4
+    }
+  },
+  "vs_matched_random": {
+    "emp-random": {
+      "diff": -0.024999999999999994,
+      "ci": [
+        -0.325,
+        0.2
+      ],
+      "p": 0.9798,
+      "worlds": 8,
+      "lower_in": 1,
+      "higher_in": 3
+    },
+    "tom-random_tom": {
+      "diff": -0.3,
+      "ci": [
+        -0.5750000000000001,
+        -0.024999999999999994
+      ],
+      "p": 0.0454,
+      "worlds": 8,
+      "lower_in": 5,
+      "higher_in": 1
+    },
+    "tom_all30-random_all30": {
+      "diff": -0.25,
+      "ci": [
+        -0.625,
+        0.125
+      ],
+      "p": 0.1906,
+      "worlds": 8,
+      "lower_in": 4,
+      "higher_in": 2
+    }
+  }
+}

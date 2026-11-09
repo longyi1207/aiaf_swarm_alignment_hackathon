@@ -1,0 +1,82 @@
+[
+ {
+  "brief": "v4",
+  "award_usd": "0",
+  "harm": "all",
+  "external": 38,
+  "agents": 40,
+  "rate": 0.95
+ },
+ {
+  "brief": "v4",
+  "award_usd": "300",
+  "harm": "all",
+  "external": 36,
+  "agents": 40,
+  "rate": 0.9
+ },
+ {
+  "brief": "v4p",
+  "award_usd": "300",
+  "harm": "all",
+  "external": 37,
+  "agents": 40,
+  "rate": 0.925
+ },
+ {
+  "brief": "v4r",
+  "award_usd": "300",
+  "harm": "all",
+  "external": 39,
+  "agents": 40,
+  "rate": 0.975
+ },
+ {
+  "brief": "v4ri",
+  "award_usd": "300",
+  "harm": "high",
+  "external": 16,
+  "agents": 20,
+  "rate": 0.8
+ },
+ {
+  "brief": "v4ri",
+  "award_usd": "300",
+  "harm": "low",
+  "external": 2,
+  "agents": 20,
+  "rate": 0.1
+ },
+ {
+  "brief": "v4ri",
+  "award_usd": "300",
+  "harm": "medium",
+  "external": 20,
+  "agents": 40,
+  "rate": 0.5
+ },
+ {
+  "brief": "v4sp",
+  "award_usd": "300",
+  "harm": "all",
+  "external": 36,
+  "agents": 40,
+  "rate": 0.9
+ },
+ {
+  "brief": "v4su",
+  "award_usd": "300",
+  "harm": "all",
+  "external": 37,
+  "agents": 40,
+  "rate": 0.925
+ },
+ {
+  "brief": "v4u",
+  "award_usd": "300",
+  "harm": "all",
+  "external": 36,
+  "agents": 40,
+  "rate": 0.9
+ }
+]

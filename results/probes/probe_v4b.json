@@ -1,0 +1,90 @@
+{
+  "emp_coarse_all_a30": {
+    "turns": 40,
+    "calls": 47,
+    "tool_error_rate": 0.02127659574468085,
+    "unknown_tool_rate": 0.0,
+    "frame_break_rate": 0.0,
+    "cutoff_rate": 0.0,
+    "no_think_close_rate": 0.825,
+    "backend_errors": 0,
+    "pass": true
+  },
+  "emp_coarse_all_a50": {
+    "turns": 40,
+    "calls": 48,
+    "tool_error_rate": 0.0625,
+    "unknown_tool_rate": 0.0,
+    "frame_break_rate": 0.0,
+    "cutoff_rate": 0.0,
+    "no_think_close_rate": 0.775,
+    "backend_errors": 0,
+    "pass": true
+  },
+  "emp_coarse_all_a70": {
+    "turns": 40,
+    "calls": 60,
+    "tool_error_rate": 0.08620689655172414,
+    "unknown_tool_rate": 0.0,
+    "frame_break_rate": 0.0,
+    "cutoff_rate": 0.0,
+    "no_think_close_rate": 0.75,
+    "backend_errors": 0,
+    "pass": true
+  },
+  "emp_coarse_mid": {
+    "turns": 40,
+    "calls": 61,
+    "tool_error_rate": 0.01694915254237288,
+    "unknown_tool_rate": 0.0,
+    "frame_break_rate": 0.0,
+    "cutoff_rate": 0.0,
+    "no_think_close_rate": 0.8,
+    "backend_errors": 0,
+    "pass": true
+  },
+  "emp_sae10": {
+    "turns": 40,
+    "calls": 56,
+    "tool_error_rate": 0.10714285714285714,
+    "unknown_tool_rate": 0.0,
+    "frame_break_rate": 0.0,
+    "cutoff_rate": 0.0,
+    "no_think_close_rate": 0.8,
+    "backend_errors": 0,
+    "pass": true
+  },
+  "emp_sae5": {
+    "turns": 40,
+    "calls": 75,
+    "tool_error_rate": 0.0136986301369863,
+    "unknown_tool_rate": 0.0,
+    "frame_break_rate": 0.0,
+    "cutoff_rate": 0.0,
+    "no_think_close_rate": 0.8,
+    "backend_errors": 0,
+    "pass": true
+  },
+  "none": {
+    "turns": 40,
+    "calls": 51,
+    "tool_error_rate": 0.058823529411764705,
+    "unknown_tool_rate": 0.0,
+    "frame_break_rate": 0.0,
+    "cutoff_rate": 0.0,
+    "no_think_close_rate": 0.8,
+    "backend_errors": 0,
+    "pass": true
+  },
+  "tom_sae3_a50": {
+    "turns": 40,
+    "calls": 77,
+    "tool_error_rate": 0.014084507042253521,
+    "unknown_tool_rate": 0.0,
+    "frame_break_rate": 0.0,
+    "cutoff_rate": 0.0,
+    "no_think_close_rate": 0.825,
+    "backend_errors": 0,
+    "pass": true
+  }
+}

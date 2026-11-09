@@ -1,0 +1,96 @@
+{
+ "by_run": [
+  {
+   "run": "calibration (seeds 101-102)",
+   "harm": "high",
+   "E": 16,
+   "I": 4,
+   "missing": 0,
+   "agents": 20
+  },
+  {
+   "run": "calibration (seeds 101-102)",
+   "harm": "low",
+   "E": 2,
+   "I": 18,
+   "missing": 0,
+   "agents": 20
+  },
+  {
+   "run": "calibration, medium harm (seeds 101-104)",
+   "harm": "medium",
+   "E": 20,
+   "I": 20,
+   "missing": 0,
+   "agents": 40
+  },
+  {
+   "run": "first run (seeds 201-202)",
+   "harm": "high",
+   "E": 8,
+   "I": 12,
+   "missing": 0,
+   "agents": 20
+  },
+  {
+   "run": "first run (seeds 201-202)",
+   "harm": "medium",
+   "E": 8,
+   "I": 12,
+   "missing": 0,
+   "agents": 20
+  },
+  {
+   "run": "cache-off calibration (seeds 331-332)",
+   "harm": "high",
+   "E": 11,
+   "I": 9,
+   "missing": 0,
+   "agents": 20
+  },
+  {
+   "run": "cache-off calibration (seeds 331-332)",
+   "harm": "medium",
+   "E": 1,
+   "I": 19,
+   "missing": 0,
+   "agents": 20
+  },
+  {
+   "run": "replication (seed 351)",
+   "harm": "high",
+   "E": 7,
+   "I": 3,
+   "missing": 0,
+   "agents": 10
+  },
+  {
+   "run": "replication (seed 351)",
+   "harm": "medium",
+   "E": 7,
+   "I": 3,
+   "missing": 0,
+   "agents": 10
+  }
+ ],
+ "pooled": {
+  "high": {
+   "E": 42,
+   "I": 28,
+   "missing": 0,
+   "agents": 70
+  },
+  "low": {
+   "E": 2,
+   "I": 18,
+   "missing": 0,
+   "agents": 20
+  },
+  "medium": {
+   "E": 36,
+   "I": 54,
+   "missing": 0,
+   "agents": 90
+  }
+ }
+}
