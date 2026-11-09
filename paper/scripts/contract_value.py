@@ -43,5 +43,15 @@ for rows in games.values():
 out = {"auditors": len(agents), "external": len(E), "internal": len(I),
        "mean_value_external": st.fmean(E), "mean_value_internal": st.fmean(I),
        "value_range": [min(v for *_, v, _ in agents), max(v for *_, v, _ in agents)],
-       "mixed_games": less + more + tie, "external_filers_had_less_at_stake": less, "had_more": more, "tie": tie}
+       "mixed_games": less + more + tie, "external_filers_had_less_at_stake": less, "had_more": more, "tie": tie,
+       "sign_test_p_two_sided": 2 * sum(__import__("math").comb(less + more, k) for k in range(max(less, more), less + more + 1)) / 2 ** (less + more)}
 print(json.dumps(out, indent=1))
+
+
+# Per-game pairs for the figure: mean remaining pay of external vs internal filers in games where both occur.
+pairs = []
+for gname, rows in games.items():
+    e = [v for v, f in rows if f == "E"]; i = [v for v, f in rows if f == "I"]
+    if e and i:
+        pairs.append({"game": gname, "external_mean": st.fmean(e), "internal_mean": st.fmean(i), "n_external": len(e), "n_internal": len(i)})
+(ROOT / "paper/data/contract_value_pairs.json").write_text(json.dumps(pairs, indent=1))

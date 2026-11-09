@@ -1,0 +1,102 @@
+{
+ "none": {
+  "auditors": 40,
+  "mean_decision_tokens": 5244,
+  "share_mentioning": {
+   "corroboration": 0.95,
+   "distrust": 0.225,
+   "patients": 0.55,
+   "own_risk": 1.0,
+   "policy": 1.0,
+   "peer_minds": 0.1
+  },
+  "mean_mentions": {
+   "corroboration": 16.85,
+   "distrust": 0.35,
+   "patients": 6.25,
+   "own_risk": 22.25,
+   "policy": 9.32,
+   "peer_minds": 0.12
+  }
+ },
+ "tom_up_c1": {
+  "auditors": 40,
+  "mean_decision_tokens": 3464,
+  "share_mentioning": {
+   "corroboration": 1.0,
+   "distrust": 0.05,
+   "patients": 0.625,
+   "own_risk": 0.85,
+   "policy": 0.975,
+   "peer_minds": 0.075
+  },
+  "mean_mentions": {
+   "corroboration": 11.8,
+   "distrust": 0.07,
+   "patients": 4.2,
+   "own_risk": 5.78,
+   "policy": 4.25,
+   "peer_minds": 0.07
+  }
+ },
+ "rand_tom_c1": {
+  "auditors": 40,
+  "mean_decision_tokens": 4275,
+  "share_mentioning": {
+   "corroboration": 1.0,
+   "distrust": 0.4,
+   "patients": 0.6,
+   "own_risk": 1.0,
+   "policy": 0.975,
+   "peer_minds": 0.1
+  },
+  "mean_mentions": {
+   "corroboration": 17.4,
+   "distrust": 0.68,
+   "patients": 8.0,
+   "own_risk": 23.48,
+   "policy": 9.53,
+   "peer_minds": 0.12
+  }
+ },
+ "emp_up_c015": {
+  "auditors": 40,
+  "mean_decision_tokens": 11948,
+  "share_mentioning": {
+   "corroboration": 1.0,
+   "distrust": 0.15,
+   "patients": 1.0,
+   "own_risk": 0.95,
+   "policy": 0.95,
+   "peer_minds": 0.325
+  },
+  "mean_mentions": {
+   "corroboration": 35.33,
+   "distrust": 0.53,
+   "patients": 112.3,
+   "own_risk": 50.52,
+   "policy": 32.4,
+   "peer_minds": 1.12
+  }
+ },
+ "rand_emp_c015": {
+  "auditors": 40,
+  "mean_decision_tokens": 5220,
+  "share_mentioning": {
+   "corroboration": 0.9,
+   "distrust": 0.275,
+   "patients": 0.65,
+   "own_risk": 0.925,
+   "policy": 1.0,
+   "peer_minds": 0.125
+  },
+  "mean_mentions": {
+   "corroboration": 20.07,
+   "distrust": 1.95,
+   "patients": 7.05,
+   "own_risk": 18.0,
+   "policy": 9.35,
+   "peer_minds": 0.15
+  }
+ }
+}

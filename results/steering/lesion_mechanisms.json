@@ -1,0 +1,72 @@
+{
+ "none": {
+  "auditors_with_decision_text": 40,
+  "pred_a_peer_files_e": 0.237,
+  "n_forecasts": 40,
+  "mean_decision_tokens": 4917,
+  "per_1k_tokens": {
+   "corroboration": 2.68,
+   "distrust": 0.12,
+   "patients": 0.63,
+   "own_risk": 4.12,
+   "policy": 1.92,
+   "peer_minds": 0.03
+  }
+ },
+ "emp": {
+  "auditors_with_decision_text": 40,
+  "pred_a_peer_files_e": 0.226,
+  "n_forecasts": 40,
+  "mean_decision_tokens": 5071,
+  "per_1k_tokens": {
+   "corroboration": 2.69,
+   "distrust": 0.17,
+   "patients": 1.07,
+   "own_risk": 4.61,
+   "policy": 1.91,
+   "peer_minds": 0.0
+  }
+ },
+ "random": {
+  "auditors_with_decision_text": 40,
+  "pred_a_peer_files_e": 0.223,
+  "n_forecasts": 40,
+  "mean_decision_tokens": 5144,
+  "per_1k_tokens": {
+   "corroboration": 3.25,
+   "distrust": 0.11,
+   "patients": 0.68,
+   "own_risk": 4.35,
+   "policy": 1.69,
+   "peer_minds": 0.02
+  }
+ },
+ "tom": {
+  "auditors_with_decision_text": 40,
+  "pred_a_peer_files_e": 0.41,
+  "n_forecasts": 39,
+  "mean_decision_tokens": 5376,
+  "per_1k_tokens": {
+   "corroboration": 1.05,
+   "distrust": 0.0,
+   "patients": 0.07,
+   "own_risk": 0.66,
+   "policy": 2.02,
+   "peer_minds": 0.01
+  }
+ },
+ "random_tom": {
+  "auditors_with_decision_text": 40,
+  "pred_a_peer_files_e": 0.285,
+  "n_forecasts": 40,
+  "mean_decision_tokens": 4808,
+  "per_1k_tokens": {
+   "corroboration": 3.04,
+   "distrust": 0.12,
+   "patients": 1.2,
+   "own_risk": 4.24,
+   "policy": 1.88,
+   "peer_minds": 0.01
+  }
+ }
+}
