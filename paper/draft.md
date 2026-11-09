@@ -174,4 +174,4 @@ Zhu, W., Zhang, Z., and Wang, Y. (2024). Language models represent beliefs of se
 
 ## LLM Usage Statement
 
-We used Claude (Anthropic), through Claude Code, to write and test most of the code, to run and monitor the GPU experiments under our direction, to compute the statistics and to draft this report. Every number in the paper is produced by scripts in the repository from saved outputs, and the quotations were checked against the game transcripts. LLM_STATEMENT_TO_CONFIRM
+We used Claude (Anthropic), through Claude Code, to write and test most of the code, to run and monitor the GPU experiments under our direction, to compute the statistics and to draft this report. Every number in the paper is produced by scripts in the repository from saved outputs, and the quotations were checked against the game transcripts.
