@@ -7,6 +7,22 @@
   "discovered": 39,
   "audits": 3
  },
+ "tom_up_c1": {
+  "E": 31,
+  "I": 9,
+  "missing": 0,
+  "agents": 40,
+  "discovered": 38,
+  "audits": 7
+ },
+ "rand_tom_c1": {
+  "E": 18,
+  "I": 22,
+  "missing": 0,
+  "agents": 40,
+  "discovered": 39,
+  "audits": 3
+ },
  "external_per_world": {
   "none": {
    "w0201_n5_t3_k5_high_discuss_b4ri_r300_p6000": 5,
@@ -17,6 +33,26 @@
    "w0202_n5_t3_k5_high_isolated_b4ri_r300_p6000": 4,
    "w0202_n5_t3_k5_medium_discuss_b4ri_r300_p6000": 0,
    "w0202_n5_t3_k5_medium_isolated_b4ri_r300_p6000": 0
+  },
+  "tom_up_c1": {
+   "w0201_n5_t3_k5_high_discuss_b4ri_r300_p6000": 4,
+   "w0201_n5_t3_k5_high_isolated_b4ri_r300_p6000": 4,
+   "w0201_n5_t3_k5_medium_discuss_b4ri_r300_p6000": 4,
+   "w0201_n5_t3_k5_medium_isolated_b4ri_r300_p6000": 4,
+   "w0202_n5_t3_k5_high_discuss_b4ri_r300_p6000": 5,
+   "w0202_n5_t3_k5_high_isolated_b4ri_r300_p6000": 1,
+   "w0202_n5_t3_k5_medium_discuss_b4ri_r300_p6000": 5,
+   "w0202_n5_t3_k5_medium_isolated_b4ri_r300_p6000": 4
+  },
+  "rand_tom_c1": {
+   "w0201_n5_t3_k5_high_discuss_b4ri_r300_p6000": 5,
+   "w0201_n5_t3_k5_high_isolated_b4ri_r300_p6000": 3,
+   "w0201_n5_t3_k5_medium_discuss_b4ri_r300_p6000": 1,
+   "w0201_n5_t3_k5_medium_isolated_b4ri_r300_p6000": 1,
+   "w0202_n5_t3_k5_high_discuss_b4ri_r300_p6000": 4,
+   "w0202_n5_t3_k5_high_isolated_b4ri_r300_p6000": 2,
+   "w0202_n5_t3_k5_medium_discuss_b4ri_r300_p6000": 0,
+   "w0202_n5_t3_k5_medium_isolated_b4ri_r300_p6000": 2
   }
  }
 }
