@@ -38,6 +38,17 @@ with empty model histories. Whole-game and decision-only interventions therefore
 the same underlying files in the paired comparison. Their subsequent live conversations
 can still diverge. [Preserved status](regenerated_stage_status.json) · [Paired SHA-256 manifest](paired_world_sha256.json)
 
+The new unlesioned repeat with the exact main files matched **all 40 auditors through
+their first seven raw replies**, versus none through four replies on regenerated files.
+It reproduced the aggregate 24 external and 16 internal filings. Nonetheless 14/40
+individuals changed channels and audit openings changed from six to five. At the first
+different generation, 35 auditors had identical rendered inputs and identical derived
+request seeds. For the other five, Python tool outputs displayed the same record IDs
+or record/date tuples in different orders. These runs establish the effect of freezing
+the file bytes on the early trajectory. They leave substantial uncertainty about the
+stability of individual final decisions. A repeated aggregate can hide that variation.
+[Exact-file per-agent results](paired_baseline_repeat.json) · [Five differing tool outputs](paired_tool_order_differences.json)
+
 ## Reproduce the audit
 
 ```bash
