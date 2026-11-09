@@ -1,0 +1,22 @@
+{
+ "none": {
+  "E": 16,
+  "I": 24,
+  "missing": 0,
+  "agents": 40,
+  "discovered": 39,
+  "audits": 3
+ },
+ "external_per_world": {
+  "none": {
+   "w0201_n5_t3_k5_high_discuss_b4ri_r300_p6000": 5,
+   "w0201_n5_t3_k5_high_isolated_b4ri_r300_p6000": 2,
+   "w0201_n5_t3_k5_medium_discuss_b4ri_r300_p6000": 0,
+   "w0201_n5_t3_k5_medium_isolated_b4ri_r300_p6000": 1,
+   "w0202_n5_t3_k5_high_discuss_b4ri_r300_p6000": 4,
+   "w0202_n5_t3_k5_high_isolated_b4ri_r300_p6000": 4,
+   "w0202_n5_t3_k5_medium_discuss_b4ri_r300_p6000": 0,
+   "w0202_n5_t3_k5_medium_isolated_b4ri_r300_p6000": 0
+  }
+ }
+}
