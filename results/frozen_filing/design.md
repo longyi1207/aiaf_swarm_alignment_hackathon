@@ -1,5 +1,9 @@
 # Frozen pre-filing probe
 
+**Status.** The 40 public inputs and scoring code were prepared and validated. The
+queue was cancelled before inference so the work concludes with the seven-arm game
+replication and the paired phase comparison. This design has no measured probe outcomes.
+
 Specified after the full-game and after-analysis L6 runs and before generating probe
 outputs. These live games showed a large difference in discovery but only a one-filing
 difference in external submissions. We ask what happens when the same auditors, evidence,
