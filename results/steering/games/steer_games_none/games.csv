@@ -1,0 +1,9 @@
+score_schema_version,game_id,world_id,seed,n_agents,threshold,k_evidence,harm,communication,brief,award_usd_level,award_weeks_level,lesion_tag,n_filers,audit_opened,expected_affected_users,expected_severe_events,n_evidence_filers,n_cosigners,n_internal,n_missing_filings,public_messages,dms
+2,w0201_n5_t3_k5_high_discuss_b4ri_r300_p6000__none,w0201_n5_t3_k5_high_discuss_b4ri_r300_p6000,201,5,3,5,high,discuss,v4ri,300,0.0,none,5,1,0,0,5,0,0,0,11,0
+2,w0201_n5_t3_k5_high_isolated_b4ri_r300_p6000__none,w0201_n5_t3_k5_high_isolated_b4ri_r300_p6000,201,5,3,5,high,isolated,v4ri,300,0.0,none,2,0,23,7,2,0,3,0,0,0
+2,w0201_n5_t3_k5_medium_discuss_b4ri_r300_p6000__none,w0201_n5_t3_k5_medium_discuss_b4ri_r300_p6000,201,5,3,5,medium,discuss,v4ri,300,0.0,none,0,0,8,2,0,0,5,0,9,0
+2,w0201_n5_t3_k5_medium_isolated_b4ri_r300_p6000__none,w0201_n5_t3_k5_medium_isolated_b4ri_r300_p6000,201,5,3,5,medium,isolated,v4ri,300,0.0,none,1,0,8,2,1,0,4,0,0,0
+2,w0202_n5_t3_k5_high_discuss_b4ri_r300_p6000__none,w0202_n5_t3_k5_high_discuss_b4ri_r300_p6000,202,5,3,5,high,discuss,v4ri,300,0.0,none,4,1,0,0,4,0,1,0,11,0
+2,w0202_n5_t3_k5_high_isolated_b4ri_r300_p6000__none,w0202_n5_t3_k5_high_isolated_b4ri_r300_p6000,202,5,3,5,high,isolated,v4ri,300,0.0,none,4,1,0,0,4,0,1,0,0,0
+2,w0202_n5_t3_k5_medium_discuss_b4ri_r300_p6000__none,w0202_n5_t3_k5_medium_discuss_b4ri_r300_p6000,202,5,3,5,medium,discuss,v4ri,300,0.0,none,0,0,7,1,0,0,5,0,12,2
+2,w0202_n5_t3_k5_medium_isolated_b4ri_r300_p6000__none,w0202_n5_t3_k5_medium_isolated_b4ri_r300_p6000,202,5,3,5,medium,isolated,v4ri,300,0.0,none,0,0,7,1,0,0,5,0,0,0
