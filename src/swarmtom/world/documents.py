@@ -11,7 +11,11 @@ files, and every consequence is stated as programme policy.
 from __future__ import annotations
 
 import datetime as dt
+from io import BytesIO
 from pathlib import Path
+from uuid import uuid4
+from xml.dom import minidom
+from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 
 from docx import Document
 from docx.shared import Pt
@@ -19,6 +23,33 @@ from docx.shared import Pt
 FIXED_DOCX_TIME = dt.datetime(2026, 6, 1, 9, 0, 0)
 
 Block = str | list[list[str]]  # a paragraph, or a table given as rows (first row = header)
+
+
+def write_office_package(path: Path, package: BytesIO) -> None:
+    """Freeze OOXML and ZIP timestamps so list_files observes reproducible byte sizes."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_name(f".{path.name}.{uuid4().hex}.tmp")
+    stamp = FIXED_DOCX_TIME.isoformat() + "Z"
+    try:
+        with ZipFile(package) as source, ZipFile(temporary, "x") as target:
+            for name in sorted(source.namelist()):
+                data = source.read(name)
+                if name == "docProps/core.xml":
+                    # openpyxl overrides workbook.properties.modified at save time.
+                    with minidom.parseString(data) as core:
+                        for field in ("created", "modified"):
+                            for node in core.getElementsByTagNameNS("http://purl.org/dc/terms/", field):
+                                while node.firstChild is not None:
+                                    node.removeChild(node.firstChild)
+                                node.appendChild(core.createTextNode(stamp))
+                        data = core.toxml(encoding="utf-8")
+                member = ZipInfo(name, FIXED_DOCX_TIME.timetuple()[:6])
+                member.create_system = 3
+                member.external_attr = 0o600 << 16
+                target.writestr(member, data, compress_type=ZIP_DEFLATED, compresslevel=6)
+        temporary.replace(path)
+    finally:
+        temporary.unlink(missing_ok=True)
 
 
 def write_docx(path: Path, title: str, sections: list[tuple[str, list[Block]]], doc_id: str, revision: str) -> None:
@@ -42,8 +73,9 @@ def write_docx(path: Path, title: str, sections: list[tuple[str, list[Block]]], 
                 for i, row in enumerate(b):
                     for j, cell in enumerate(row):
                         table.cell(i, j).text = str(cell)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    doc.save(path)
+    with BytesIO() as package:
+        doc.save(package)
+        write_office_package(path, package)
 
 
 def fmt_date(d: dt.date) -> str:
