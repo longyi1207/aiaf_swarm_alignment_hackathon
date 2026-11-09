@@ -1,0 +1,14 @@
+{
+  "files": {
+    "identical_ground_truth": 8,
+    ".xlsx_count": 560,
+    ".xlsx_different_bytes": 560,
+    ".xlsx_different_length": 560,
+    ".docx_count": 64,
+    ".docx_different_bytes": 64,
+    ".docx_different_length": 0
+  },
+  "changed_members": {
+    ".xlsx:docProps/core.xml": 560
+  }
+}

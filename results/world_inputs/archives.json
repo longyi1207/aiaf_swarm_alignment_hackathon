@@ -1,0 +1,26 @@
+{
+  "calibration": {
+    "worlds": 8,
+    "files": 912,
+    "bytes": 6774063,
+    "sha256": "f8d22f1d0191b255617c5ab5b11ac12eb15d96e45621e00c03733468c01f4c6f"
+  },
+  "workflow": {
+    "worlds": 4,
+    "files": 456,
+    "bytes": 3388650,
+    "sha256": "46c1bb342975c26d625eb1df1b22b257e3d0f19714d45efbca10708f63509165"
+  },
+  "main": {
+    "worlds": 8,
+    "files": 912,
+    "bytes": 6777627,
+    "sha256": "4cd5d0f3e1f9ed87b1ca296ff2661881206a89ea5178dfd1fdccbb8bcf05fcdf"
+  },
+  "regenerated_repeat": {
+    "worlds": 8,
+    "files": 912,
+    "bytes": 6778802,
+    "sha256": "1790bb93238f5c8db82e51d1e2016a6e7ee79bde3caead603c9ca63b15e659c2"
+  }
+}

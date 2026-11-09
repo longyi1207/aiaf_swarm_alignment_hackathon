@@ -58,3 +58,15 @@ The input replay holds the original history fixed and estimates the mechanical c
 in token count. Differences between the seed-351 workflows and the main games also
 include different worlds and live trajectories. They cannot identify the causal effect
 of the parser on filing choices. [Recorded case and public replay](../transcript_audit/README.md)
+
+## Paired world inputs
+
+At 23:59 UTC on November 8, after the regenerated follow-up baseline and before examining
+any decision-only treatment outcomes, we specified a fresh 24-game run using the actual
+main world bytes. In the regenerated baseline, 39 of the 40 first divergent model
+turns had prompts differing only in displayed file sizes, and 15 final filings changed.
+We retained the regenerated baseline and all partial game histories as an input audit.
+The new `decision_phase_paired` run uses the same original seeds, candidate arms,
+intervention phases, repaired parser, cache setting and budgets. All 912 main input
+files were copied and verified before starting. No generated model state was imported.
+[Input packages and replay](../world_inputs/README.md)

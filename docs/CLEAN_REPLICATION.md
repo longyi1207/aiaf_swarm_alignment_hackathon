@@ -253,6 +253,26 @@ in both controller and worker. With a shared Python environment, set
 checkout if it needs to resume. The case that prompted this transition has a GPU-free
 [tokenizer replay](../results/transcript_audit/README.md).
 
+For a replay of the recorded game inputs, prepare the tag first and extract the original
+synthetic world packages before starting the game loop. The phase comparison uses
+the same main package. The input archives contain the world documents and ground truth.
+The controller still verifies every world and starts with fresh game transcripts.
+When using separate checkouts for the historical parser transition, use the archive
+directory from the results checkout. To run a new independent design with the latest
+generator, let the runner create its reproducible world packages instead.
+
+```bash
+world_archives="$PWD/results/world_inputs"
+for stage in calibration workflow main decision_phase; do
+    pack=$stage
+    if [ "$stage" = decision_phase ]; then pack=main; fi
+    mkdir -p "$r/$stage/worlds"
+    "$py" -m zipfile -e "$world_archives/$pack.zip" "$r/$stage/worlds"
+done
+```
+
+[Archive checksums and input reproducibility audit](../results/world_inputs/README.md)
+
 ### Run the game tools on a separate controller
 
 On the November 8 GPU host, the kernel lacked the filesystem isolation required for

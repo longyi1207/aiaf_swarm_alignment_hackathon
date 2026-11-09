@@ -1,0 +1,15 @@
+{
+  "none": {
+    "model_turns": 977,
+    "completion_tokens": 672623,
+    "dispatched_filing_calls": 40,
+    "invalid_channel_calls": 0,
+    "missing_citation_calls": 0,
+    "capped_unclosed": 3,
+    "capped_with_visible_content": 3,
+    "capped_tool_calls": 0,
+    "capped_kept_as_reasoning_only": 0,
+    "agents_with_capped_thought": 3,
+    "agents_with_input_limit_error": 0
+  }
+}

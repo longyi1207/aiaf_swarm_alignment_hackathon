@@ -17,6 +17,7 @@ import datetime as dt
 import json
 import logging
 import random
+from io import BytesIO
 from pathlib import Path
 
 import pandas as pd
@@ -239,13 +240,11 @@ def generate_world(spec: WorldSpec, out_dir: Path) -> dict:
 
 
 def _xlsx(path: Path, sheets: dict[str, pd.DataFrame]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with pd.ExcelWriter(path, engine="openpyxl") as xw:
-        for name, df in sheets.items():
-            df.to_excel(xw, sheet_name=name, index=False)
-        wb = xw.book
-        wb.properties.created = D.FIXED_DOCX_TIME
-        wb.properties.modified = D.FIXED_DOCX_TIME
+    with BytesIO() as package:
+        with pd.ExcelWriter(package, engine="openpyxl") as xw:
+            for name, df in sheets.items():
+                df.to_excel(xw, sheet_name=name, index=False)
+        D.write_office_package(path, package)
 
 
 def _write(out_dir, spec, cast, ctx, roster, lot_master, archive, batches, records, contracts) -> None:

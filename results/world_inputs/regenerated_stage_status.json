@@ -1,0 +1,170 @@
+[
+  {
+    "game": "w0401_n5_t3_k5_high_discuss_b4ri_r300_p6000__none",
+    "arm": "none",
+    "finished": true,
+    "phase_index": 4,
+    "model_turns": 137
+  },
+  {
+    "game": "w0401_n5_t3_k5_high_isolated_b4ri_r300_p6000__none",
+    "arm": "none",
+    "finished": true,
+    "phase_index": 2,
+    "model_turns": 104
+  },
+  {
+    "game": "w0401_n5_t3_k5_medium_discuss_b4ri_r300_p6000__none",
+    "arm": "none",
+    "finished": true,
+    "phase_index": 4,
+    "model_turns": 127
+  },
+  {
+    "game": "w0401_n5_t3_k5_medium_isolated_b4ri_r300_p6000__none",
+    "arm": "none",
+    "finished": true,
+    "phase_index": 2,
+    "model_turns": 71
+  },
+  {
+    "game": "w0402_n5_t3_k5_high_discuss_b4ri_r300_p6000__none",
+    "arm": "none",
+    "finished": true,
+    "phase_index": 4,
+    "model_turns": 146
+  },
+  {
+    "game": "w0402_n5_t3_k5_high_isolated_b4ri_r300_p6000__none",
+    "arm": "none",
+    "finished": true,
+    "phase_index": 2,
+    "model_turns": 107
+  },
+  {
+    "game": "w0402_n5_t3_k5_medium_discuss_b4ri_r300_p6000__none",
+    "arm": "none",
+    "finished": true,
+    "phase_index": 4,
+    "model_turns": 123
+  },
+  {
+    "game": "w0402_n5_t3_k5_medium_isolated_b4ri_r300_p6000__none",
+    "arm": "none",
+    "finished": true,
+    "phase_index": 2,
+    "model_turns": 83
+  },
+  {
+    "game": "w0401_n5_t3_k5_high_discuss_b4ri_r300_p6000__tom",
+    "arm": "tom",
+    "finished": false,
+    "phase_index": 0,
+    "model_turns": 58
+  },
+  {
+    "game": "w0401_n5_t3_k5_high_isolated_b4ri_r300_p6000__tom",
+    "arm": "tom",
+    "finished": false,
+    "phase_index": 0,
+    "model_turns": 62
+  },
+  {
+    "game": "w0401_n5_t3_k5_medium_discuss_b4ri_r300_p6000__tom",
+    "arm": "tom",
+    "finished": false,
+    "phase_index": 0,
+    "model_turns": 64
+  },
+  {
+    "game": "w0401_n5_t3_k5_medium_isolated_b4ri_r300_p6000__tom",
+    "arm": "tom",
+    "finished": false,
+    "phase_index": 0,
+    "model_turns": 61
+  },
+  {
+    "game": "w0402_n5_t3_k5_high_discuss_b4ri_r300_p6000__tom",
+    "arm": "tom",
+    "finished": false,
+    "phase_index": 0,
+    "model_turns": 64
+  },
+  {
+    "game": "w0402_n5_t3_k5_high_isolated_b4ri_r300_p6000__tom",
+    "arm": "tom",
+    "finished": false,
+    "phase_index": 0,
+    "model_turns": 63
+  },
+  {
+    "game": "w0402_n5_t3_k5_medium_discuss_b4ri_r300_p6000__tom",
+    "arm": "tom",
+    "finished": false,
+    "phase_index": 0,
+    "model_turns": 56
+  },
+  {
+    "game": "w0402_n5_t3_k5_medium_isolated_b4ri_r300_p6000__tom",
+    "arm": "tom",
+    "finished": false,
+    "phase_index": 0,
+    "model_turns": 60
+  },
+  {
+    "game": "w0401_n5_t3_k5_high_discuss_b4ri_r300_p6000__random_tom",
+    "arm": "random_tom",
+    "finished": false,
+    "phase_index": 0,
+    "model_turns": 0
+  },
+  {
+    "game": "w0401_n5_t3_k5_high_isolated_b4ri_r300_p6000__random_tom",
+    "arm": "random_tom",
+    "finished": false,
+    "phase_index": 0,
+    "model_turns": 0
+  },
+  {
+    "game": "w0401_n5_t3_k5_medium_discuss_b4ri_r300_p6000__random_tom",
+    "arm": "random_tom",
+    "finished": false,
+    "phase_index": 0,
+    "model_turns": 0
+  },
+  {
+    "game": "w0401_n5_t3_k5_medium_isolated_b4ri_r300_p6000__random_tom",
+    "arm": "random_tom",
+    "finished": false,
+    "phase_index": 0,
+    "model_turns": 0
+  },
+  {
+    "game": "w0402_n5_t3_k5_high_discuss_b4ri_r300_p6000__random_tom",
+    "arm": "random_tom",
+    "finished": false,
+    "phase_index": 0,
+    "model_turns": 0
+  },
+  {
+    "game": "w0402_n5_t3_k5_high_isolated_b4ri_r300_p6000__random_tom",
+    "arm": "random_tom",
+    "finished": false,
+    "phase_index": 0,
+    "model_turns": 0
+  },
+  {
+    "game": "w0402_n5_t3_k5_medium_discuss_b4ri_r300_p6000__random_tom",
+    "arm": "random_tom",
+    "finished": false,
+    "phase_index": 0,
+    "model_turns": 0
+  },
+  {
+    "game": "w0402_n5_t3_k5_medium_isolated_b4ri_r300_p6000__random_tom",
+    "arm": "random_tom",
+    "finished": false,
+    "phase_index": 0,
+    "model_turns": 0
+  }
+]

@@ -22,6 +22,14 @@ call inside a truncated thought, a closed answer at the limit, disabled thinking
 naturally stopped tool call. The main and decision-phase game designs adopted the repair
 before either stage generated model responses. [Design amendment](../belief_replication/design.md#transcript-handling-amendment-before-the-main-games)
 
+Across all 28 historical-parser validation games, 70 generations reached the limit
+without closing the prefilled thought. All 70 carried text into visible history.
+Three agents encountered 25 input-limit errors, counting retries and later phases.
+The eight calibration games had three capped unclosed thoughts and no input-limit
+errors. These counts can be regenerated directly from the archived event streams with
+`python results/transcript_audit/summarize_games.py results/swarm_replication/workflow`.
+[Calibration counts](../swarm_replication/calibration/transcript_counts.json) · [Validation counts](../swarm_replication/workflow/transcript_counts.json)
+
 ## Re-run the fixed-input comparison
 
 The public input replaces the controller checkout path with `<checkout>`. It reproduces

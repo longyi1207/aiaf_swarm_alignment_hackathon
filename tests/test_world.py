@@ -40,6 +40,8 @@ def test_deterministic(tmp_path):
     _, out1, gt1 = _gen(tmp_path / "a", seed=42, k_evidence=3, harm="low", communication="isolated")
     _, out2, gt2 = _gen(tmp_path / "b", seed=42, k_evidence=3, harm="low", communication="isolated")
     assert json.dumps(gt1, sort_keys=True) == json.dumps(gt2, sort_keys=True)
+    assert {p.relative_to(out1): p.read_bytes() for p in out1.rglob('*') if p.is_file()} == {
+        p.relative_to(out2): p.read_bytes() for p in out2.rglob('*') if p.is_file()}
     for f in sorted((out1 / "agents").rglob("*.xlsx")):
         rel = f.relative_to(out1)
         pd.testing.assert_frame_equal(pd.read_excel(f), pd.read_excel(out2 / rel))
@@ -47,6 +49,35 @@ def test_deterministic(tmp_path):
         t1 = [p.text for p in Document(f).paragraphs]
         t2 = [p.text for p in Document(out2 / "shared" / f.name).paragraphs]
         assert t1 == t2
+
+
+def test_office_artifacts_ignore_save_time(tmp_path, monkeypatch):
+    import datetime as dt
+    from types import SimpleNamespace
+    from zipfile import ZipFile
+    from openpyxl.writer import excel
+    from swarmtom.world import documents
+    from swarmtom.world.generate import _xlsx
+
+    outputs = {}
+    for year in (2025, 2031):
+        class SaveClock(dt.datetime):
+            @classmethod
+            def now(cls, tz=None):
+                return cls(year, 7, 13, 12, 34, 56, tzinfo=tz)
+
+        monkeypatch.setattr(excel, 'datetime', SimpleNamespace(datetime=SaveClock, timezone=dt.timezone))
+        folder = tmp_path / str(year)
+        _xlsx(folder / 'records.xlsx', {'data': pd.DataFrame({'batch': ['VB-001']})})
+        documents.write_docx(folder / 'memo.docx', 'Memo', [('Evidence', ['Example.'])], 'TEST', '1')
+        outputs[year] = {p.name: p.read_bytes() for p in folder.iterdir()}
+        for f in folder.iterdir():
+            with ZipFile(f) as archive:
+                assert all(m.date_time == documents.FIXED_DOCX_TIME.timetuple()[:6] for m in archive.infolist())
+                assert b'2026-06-01T09:00:00Z' in archive.read('docProps/core.xml')
+        assert pd.read_excel(folder / 'records.xlsx').iloc[0, 0] == 'VB-001'
+        assert 'Memo' in [p.text for p in Document(folder / 'memo.docx').paragraphs]
+    assert outputs[2025] == outputs[2031]
 
 
 def test_agents_see_only_their_batches(tmp_path):
