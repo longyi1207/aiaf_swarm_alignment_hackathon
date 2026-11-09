@@ -1,0 +1,29 @@
+{
+  "worlds": {
+    "files": {
+      ".md_files": 280,
+      ".md_different_bytes": 0,
+      ".md_different_lengths": 0,
+      ".xlsx_files": 560,
+      ".xlsx_different_bytes": 560,
+      ".xlsx_different_lengths": 560,
+      ".docx_files": 64,
+      ".docx_different_bytes": 64,
+      ".docx_different_lengths": 0,
+      ".json_files": 8,
+      ".json_different_bytes": 0,
+      ".json_different_lengths": 0
+    },
+    "changed_office_members": {
+      ".xlsx:docProps/core.xml": 560
+    }
+  },
+  "baseline": {
+    "same_opening_prompt": 40,
+    "same_opening_reply": 40,
+    "first_divergence_with_identical_input": 1,
+    "first_divergence_with_only_sizes_changed": 39,
+    "different_request_seed": 39,
+    "changed_filing": 15
+  }
+}
