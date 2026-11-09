@@ -1,0 +1,204 @@
+{
+ "none": {
+  "E": 16,
+  "I": 24,
+  "missing": 0,
+  "agents": 40,
+  "discovered": 39,
+  "audits": 3
+ },
+ "tom_up_c1": {
+  "E": 31,
+  "I": 9,
+  "missing": 0,
+  "agents": 40,
+  "discovered": 38,
+  "audits": 7
+ },
+ "rand_tom_c1": {
+  "E": 18,
+  "I": 22,
+  "missing": 0,
+  "agents": 40,
+  "discovered": 39,
+  "audits": 3
+ },
+ "emp_up": {
+  "E": 37,
+  "I": 3,
+  "missing": 0,
+  "agents": 40,
+  "discovered": 39,
+  "audits": 7
+ },
+ "rand_emp": {
+  "E": 27,
+  "I": 13,
+  "missing": 0,
+  "agents": 40,
+  "discovered": 39,
+  "audits": 6
+ },
+ "external_per_world": {
+  "none": {
+   "w0201_n5_t3_k5_high_discuss_b4ri_r300_p6000": 5,
+   "w0201_n5_t3_k5_high_isolated_b4ri_r300_p6000": 2,
+   "w0201_n5_t3_k5_medium_discuss_b4ri_r300_p6000": 0,
+   "w0201_n5_t3_k5_medium_isolated_b4ri_r300_p6000": 1,
+   "w0202_n5_t3_k5_high_discuss_b4ri_r300_p6000": 4,
+   "w0202_n5_t3_k5_high_isolated_b4ri_r300_p6000": 4,
+   "w0202_n5_t3_k5_medium_discuss_b4ri_r300_p6000": 0,
+   "w0202_n5_t3_k5_medium_isolated_b4ri_r300_p6000": 0
+  },
+  "tom_up_c1": {
+   "w0201_n5_t3_k5_high_discuss_b4ri_r300_p6000": 4,
+   "w0201_n5_t3_k5_high_isolated_b4ri_r300_p6000": 4,
+   "w0201_n5_t3_k5_medium_discuss_b4ri_r300_p6000": 4,
+   "w0201_n5_t3_k5_medium_isolated_b4ri_r300_p6000": 4,
+   "w0202_n5_t3_k5_high_discuss_b4ri_r300_p6000": 5,
+   "w0202_n5_t3_k5_high_isolated_b4ri_r300_p6000": 1,
+   "w0202_n5_t3_k5_medium_discuss_b4ri_r300_p6000": 5,
+   "w0202_n5_t3_k5_medium_isolated_b4ri_r300_p6000": 4
+  },
+  "rand_tom_c1": {
+   "w0201_n5_t3_k5_high_discuss_b4ri_r300_p6000": 5,
+   "w0201_n5_t3_k5_high_isolated_b4ri_r300_p6000": 3,
+   "w0201_n5_t3_k5_medium_discuss_b4ri_r300_p6000": 1,
+   "w0201_n5_t3_k5_medium_isolated_b4ri_r300_p6000": 1,
+   "w0202_n5_t3_k5_high_discuss_b4ri_r300_p6000": 4,
+   "w0202_n5_t3_k5_high_isolated_b4ri_r300_p6000": 2,
+   "w0202_n5_t3_k5_medium_discuss_b4ri_r300_p6000": 0,
+   "w0202_n5_t3_k5_medium_isolated_b4ri_r300_p6000": 2
+  },
+  "emp_up": {
+   "w0201_n5_t3_k5_high_discuss_b4ri_r300_p6000": 5,
+   "w0201_n5_t3_k5_high_isolated_b4ri_r300_p6000": 2,
+   "w0201_n5_t3_k5_medium_discuss_b4ri_r300_p6000": 5,
+   "w0201_n5_t3_k5_medium_isolated_b4ri_r300_p6000": 5,
+   "w0202_n5_t3_k5_high_discuss_b4ri_r300_p6000": 5,
+   "w0202_n5_t3_k5_high_isolated_b4ri_r300_p6000": 5,
+   "w0202_n5_t3_k5_medium_discuss_b4ri_r300_p6000": 5,
+   "w0202_n5_t3_k5_medium_isolated_b4ri_r300_p6000": 5
+  },
+  "rand_emp": {
+   "w0201_n5_t3_k5_high_discuss_b4ri_r300_p6000": 4,
+   "w0201_n5_t3_k5_high_isolated_b4ri_r300_p6000": 2,
+   "w0201_n5_t3_k5_medium_discuss_b4ri_r300_p6000": 4,
+   "w0201_n5_t3_k5_medium_isolated_b4ri_r300_p6000": 1,
+   "w0202_n5_t3_k5_high_discuss_b4ri_r300_p6000": 5,
+   "w0202_n5_t3_k5_high_isolated_b4ri_r300_p6000": 3,
+   "w0202_n5_t3_k5_medium_discuss_b4ri_r300_p6000": 5,
+   "w0202_n5_t3_k5_medium_isolated_b4ri_r300_p6000": 3
+  }
+ },
+ "paired_tests": {
+  "emp_up-rand_emp": {
+   "diff": 0.25,
+   "ci": [
+    0.075,
+    0.45
+   ],
+   "p_exact": 0.0625,
+   "per_world": [
+    1,
+    0,
+    1,
+    4,
+    0,
+    2,
+    0,
+    2
+   ]
+  },
+  "emp_up-none": {
+   "diff": 0.525,
+   "ci": [
+    0.225,
+    0.825
+   ],
+   "p_exact": 0.03125,
+   "per_world": [
+    0,
+    0,
+    5,
+    4,
+    1,
+    1,
+    5,
+    5
+   ]
+  },
+  "rand_emp-none": {
+   "diff": 0.275,
+   "ci": [
+    -0.025,
+    0.575
+   ],
+   "p_exact": 0.21875,
+   "per_world": [
+    -1,
+    0,
+    4,
+    0,
+    1,
+    -1,
+    5,
+    3
+   ]
+  },
+  "tom_up_c1-rand_tom_c1": {
+   "diff": 0.325,
+   "ci": [
+    0.05,
+    0.575
+   ],
+   "p_exact": 0.09375,
+   "per_world": [
+    -1,
+    1,
+    3,
+    3,
+    1,
+    -1,
+    5,
+    2
+   ]
+  },
+  "tom_up_c1-none": {
+   "diff": 0.375,
+   "ci": [
+    0.0,
+    0.7
+   ],
+   "p_exact": 0.125,
+   "per_world": [
+    -1,
+    2,
+    4,
+    3,
+    1,
+    -3,
+    5,
+    4
+   ]
+  },
+  "rand_tom_c1-none": {
+   "diff": 0.05,
+   "ci": [
+    -0.1,
+    0.2
+   ],
+   "p_exact": 0.75,
+   "per_world": [
+    0,
+    1,
+    1,
+    0,
+    0,
+    -2,
+    0,
+    2
+   ]
+  }
+ }
+}
