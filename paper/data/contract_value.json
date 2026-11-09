@@ -12,10 +12,5 @@
  "external_filers_had_less_at_stake": 15,
  "had_more": 5,
  "tie": 0,
- "sign_test_p_two_sided": 0.04138946533203125,
- "value_quantiles_10_50_90": [
-  18300.0,
-  42000,
-  54000
- ]
+ "sign_test_p_two_sided": 0.04138946533203125
 }

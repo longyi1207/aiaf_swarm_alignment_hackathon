@@ -1,0 +1,142 @@
+[
+ {
+  "game": "w0101_n5_t3_k5_high_discuss_b4ri_r300_p6000__none",
+  "external_mean": 34500.0,
+  "internal_mean": 54000.0,
+  "n_external": 4,
+  "n_internal": 1
+ },
+ {
+  "game": "w0101_n5_t3_k5_high_isolated_b4ri_r300_p6000__none",
+  "external_mean": 37500.0,
+  "internal_mean": 42000.0,
+  "n_external": 4,
+  "n_internal": 1
+ },
+ {
+  "game": "w0101_n5_t3_k5_low_isolated_b4ri_r300_p6000__none",
+  "external_mean": 36000.0,
+  "internal_mean": 40000.0,
+  "n_external": 2,
+  "n_internal": 3
+ },
+ {
+  "game": "w0102_n5_t3_k5_high_isolated_b4ri_r300_p6000__none",
+  "external_mean": 46000.0,
+  "internal_mean": 45000.0,
+  "n_external": 3,
+  "n_internal": 2
+ },
+ {
+  "game": "w0101_n5_t3_k5_medium_isolated_b4ri_r300_p6000__none",
+  "external_mean": 38000.0,
+  "internal_mean": 39000.0,
+  "n_external": 3,
+  "n_internal": 2
+ },
+ {
+  "game": "w0102_n5_t3_k5_medium_isolated_b4ri_r300_p6000__none",
+  "external_mean": 48000.0,
+  "internal_mean": 44000.0,
+  "n_external": 2,
+  "n_internal": 3
+ },
+ {
+  "game": "w0103_n5_t3_k5_medium_isolated_b4ri_r300_p6000__none",
+  "external_mean": 18000.0,
+  "internal_mean": 36000.0,
+  "n_external": 2,
+  "n_internal": 3
+ },
+ {
+  "game": "w0104_n5_t3_k5_medium_isolated_b4ri_r300_p6000__none",
+  "external_mean": 38000.0,
+  "internal_mean": 36000.0,
+  "n_external": 3,
+  "n_internal": 2
+ },
+ {
+  "game": "w0201_n5_t3_k5_high_isolated_b4ri_r300_p6000__none",
+  "external_mean": 26000.0,
+  "internal_mean": 51000.0,
+  "n_external": 3,
+  "n_internal": 2
+ },
+ {
+  "game": "w0201_n5_t3_k5_medium_isolated_b4ri_r300_p6000__none",
+  "external_mean": 24000.0,
+  "internal_mean": 39000.0,
+  "n_external": 1,
+  "n_internal": 4
+ },
+ {
+  "game": "w0202_n5_t3_k5_high_discuss_b4ri_r300_p6000__none",
+  "external_mean": 36000.0,
+  "internal_mean": 40500.0,
+  "n_external": 1,
+  "n_internal": 4
+ },
+ {
+  "game": "w0202_n5_t3_k5_high_isolated_b4ri_r300_p6000__none",
+  "external_mean": 40500.0,
+  "internal_mean": 36000.0,
+  "n_external": 4,
+  "n_internal": 1
+ },
+ {
+  "game": "w0202_n5_t3_k5_medium_discuss_b4ri_r300_p6000__none",
+  "external_mean": 36000.0,
+  "internal_mean": 45000.0,
+  "n_external": 3,
+  "n_internal": 2
+ },
+ {
+  "game": "w0202_n5_t3_k5_medium_isolated_b4ri_r300_p6000__none",
+  "external_mean": 40500.0,
+  "internal_mean": 36000.0,
+  "n_external": 4,
+  "n_internal": 1
+ },
+ {
+  "game": "w0331_n5_t3_k5_high_isolated_b4ri_r300_p6000__none",
+  "external_mean": 0.0,
+  "internal_mean": 42000.0,
+  "n_external": 2,
+  "n_internal": 3
+ },
+ {
+  "game": "w0331_n5_t3_k5_medium_isolated_b4ri_r300_p6000__none",
+  "external_mean": 0.0,
+  "internal_mean": 48000.0,
+  "n_external": 1,
+  "n_internal": 4
+ },
+ {
+  "game": "w0332_n5_t3_k5_high_discuss_b4ri_r300_p6000__none",
+  "external_mean": 0.0,
+  "internal_mean": 37500.0,
+  "n_external": 1,
+  "n_internal": 4
+ },
+ {
+  "game": "w0332_n5_t3_k5_high_isolated_b4ri_r300_p6000__none",
+  "external_mean": 24300.0,
+  "internal_mean": 39000.0,
+  "n_external": 3,
+  "n_internal": 2
+ },
+ {
+  "game": "w0351_n5_t3_k5_high_isolated_b4ri_r300_p6000__none",
+  "external_mean": 0.0,
+  "internal_mean": 90000.0,
+  "n_external": 2,
+  "n_internal": 3
+ },
+ {
+  "game": "w0351_n5_t3_k5_medium_isolated_b4ri_r300_p6000__none",
+  "external_mean": 0.0,
+  "internal_mean": 52000.0,
+  "n_external": 2,
+  "n_internal": 3
+ }
+]
