@@ -1,0 +1,67 @@
+{
+  "backend": {
+    "dtype": "bfloat16",
+    "enable_thinking": true,
+    "enforce_eager": true,
+    "gpu_memory_utilization": 0.38,
+    "max_new_tokens": 4096,
+    "max_prompt_tokens": 98304,
+    "model": "Qwen/Qwen3.5-9B",
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "type": "vllm_stdio",
+    "seed": 20261108,
+    "revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+    "enable_prefix_caching": false
+  },
+  "design": {
+    "communication": [
+      "isolated",
+      "discuss"
+    ],
+    "harm": [
+      "medium",
+      "high"
+    ],
+    "k_evidence": [
+      5
+    ],
+    "lesion_conditions": [
+      "none",
+      "emp",
+      "random",
+      "tom",
+      "random_tom",
+      "tom_all30",
+      "random_all30"
+    ],
+    "matched_controls": {
+      "emp": "random",
+      "tom": "random_tom",
+      "tom_all30": "random_all30"
+    },
+    "seeds": [
+      401,
+      402
+    ]
+  },
+  "lesions_config": "configs/lesions.yaml",
+  "out_dir": "runs/h100_replay",
+  "protocol": {
+    "analysis_max_steps": 40,
+    "discussion_minutes": 10,
+    "minutes_per_round": 2,
+    "python_network": "block",
+    "own_file_free_turns": 16,
+    "lesion_phases": []
+  },
+  "run_id": "main",
+  "world": {
+    "award_usd": 300,
+    "brief": "v4ri",
+    "monthly_pay_usd": 6000,
+    "n_agents": 5,
+    "threshold": 3
+  },
+  "repo_root": "."
+}

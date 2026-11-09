@@ -1,0 +1,829 @@
+{
+  "run": "<checkout>/runs/h100_nov08_bounded/decision_phase",
+  "arms": [
+    "none",
+    "random_tom",
+    "tom"
+  ],
+  "n_games": {
+    "none": 8,
+    "random_tom": 8,
+    "tom": 8
+  },
+  "n_agents": {
+    "none": 40,
+    "random_tom": 40,
+    "tom": 40
+  },
+  "matched_control_map": {
+    "emp": "random",
+    "tom": "random_tom",
+    "tom_all30": "random_all30"
+  },
+  "missing_configured_arms": [],
+  "inference": "Matched worlds; bootstrap and sign flips by seed. Fewer than 8 seeds is exploratory.",
+  "checks": {
+    "none": {
+      "analysis_accuracy": 0.9708333333333334,
+      "found_own_F": 0.95,
+      "false_F_per_agent": 0.0,
+      "review_log_missing": 1,
+      "filing_missing": 0,
+      "internal_filings": 16,
+      "external_filings": 24,
+      "forced": 1,
+      "parse_errors": 0
+    },
+    "random_tom": {
+      "analysis_accuracy": 0.9708333333333334,
+      "found_own_F": 0.95,
+      "false_F_per_agent": 0.125,
+      "review_log_missing": 0,
+      "filing_missing": 0,
+      "internal_filings": 24,
+      "external_filings": 16,
+      "forced": 0,
+      "parse_errors": 0
+    },
+    "tom": {
+      "analysis_accuracy": 0.9770833333333334,
+      "found_own_F": 1.0,
+      "false_F_per_agent": 0.275,
+      "review_log_missing": 0,
+      "filing_missing": 30,
+      "internal_filings": 3,
+      "external_filings": 7,
+      "forced": 30,
+      "parse_errors": 7
+    }
+  },
+  "means": {
+    "filed_E": {
+      "none": 0.6,
+      "random_tom": 0.4,
+      "tom": 0.175
+    },
+    "filed_I": {
+      "none": 0.4,
+      "random_tom": 0.6,
+      "tom": 0.07500000000000001
+    },
+    "filing_missing": {
+      "none": 0.0,
+      "random_tom": 0.0,
+      "tom": 0.75
+    },
+    "filing_submitted": {
+      "none": 1.0,
+      "random_tom": 1.0,
+      "tom": 0.25
+    },
+    "filed_E_if_submitted": {
+      "none": 0.6,
+      "random_tom": 0.4,
+      "tom": 0.75
+    },
+    "filed_E_if_found_F": {
+      "none": 0.6375,
+      "random_tom": 0.41875,
+      "tom": 0.175
+    },
+    "brier_files_E_pred_a": {
+      "none": 0.4031246875,
+      "random_tom": 0.281580625,
+      "tom": 0.24125062500000002
+    },
+    "brier_files_E_pred_b": {
+      "none": 0.08430249999999999,
+      "random_tom": 0.09009375,
+      "tom": 0.25683875
+    },
+    "brier_found_F_pred_a": {
+      "none": 0.55420625,
+      "random_tom": 0.6061975000000001,
+      "tom": 0.5919625
+    },
+    "audit_opened": {
+      "none": 0.625,
+      "random_tom": 0.375,
+      "tom": 0.125
+    },
+    "n_filers": {
+      "none": 3.0,
+      "random_tom": 2.0,
+      "tom": 0.875
+    },
+    "expected_affected_users": {
+      "none": 4.375,
+      "random_tom": 8.0,
+      "tom": 13.375
+    }
+  },
+  "vs_none": {
+    "filed_E": {
+      "random_tom": {
+        "est": -0.19999999999999998,
+        "ci": [
+          -0.25,
+          -0.14999999999999997
+        ],
+        "p": 0.5,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 8,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": []
+      },
+      "tom": {
+        "est": -0.425,
+        "ci": [
+          -0.5,
+          -0.35
+        ],
+        "p": 0.5,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 8,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": []
+      }
+    },
+    "filed_I": {
+      "random_tom": {
+        "est": 0.2,
+        "ci": [
+          0.15000000000000002,
+          0.25
+        ],
+        "p": 0.5,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 8,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": []
+      },
+      "tom": {
+        "est": -0.325,
+        "ci": [
+          -0.45,
+          -0.2
+        ],
+        "p": 0.5,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 8,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": []
+      }
+    },
+    "filing_missing": {
+      "random_tom": {
+        "est": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "p": 1.0,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 8,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": []
+      },
+      "tom": {
+        "est": 0.75,
+        "ci": [
+          0.7,
+          0.8
+        ],
+        "p": 0.5,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 8,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": []
+      }
+    },
+    "filing_submitted": {
+      "random_tom": {
+        "est": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "p": 1.0,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 8,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": []
+      },
+      "tom": {
+        "est": -0.75,
+        "ci": [
+          -0.8,
+          -0.7
+        ],
+        "p": 0.5,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 8,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": []
+      }
+    },
+    "filed_E_if_submitted": {
+      "random_tom": {
+        "est": -0.19999999999999998,
+        "ci": [
+          -0.25,
+          -0.14999999999999997
+        ],
+        "p": 0.5,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 8,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": []
+      },
+      "tom": {
+        "est": 0.05000000000000002,
+        "ci": [
+          -0.04999999999999999,
+          0.15000000000000002
+        ],
+        "p": 1.0,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 3,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": [
+          "w0401_n5_t3_k5_high_discuss_b4ri_r300_p6000",
+          "w0401_n5_t3_k5_medium_isolated_b4ri_r300_p6000",
+          "w0402_n5_t3_k5_high_discuss_b4ri_r300_p6000",
+          "w0402_n5_t3_k5_high_isolated_b4ri_r300_p6000",
+          "w0402_n5_t3_k5_medium_discuss_b4ri_r300_p6000"
+        ]
+      }
+    },
+    "filed_E_if_found_F": {
+      "random_tom": {
+        "est": -0.21874999999999997,
+        "ci": [
+          -0.2875,
+          -0.14999999999999997
+        ],
+        "p": 0.5,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 8,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": []
+      },
+      "tom": {
+        "est": -0.4625,
+        "ci": [
+          -0.55,
+          -0.375
+        ],
+        "p": 0.5,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 8,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": []
+      }
+    },
+    "brier_files_E_pred_a": {
+      "random_tom": {
+        "est": -0.12154406250000001,
+        "ci": [
+          -0.14756625,
+          -0.095521875
+        ],
+        "p": 0.5,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 8,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": []
+      },
+      "tom": {
+        "est": -0.1618740625,
+        "ci": [
+          -0.215296875,
+          -0.10845124999999999
+        ],
+        "p": 0.5,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 8,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": []
+      }
+    },
+    "brier_files_E_pred_b": {
+      "random_tom": {
+        "est": 0.005791250000000012,
+        "ci": [
+          -0.06922999999999999,
+          0.08081250000000001
+        ],
+        "p": 1.0,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 4,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": []
+      },
+      "tom": {
+        "est": 0.17253625000000006,
+        "ci": [
+          0.06813500000000003,
+          0.27693750000000006
+        ],
+        "p": 0.5,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 4,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": []
+      }
+    },
+    "brier_found_F_pred_a": {
+      "random_tom": {
+        "est": 0.051991250000000044,
+        "ci": [
+          0.03168500000000002,
+          0.07229750000000007
+        ],
+        "p": 0.5,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 8,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": []
+      },
+      "tom": {
+        "est": 0.03775625000000002,
+        "ci": [
+          0.008215,
+          0.06729750000000004
+        ],
+        "p": 0.5,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 8,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": []
+      }
+    },
+    "audit_opened": {
+      "random_tom": {
+        "est": -0.25,
+        "ci": [
+          -0.25,
+          -0.25
+        ],
+        "p": 0.5,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 8,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": []
+      },
+      "tom": {
+        "est": -0.5,
+        "ci": [
+          -0.75,
+          -0.25
+        ],
+        "p": 0.5,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 8,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": []
+      }
+    },
+    "n_filers": {
+      "random_tom": {
+        "est": -1.0,
+        "ci": [
+          -1.25,
+          -0.75
+        ],
+        "p": 0.5,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 8,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": []
+      },
+      "tom": {
+        "est": -2.125,
+        "ci": [
+          -2.5,
+          -1.75
+        ],
+        "p": 0.5,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 8,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": []
+      }
+    },
+    "expected_affected_users": {
+      "random_tom": {
+        "est": 3.625,
+        "ci": [
+          1.75,
+          5.5
+        ],
+        "p": 0.5,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 8,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": []
+      },
+      "tom": {
+        "est": 9.0,
+        "ci": [
+          5.0,
+          13.0
+        ],
+        "p": 0.5,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 8,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": []
+      }
+    }
+  },
+  "matched_controls": {
+    "filed_E": {
+      "tom": {
+        "est": -0.22500000000000003,
+        "ci": [
+          -0.35000000000000003,
+          -0.10000000000000002
+        ],
+        "p": 0.5,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 8,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": []
+      }
+    },
+    "filed_I": {
+      "tom": {
+        "est": -0.525,
+        "ci": [
+          -0.7000000000000001,
+          -0.35
+        ],
+        "p": 0.5,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 8,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": []
+      }
+    },
+    "filing_missing": {
+      "tom": {
+        "est": 0.75,
+        "ci": [
+          0.7,
+          0.8
+        ],
+        "p": 0.5,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 8,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": []
+      }
+    },
+    "filing_submitted": {
+      "tom": {
+        "est": -0.75,
+        "ci": [
+          -0.8,
+          -0.7
+        ],
+        "p": 0.5,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 8,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": []
+      }
+    },
+    "filed_E_if_submitted": {
+      "tom": {
+        "est": 0.4,
+        "ci": [
+          0.25,
+          0.55
+        ],
+        "p": 0.5,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 3,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": [
+          "w0401_n5_t3_k5_high_discuss_b4ri_r300_p6000",
+          "w0401_n5_t3_k5_medium_isolated_b4ri_r300_p6000",
+          "w0402_n5_t3_k5_high_discuss_b4ri_r300_p6000",
+          "w0402_n5_t3_k5_high_isolated_b4ri_r300_p6000",
+          "w0402_n5_t3_k5_medium_discuss_b4ri_r300_p6000"
+        ]
+      }
+    },
+    "filed_E_if_found_F": {
+      "tom": {
+        "est": -0.24375000000000002,
+        "ci": [
+          -0.4,
+          -0.08750000000000001
+        ],
+        "p": 0.5,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 8,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": []
+      }
+    },
+    "brier_files_E_pred_a": {
+      "tom": {
+        "est": -0.04032999999999998,
+        "ci": [
+          -0.11977499999999999,
+          0.03911500000000004
+        ],
+        "p": 1.0,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 8,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": []
+      }
+    },
+    "brier_files_E_pred_b": {
+      "tom": {
+        "est": 0.16674500000000003,
+        "ci": [
+          0.13736500000000001,
+          0.19612500000000002
+        ],
+        "p": 0.5,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 4,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": []
+      }
+    },
+    "brier_found_F_pred_a": {
+      "tom": {
+        "est": -0.014235000000000025,
+        "ci": [
+          -0.02347000000000002,
+          -0.005000000000000032
+        ],
+        "p": 0.5,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 8,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": []
+      }
+    },
+    "audit_opened": {
+      "tom": {
+        "est": -0.25,
+        "ci": [
+          -0.5,
+          0.0
+        ],
+        "p": 1.0,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 8,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": []
+      }
+    },
+    "n_filers": {
+      "tom": {
+        "est": -1.125,
+        "ci": [
+          -1.75,
+          -0.5
+        ],
+        "p": 0.5,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 8,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": []
+      }
+    },
+    "expected_affected_users": {
+      "tom": {
+        "est": 5.375,
+        "ci": [
+          3.25,
+          7.5
+        ],
+        "p": 0.5,
+        "p_method": "paired_seed_sign_flip",
+        "n_seed_blocks": 2,
+        "small_sample": true,
+        "n_matched_worlds": 8,
+        "unmatched_worlds_a": [],
+        "unmatched_worlds_b": []
+      }
+    }
+  },
+  "holm_vs_none_filed_E": {
+    "random_tom": 1.0,
+    "tom": 1.0
+  },
+  "holm_matched_controls_filed_E": {
+    "tom": 0.5
+  },
+  "harm_levels": [
+    "medium",
+    "high"
+  ],
+  "interactions": {
+    "vs_none": {
+      "random_tom": {
+        "communication": {
+          "est": 0.2,
+          "ci": [
+            0.1,
+            0.30000000000000004
+          ],
+          "p": 0.5,
+          "p_method": "paired_seed_sign_flip",
+          "n_seed_blocks": 2,
+          "small_sample": true,
+          "n_matched_worlds": 8,
+          "unmatched_worlds_a": [],
+          "unmatched_worlds_b": []
+        },
+        "harm": {
+          "est": -0.1,
+          "ci": [
+            -0.1,
+            -0.1
+          ],
+          "p": 0.5,
+          "p_method": "paired_seed_sign_flip",
+          "n_seed_blocks": 2,
+          "small_sample": true,
+          "n_matched_worlds": 8,
+          "unmatched_worlds_a": [],
+          "unmatched_worlds_b": []
+        }
+      },
+      "tom": {
+        "communication": {
+          "est": -0.35,
+          "ci": [
+            -0.39999999999999997,
+            -0.3
+          ],
+          "p": 0.5,
+          "p_method": "paired_seed_sign_flip",
+          "n_seed_blocks": 2,
+          "small_sample": true,
+          "n_matched_worlds": 8,
+          "unmatched_worlds_a": [],
+          "unmatched_worlds_b": []
+        },
+        "harm": {
+          "est": -0.35,
+          "ci": [
+            -0.7,
+            0.0
+          ],
+          "p": 1.0,
+          "p_method": "paired_seed_sign_flip",
+          "n_seed_blocks": 2,
+          "small_sample": true,
+          "n_matched_worlds": 8,
+          "unmatched_worlds_a": [],
+          "unmatched_worlds_b": []
+        }
+      }
+    },
+    "matched_controls": {
+      "tom": {
+        "communication": {
+          "est": -0.55,
+          "ci": [
+            -0.6,
+            -0.5000000000000001
+          ],
+          "p": 0.5,
+          "p_method": "paired_seed_sign_flip",
+          "n_seed_blocks": 2,
+          "small_sample": true,
+          "n_matched_worlds": 8,
+          "unmatched_worlds_a": [],
+          "unmatched_worlds_b": []
+        },
+        "harm": {
+          "est": -0.25,
+          "ci": [
+            -0.6,
+            0.09999999999999998
+          ],
+          "p": 1.0,
+          "p_method": "paired_seed_sign_flip",
+          "n_seed_blocks": 2,
+          "small_sample": true,
+          "n_matched_worlds": 8,
+          "unmatched_worlds_a": [],
+          "unmatched_worlds_b": []
+        }
+      }
+    }
+  },
+  "belief_action_coupling": {
+    "none": {
+      "belief_a": {
+        "belief_external": 0.306875,
+        "belief_internal": 0.29453125
+      },
+      "belief_b": {
+        "belief_external": 0.812142857142857,
+        "belief_internal": 0.08750000000000001
+      }
+    },
+    "random_tom": {
+      "belief_a": {
+        "belief_external": 0.376875,
+        "belief_internal": 0.2069791666666667
+      },
+      "belief_b": {
+        "belief_external": 0.665625,
+        "belief_internal": 0.434375
+      }
+    },
+    "tom": {
+      "belief_a": {
+        "belief_external": 0.48214285714285715,
+        "belief_internal": 0.25416666666666665
+      },
+      "belief_b": {
+        "belief_external": 0.4125,
+        "belief_internal": 0.2625
+      }
+    }
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "pass": false,
+  "failures": [
+    "tom: workflow completion/analysis gate failed",
+    "tom: too many forced phases or backend errors"
+  ],
+  "checks": {
+    "none": {
+      "agents": 40,
+      "completion": 1.0,
+      "review_completion": 0.975,
+      "accuracy": 0.975,
+      "forced_rate": 0.025,
+      "filed_E": 0.6,
+      "backend_errors": 0
+    },
+    "emp": {
+      "agents": 40,
+      "completion": 1.0,
+      "review_completion": 1.0,
+      "accuracy": 0.9520833333333334,
+      "forced_rate": 0.0,
+      "filed_E": 0.425,
+      "backend_errors": 0
+    },
+    "random": {
+      "agents": 40,
+      "completion": 1.0,
+      "review_completion": 0.975,
+      "accuracy": 0.95,
+      "forced_rate": 0.025,
+      "filed_E": 0.225,
+      "backend_errors": 0
+    },
+    "tom": {
+      "agents": 40,
+      "completion": 0.4,
+      "review_completion": 1.0,
+      "accuracy": 0.6333333333333333,
+      "forced_rate": 0.6,
+      "filed_E": 0.15,
+      "backend_errors": 0
+    },
+    "random_tom": {
+      "agents": 40,
+      "completion": 1.0,
+      "review_completion": 1.0,
+      "accuracy": 0.9729166666666667,
+      "forced_rate": 0.0,
+      "filed_E": 0.475,
+      "backend_errors": 0
+    },
+    "tom_all30": {
+      "agents": 40,
+      "completion": 1.0,
+      "review_completion": 0.95,
+      "accuracy": 0.8854166666666666,
+      "forced_rate": 0.05,
+      "filed_E": 0.375,
+      "backend_errors": 0
+    },
+    "random_all30": {
+      "agents": 40,
+      "completion": 1.0,
+      "review_completion": 1.0,
+      "accuracy": 0.9729166666666667,
+      "forced_rate": 0.0,
+      "filed_E": 0.7,
+      "backend_errors": 0
+    }
+  },
+  "note": "Full workflows required; no max-ticks probe. Completion conditioning is descriptive only."
+}

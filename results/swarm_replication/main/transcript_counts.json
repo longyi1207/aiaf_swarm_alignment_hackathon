@@ -1,0 +1,93 @@
+{
+  "emp": {
+    "model_turns": 962,
+    "completion_tokens": 626597,
+    "dispatched_filing_calls": 40,
+    "invalid_channel_calls": 0,
+    "missing_citation_calls": 0,
+    "capped_unclosed": 2,
+    "capped_with_visible_content": 0,
+    "capped_tool_calls": 0,
+    "capped_kept_as_reasoning_only": 2,
+    "agents_with_capped_thought": 2,
+    "agents_with_input_limit_error": 0
+  },
+  "none": {
+    "model_turns": 962,
+    "completion_tokens": 854588,
+    "dispatched_filing_calls": 40,
+    "invalid_channel_calls": 0,
+    "missing_citation_calls": 0,
+    "capped_unclosed": 5,
+    "capped_with_visible_content": 0,
+    "capped_tool_calls": 0,
+    "capped_kept_as_reasoning_only": 5,
+    "agents_with_capped_thought": 5,
+    "agents_with_input_limit_error": 0
+  },
+  "random": {
+    "model_turns": 1054,
+    "completion_tokens": 838396,
+    "dispatched_filing_calls": 40,
+    "invalid_channel_calls": 0,
+    "missing_citation_calls": 0,
+    "capped_unclosed": 5,
+    "capped_with_visible_content": 0,
+    "capped_tool_calls": 0,
+    "capped_kept_as_reasoning_only": 5,
+    "agents_with_capped_thought": 4,
+    "agents_with_input_limit_error": 0
+  },
+  "random_all30": {
+    "model_turns": 889,
+    "completion_tokens": 597711,
+    "capped_unclosed": 3,
+    "capped_with_visible_content": 0,
+    "capped_tool_calls": 0,
+    "capped_kept_as_reasoning_only": 3,
+    "dispatched_filing_calls": 40,
+    "invalid_channel_calls": 0,
+    "missing_citation_calls": 0,
+    "agents_with_capped_thought": 3,
+    "agents_with_input_limit_error": 0
+  },
+  "random_tom": {
+    "model_turns": 944,
+    "completion_tokens": 662294,
+    "dispatched_filing_calls": 40,
+    "invalid_channel_calls": 0,
+    "missing_citation_calls": 0,
+    "capped_unclosed": 2,
+    "capped_with_visible_content": 0,
+    "capped_tool_calls": 0,
+    "capped_kept_as_reasoning_only": 2,
+    "agents_with_capped_thought": 2,
+    "agents_with_input_limit_error": 0
+  },
+  "tom": {
+    "model_turns": 1274,
+    "completion_tokens": 605586,
+    "capped_unclosed": 19,
+    "capped_with_visible_content": 0,
+    "capped_tool_calls": 0,
+    "capped_kept_as_reasoning_only": 19,
+    "dispatched_filing_calls": 214,
+    "invalid_channel_calls": 193,
+    "missing_citation_calls": 5,
+    "agents_with_capped_thought": 15,
+    "agents_with_input_limit_error": 0
+  },
+  "tom_all30": {
+    "model_turns": 1068,
+    "completion_tokens": 835788,
+    "capped_unclosed": 5,
+    "capped_with_visible_content": 0,
+    "capped_tool_calls": 0,
+    "capped_kept_as_reasoning_only": 5,
+    "dispatched_filing_calls": 50,
+    "invalid_channel_calls": 0,
+    "missing_citation_calls": 10,
+    "agents_with_capped_thought": 4,
+    "agents_with_input_limit_error": 0
+  }
+}
