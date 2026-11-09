@@ -1,5 +1,8 @@
 # Fourteen missing filings, three distinct failure modes
 
+The same audit on fresh seeds compares full-game L6 with L6 applied only after evidence
+analysis. [Phase comparison and new replay data](phase_comparison.md)
+
 In the four validation games at seed 351, L6 produced **0 external filings, 6 internal
 filings and 14 missing filings** among 20 auditors. The historical study reported
 2 external, 11 internal and 27 missing among 40. Baseline completed all 20 filings in
