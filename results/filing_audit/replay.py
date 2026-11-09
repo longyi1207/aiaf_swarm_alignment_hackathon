@@ -1,5 +1,6 @@
 """Replay one precisely specified correction to malformed parameter end tags."""
 from collections import Counter
+import argparse
 import gzip
 import json
 from pathlib import Path
@@ -55,5 +56,7 @@ def replay(data):
 
 
 if __name__ == '__main__':
-    with gzip.open(Path(__file__).with_name('observed.json.gz'), 'rt') as f:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('fixture', nargs='?', type=Path, default=Path(__file__).with_name('observed.json.gz'))
+    with gzip.open(parser.parse_args().fixture, 'rt') as f:
         print(json.dumps(replay(json.load(f)), indent=2))
