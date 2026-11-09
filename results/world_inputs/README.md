@@ -66,3 +66,5 @@ inside them retain their original bytes. The main archive also serves the paired
 decision-phase stage. [Calibration](calibration.zip) · [Workflow](workflow.zip) ·
 [Main and paired phase](main.zip) · [Original regenerated repeat](regenerated_repeat.zip) ·
 [Archive SHA-256 checksums](archives.json)
+
+Public diagnostic event streams replace workstation checkout and home prefixes with `<checkout>` and `<user>`. The world packages retain the original file bytes.
